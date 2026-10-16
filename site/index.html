@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Saywell — speak, and it's typed</title>
-<meta name="description" content="Free, open-source dictation for Mac. Speak in any app; text appears where your cursor is. Local recognition, optional language tips.">
-<meta property="og:title" content="Saywell — speak, and it's typed">
-<meta property="og:description" content="Free, open-source dictation for Mac with optional language tips. Runs on your Mac.">
-<meta property="og:image" content="assets/icon-512.png">
+<title>Saywell — dictation that teaches you the language</title>
+<meta name="description" content="Free, open-source dictation for Mac that helps you learn the language you speak: talk in any app, and a friendly tip shows the one mistake worth fixing. Runs locally.">
+<meta property="og:title" content="Saywell — dictation that teaches you the language">
+<meta property="og:description" content="Speak in any Mac app, get your text at the cursor and a friendly correction of the one mistake worth fixing. Free, open source, local.">
+<meta property="og:image" content="https://gomin1i.github.io/saywell/assets/social.png">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/favicon.png">
 <style>
   :root {
@@ -114,6 +115,11 @@
   .shot img { display: block; width: 100%; height: auto; }
   .shot figcaption { font-size: 13px; color: var(--faint); padding: 10px 14px; }
   .stack { display: grid; gap: 18px; }
+  .tipshot { margin: 0; display: grid; place-items: center; background: radial-gradient(420px 260px at 50% 60%, rgba(255,90,78,.20), transparent 70%), var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+  .tipshot img { width: min(100%, 410px); height: auto; filter: drop-shadow(0 18px 40px rgba(0,0,0,.35)); }
+  .tipshot figcaption { font-size: 13px; color: var(--faint); margin-top: 10px; text-align: center; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 600px) { .grid2 { grid-template-columns: 1fr; } }
 
   table { width: 100%; border-collapse: collapse; font-size: 15px; }
   th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
@@ -149,8 +155,8 @@
   <div class="wrap">
     <a class="brand" href="#top"><img src="assets/icon-512.png" alt="">Saywell</a>
     <div class="links">
-      <a href="#features" data-i18n="nav.features">Features</a>
       <a href="#learn" data-i18n="nav.learn">Learning</a>
+      <a href="#features" data-i18n="nav.features">Features</a>
       <a href="#privacy" data-i18n="nav.privacy">Privacy</a>
       <a href="#install" data-i18n="nav.install">Install</a>
       <a class="gh" href="#" data-repo-link>GitHub</a>
@@ -165,9 +171,9 @@
 <header class="hero" id="top">
   <div class="wrap">
     <div>
-      <span class="eyebrow"><b>●</b> <span data-i18n="hero.eyebrow">Free and open source · for Mac</span></span>
-      <h1 data-i18n-html="hero.title">Speak.<br>It's typed <em>where you are.</em></h1>
-      <p class="lead" data-i18n="hero.lead">Press one key in any app and talk. Saywell turns your voice into text right at the cursor — locally on your Mac. Learning a language? It can quietly point out a real mistake, after the text is already in.</p>
+      <span class="eyebrow"><b>●</b> <span data-i18n="hero.eyebrow">Free and open source · dictation + language coach for Mac</span></span>
+      <h1 data-i18n-html="hero.title">Speak naturally.<br><em>Get better every time.</em></h1>
+      <p class="lead" data-i18n="hero.lead">Press one key in any app and talk — your words appear at the cursor. Speaking a language you're learning? Right after, Saywell shows the one mistake worth fixing, explained like a friend would. Every email and message becomes practice.</p>
       <div class="cta">
         <a class="btn primary" href="#install" data-download>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
@@ -200,10 +206,35 @@
 </header>
 
 <main>
+<section id="learn">
+  <div class="wrap">
+    <h2 data-i18n="l.title">Practise a language every time you speak</h2>
+    <p class="sub" data-i18n="l.sub">Most learners never get feedback on what they actually say. Saywell gives it inside the work you're already doing — no lessons to schedule, no app to switch to.</p>
+    <div class="shots" style="margin-bottom:18px">
+      <figure class="tipshot"><img src="assets/tip.png" alt="A Saywell tip card: “I am agree” becomes “I agree”, with a short explanation, a fuller reason and an example" loading="lazy"><figcaption data-i18n="l.capTip">A real tip from the app: the fix, a short reason, and more when you ask.</figcaption></figure>
+      <div class="grid2">
+        <div class="feat"><h3 data-i18n="l1.t">Your sentence, corrected</h3><p data-i18n="l1.p">Your text goes in exactly as you said it. Then a small card grows out of the capsule with the one correction worth knowing.</p></div>
+        <div class="feat"><h3 data-i18n="l2.t">Explained like a friend</h3><p data-i18n="l2.p">One short reason in your own language, pitched to your level. Tap “Why?” for the rule and an example.</p></div>
+        <div class="feat"><h3 data-i18n="l3.t">Only what matters</h3><p data-i18n="l3.p">Grammar, word choice, punctuation and style are labelled differently. Correct sentences get nothing — no praise, no noise.</p></div>
+        <div class="feat"><h3 data-i18n="l4.t">Honest about the mic</h3><p data-i18n="l4.p">If the recognizer may have misheard you, the tip says so — and it never counts as your mistake.</p></div>
+        <div class="feat"><h3 data-i18n="l5.t">From tips to skills</h3><p data-i18n="l5.p">“Practise later” turns a correction into a spaced-review card. Your recurring topics show what to work on next.</p></div>
+        <div class="feat"><h3 data-i18n="l6.t">Never in your way</h3><p data-i18n="l6.p">Tips never touch your text or steal keyboard focus. Keep typing; ⌃⌥L brings the last tip back.</p></div>
+      </div>
+    </div>
+    <div class="shots">
+      <figure class="shot"><img src="assets/learning.jpg" alt="Saywell learning settings: how tips appear, how long they stay, explanation length and level" loading="lazy"><figcaption data-i18n="l.cap1">Choose how tips appear, how long they stay, and how much they explain.</figcaption></figure>
+      <div class="stack">
+        <figure class="shot"><img src="assets/main-dark.jpg" alt="Saywell main window in dark mode, ready to dictate" loading="lazy"><figcaption data-i18n="l.cap2">The compact main window shows the active mode and what will happen.</figcaption></figure>
+        <p class="note" data-i18n-html="l.note">Tips use a text model you choose: free and fully local through <a href="https://ollama.com">Ollama</a>, or your own cloud key. Tips work in any language your model knows; English and Russian are the most thoroughly tested so far.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 <section id="features">
   <div class="wrap">
-    <h2 data-i18n="f.title">Dictation that stays out of the way</h2>
-    <p class="sub" data-i18n="f.sub">A small capsule while you speak. Text where your cursor was. Nothing else to manage.</p>
+    <h2 data-i18n="f.title">And dictation you'll want to keep</h2>
+    <p class="sub" data-i18n="f.sub">A small capsule while you speak, text where your cursor was — fast, private and shaped to your taste.</p>
     <div class="grid3">
       <div class="feat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="8" width="18" height="8" rx="4"/><path d="M9 11v2M12 10v4M15 9v6"/></svg></div>
         <h3 data-i18n="f1.t">Works in every app</h3><p data-i18n="f1.p">Tap right ⌘, speak, tap again. Mail, Slack, your editor, a browser — the text goes into the field you were typing in, and Saywell tells you if it couldn't.</p></div>
@@ -214,24 +245,11 @@
       <div class="feat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 12h10M4 19h7"/></svg></div>
         <h3 data-i18n="f4.t">Modes for each job</h3><p data-i18n="f4.p">Keep exactly what you said, tidy punctuation, fix grammar, or rewrite in a tone — per mode, with a preview of what changes. Switch with ⌃⌥M.</p></div>
       <div class="feat"><div class="ico g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
-        <h3 data-i18n="f5.t">Mixed languages</h3><p data-i18n="f5.p">Russian with English terms, German, Chinese and more. Saywell keeps each phrase in the language you spoke — it never translates behind your back.</p></div>
+        <h3 data-i18n="f5.t">Truly multilingual</h3><p data-i18n="f5.p">Around 100 languages, and you can switch between them mid-sentence. Foreign terms keep their own spelling, and nothing is translated behind your back.</p></div>
       <div class="feat"><div class="ico c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div>
-        <h3 data-i18n="f6.t">Feels native</h3><p data-i18n="f6.p">Liquid Glass or quiet ink capsule, light and dark, Reduce Motion and VoiceOver respected. Interface in English, Russian, German and Chinese.</p></div>
+        <h3 data-i18n="f6.t">Made to be yours</h3><p data-i18n="f6.p">Liquid Glass or quiet Ink capsule, palettes, size, motion, sounds, light and dark, your own shortcuts. Interface in English, Russian, German and Chinese.</p></div>
     </div>
-  </div>
-</section>
-
-<section id="learn">
-  <div class="wrap">
-    <h2 data-i18n="l.title">Learn from your own sentences</h2>
-    <p class="sub" data-i18n="l.sub">Turn tips on for a mode and dictate in the language you're learning. When there's a real mistake, a card grows out of the capsule: the fix, a friendly reason, an example on request. Correct text gets nothing — no praise, no noise.</p>
-    <div class="shots">
-      <figure class="shot"><img src="assets/learning.jpg" alt="Saywell learning settings: how tips appear, how long they stay, explanation length and level" loading="lazy"><figcaption data-i18n="l.cap1">Choose how tips appear, how long they stay, and how much they explain.</figcaption></figure>
-      <div class="stack">
-        <figure class="shot"><img src="assets/main-dark.jpg" alt="Saywell main window in dark mode, ready to dictate" loading="lazy"><figcaption data-i18n="l.cap2">The compact main window shows the active mode and what will happen.</figcaption></figure>
-        <figure class="shot"><img src="assets/appearance.jpg" alt="Appearance settings with capsule preview, theme, material and colours" loading="lazy"><figcaption data-i18n="l.cap3">Capsule material, colours, size and motion, with a live preview.</figcaption></figure>
-      </div>
-    </div>
+    <figure class="shot" style="margin-top:24px"><img src="assets/appearance.jpg" alt="Appearance settings with capsule preview, theme, material and colours" loading="lazy"><figcaption data-i18n="l.cap3">Capsule material, colours, size and motion, with a live preview.</figcaption></figure>
   </div>
 </section>
 
@@ -243,7 +261,7 @@
       <table>
         <thead><tr><th data-i18n="m.h1">Model</th><th data-i18n="m.h2">Per phrase</th><th data-i18n="m.h3">Word errors RU / EN / DE</th><th data-i18n="m.h4">Best for</th></tr></thead>
         <tbody>
-          <tr><td><b>Whisper large-v3-turbo</b></td><td>≈0.7 s</td><td>4.1 % / 3.6 % / 4.4 %</td><td data-i18n="m.r1">Mixed languages, Chinese, personal vocabulary</td></tr>
+          <tr><td><b>Whisper large-v3-turbo</b></td><td>≈0.5 s</td><td>4.1 % / 3.6 % / 4.4 %</td><td data-i18n="m.r1">Mixed languages, Chinese, personal vocabulary</td></tr>
           <tr><td><b>NVIDIA Parakeet TDT 0.6B v3</b></td><td>≈0.1 s</td><td>6.1 % / 4.3 % / 5.6 %</td><td data-i18n="m.r2">Speed, one language per recording (25 European languages)</td></tr>
           <tr><td><b>Apple on-device</b></td><td data-i18n="m.fast">fast</td><td>—</td><td data-i18n="m.r3">No download; one language per mode (macOS 26+)</td></tr>
         </tbody>
@@ -304,20 +322,28 @@
 
   const ru = {
     "nav.features": "Возможности", "nav.learn": "Обучение", "nav.privacy": "Приватность", "nav.install": "Установка",
-    "hero.eyebrow": "Бесплатно и с открытым кодом · для Mac",
-    "hero.title": "Говори.<br>Текст появится <em>там, где ты.</em>",
-    "hero.lead": "Нажми одну клавишу в любом приложении и говори. Saywell превращает голос в текст прямо у курсора — локально, на твоём Mac. Учишь язык? Он может ненавязчиво показать настоящую ошибку — уже после того, как текст вставлен.",
+    "hero.eyebrow": "Бесплатно и с открытым кодом · диктовка + языковой тренер для Mac",
+    "hero.title": "Говори как есть.<br><em>Становись лучше с каждой фразой.</em>",
+    "hero.lead": "Нажми одну клавишу в любом приложении и говори — слова появятся у курсора. Говоришь на языке, который учишь? Сразу после Saywell покажет ту самую ошибку, которую стоит исправить, и объяснит её по-дружески. Каждое письмо и сообщение становится практикой.",
     "hero.download": "Скачать для Mac", "hero.how": "Как установить",
     "hero.fine": "Apple silicon · macOS 14 и новее · предварительная версия, не заверена Apple",
     "card.kind": "Aa  Грамматика", "card.why": "Говорят просто «I agree». Agree — это уже глагол, поэтому am перед ним не нужен.", "card.more": "Почему?", "card.save": "В тренировку", "card.ok": "Понятно",
-    "f.title": "Диктовка, которая не мешает", "f.sub": "Маленькая капсула, пока говоришь. Текст там, где был курсор. Больше ничего настраивать не нужно.",
+    "f.title": "И диктовка, с которой не захочется расставаться", "f.sub": "Маленькая капсула, пока говоришь, текст там, где был курсор, — быстро, приватно и так, как нравится тебе.",
     "f1.t": "Работает в любом приложении", "f1.p": "Нажми правый ⌘, скажи, нажми ещё раз. Почта, Slack, редактор, браузер — текст попадёт в поле, где ты печатал, а если не получится, Saywell честно скажет.",
     "f2.t": "Приватно по устройству", "f2.p": "Речь распознаётся на твоём Mac моделями Whisper или NVIDIA Parakeet. Звук никуда не уходит. Правка текста и подсказки — по желанию и тоже могут работать локально.",
     "f3.t": "Быстро", "f3.p": "Текст обычно появляется примерно через полсекунды после конца фразы. Parakeet распознаёт фразу примерно за 0,1 с на Apple silicon.",
     "f4.t": "Режимы под задачу", "f4.p": "Оставить как сказано, поправить пунктуацию, исправить грамматику или переписать в нужном тоне — в каждом режиме свой выбор с примером. Переключение — ⌃⌥M.",
-    "f5.t": "Смешанные языки", "f5.p": "Русский с английскими терминами, немецкий, китайский и другие. Каждая фраза остаётся на том языке, на котором сказана, — ничего не переводится за спиной.",
-    "f6.t": "Как родное приложение", "f6.p": "Капсула из жидкого стекла или спокойные «чернила», светлая и тёмная тема, учёт «Уменьшения движения» и VoiceOver. Интерфейс на русском, английском, немецком и китайском.",
-    "l.title": "Учись на своих же фразах", "l.sub": "Включи подсказки в режиме и диктуй на изучаемом языке. Если есть настоящая ошибка, из капсулы вырастает карточка: исправление, понятное объяснение, пример по запросу. Если всё верно — ничего: ни похвалы, ни шума.",
+    "f5.t": "По-настоящему многоязычно", "f5.p": "Около 100 языков, и переключаться между ними можно прямо посреди фразы. Иностранные термины сохраняют своё написание, и ничего не переводится за твоей спиной.",
+    "f6.t": "Настраивается под тебя", "f6.p": "Капсула Liquid Glass или спокойная Ink, палитры, размер, движение, звуки, светлая и тёмная тема, свои сочетания клавиш. Интерфейс на русском, английском, немецком и китайском.",
+    "l.title": "Практикуй язык каждый раз, когда говоришь", "l.sub": "Большинство изучающих язык никогда не получают обратной связи на то, что реально говорят. Saywell даёт её прямо в работе, которую ты и так делаешь, — без расписания уроков и без переключения приложений.",
+    "l.capTip": "Настоящая подсказка из приложения: исправление, короткая причина и подробности по запросу.",
+    "l1.t": "Твоя фраза — исправленная", "l1.p": "Текст вставляется ровно так, как ты сказал. Потом из капсулы вырастает маленькая карточка с одним исправлением, которое стоит знать.",
+    "l2.t": "Объяснение как от друга", "l2.p": "Одна короткая причина на твоём языке, под твой уровень. Нажми «Почему?» — будет правило и пример.",
+    "l3.t": "Только важное", "l3.p": "Грамматика, выбор слова, пунктуация и стиль помечаются по-разному. Правильные фразы ничего не получают — ни похвалы, ни шума.",
+    "l4.t": "Честно про микрофон", "l4.p": "Если распознаватель мог тебя не расслышать, подсказка так и скажет — и это не засчитается как твоя ошибка.",
+    "l5.t": "Из подсказок — в навык", "l5.p": "«В тренировку» превращает исправление в карточку с интервальным повторением. Частые темы показывают, над чем поработать.",
+    "l6.t": "Никогда не мешает", "l6.p": "Подсказки не трогают твой текст и не забирают фокус клавиатуры. Продолжай печатать; ⌃⌥L вернёт последнюю подсказку.",
+    "l.note": "Подсказки работают через выбранную тобой текстовую модель: бесплатно и полностью локально через <a href=\"https://ollama.com\">Ollama</a> или по своему облачному ключу. Подсказки работают на любом языке, который знает модель; лучше всего пока проверены английский и русский.",
     "l.cap1": "Выбери, как появляются подсказки, сколько держатся и насколько подробно объясняют.", "l.cap2": "Компактное главное окно показывает режим и что произойдёт.", "l.cap3": "Материал, цвета, размер и движение капсулы — с живым предпросмотром.",
     "m.title": "Выбери подходящий распознаватель", "m.sub": "Всё ниже работает на твоём Mac. «Автоматически» берёт Parakeet для одноязычных режимов и Whisper для смешанной речи.",
     "m.h1": "Модель", "m.h2": "На фразу", "m.h3": "Ошибки в словах RU / EN / DE", "m.h4": "Лучше всего для",

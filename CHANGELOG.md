@@ -6,7 +6,7 @@
 - Settings read like a finished product: maintainer notes removed or rewritten as short user-facing text in all four languages.
 - How recognition and *Automatic* work, with a measured comparison of language-gated routing (docs/RECOGNITION.md, scripts/eval-routing.py).
 - GitHub automation: CI with a review tier, CodeQL, optional Claude code and security review, Dependabot, pre-release → promote → rollback releases (docs/GITHUB.md); `scripts/check.sh` runs the same checks locally.
-- README with requirements, configuration, languages and security sections; SECURITY.md with private reporting.
+- README and product page lead with language practice; requirements, configuration, languages and security sections; social preview image; SECURITY.md with private reporting.
 
 - Recognition engine “Automatic” (default for new modes): Parakeet for one-language modes when installed, Whisper for mixed languages and Chinese.
 - Parakeet output gets digits: Russian and English cardinals, Russian dates (“15 марта”), times (“14 часов 30 минут”), rooms (“204”); idioms and small single numbers stay words.

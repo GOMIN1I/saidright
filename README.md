@@ -2,25 +2,38 @@
 
 <h1 align="center">Saywell</h1>
 
-<p align="center"><b>Speak in any Mac app — the text appears where your cursor is.</b><br>
-Local speech recognition, modes for how much to edit, and optional language tips that never get in the way.</p>
+<p align="center"><b>Dictation that teaches you the language you speak.</b><br>
+Talk in any Mac app, your words appear at the cursor, and a friendly tip shows you the one mistake worth fixing.</p>
 
-<p align="center"><a href="../../releases/latest">Download</a> · <a href="site/index.html">Product page</a> · <a href="README.ru.md">Русский</a></p>
+<p align="center"><a href="../../releases/latest"><b>Download for Mac</b></a> · <a href="https://gomin1i.github.io/saywell/">Website</a> · <a href="README.ru.md">Русский</a></p>
 
-> **Status: 0.5 developer preview.** Free and open source (Apache 2.0). Apple silicon, macOS 14 or later. Not notarized by Apple — see [Install](#install).
+<p align="center">Free and open source · runs on your Mac · Apple silicon, macOS 14+</p>
+
+<p align="center"><img src="docs/screenshots/readme-tip.png" width="420" alt="A Saywell language tip: “I am agree” becomes “I agree”, with a short explanation and an example"></p>
+
+## Practise a language every time you speak
+
+Most people learning a language never get feedback on what they actually say. Saywell gives it to you **inside the work you are already doing** — an email, a chat message, a note — with no lessons to schedule.
+
+- **Your sentence, corrected.** You dictate in the language you are learning. The text goes in as you said it; then a small card grows out of the capsule: *I am agree → I agree*.
+- **Explained like a friend would.** One short reason in your own language, pitched to your level. Tap **Why?** for the rule and an example.
+- **Only what matters.** One useful correction at a time, labelled as grammar, word choice, punctuation or style. Correct sentences get nothing — no praise, no noise.
+- **Honest about the microphone.** If the problem might be the recognizer mishearing you, the tip says so and it never counts as your mistake.
+- **Turn tips into skills.** *Practise later* saves a correction as a card for spaced review; your recurring topics show what to work on next.
+- **Never in the way.** Tips never touch your text and never take keyboard focus. Keep typing; ⌃⌥L brings the last tip back.
+
+Tips use a text model you choose: free and fully local through [Ollama](https://ollama.com), or your own cloud key. Tips work in any language your model knows; English and Russian are the most thoroughly tested so far.
+
+## And a dictation app you will want to keep
+
+- **Works everywhere.** Tap right ⌘ (or ⌃⌥Space), speak, tap again — the text appears where your cursor is. Ordinary shortcuts such as ⌘C never start a recording; Esc cancels.
+- **Truly multilingual.** Around 100 languages, and you can switch between them mid-dictation. Foreign terms keep their own spelling — say, an English “pull request” inside a Russian sentence. Nothing is translated behind your back.
+- **Fast and private.** Whisper large-v3-turbo or NVIDIA Parakeet run locally through MLX — about half a second per phrase, and audio never leaves your Mac. No account, no telemetry.
+- **Modes for every job.** Keep exactly what you said, tidy punctuation, fix grammar, or rewrite in a tone. Switch with ⌃⌥M.
+- **Made to be yours.** Liquid Glass or Ink capsule, palettes, size, motion, sounds, light and dark, your own shortcuts — and a settings window with search.
+- **Honest delivery.** If focus moved while you were speaking, nothing is pasted into the wrong place; the text waits on the clipboard.
 
 <p align="center"><img src="docs/screenshots/readme-main.jpg" width="420" alt="Saywell main window"> <img src="docs/screenshots/readme-recognition.jpg" width="420" alt="Recognition settings"></p>
-
-## What it does
-
-- **Dictation anywhere.** Tap right ⌘ (or ⌃⌥Space), speak, tap again. Hold-to-talk is available. Ordinary shortcuts such as ⌘C never start a recording; Esc cancels.
-- **Honest delivery.** Text goes only into the field you were typing in. If focus moved, nothing is pasted and the text is on the clipboard, with the reason.
-- **Local recognition.** Whisper large-v3-turbo (best for mixed languages and Chinese) or NVIDIA Parakeet TDT 0.6B v3 (≈0.1 s per phrase, 25 European languages), both through MLX on your Mac; Apple on-device dictation as a no-download option. *Automatic* picks Parakeet for one-language modes and Whisper for mixed speech — see [How recognition works](docs/RECOGNITION.md). Spoken numbers become digits.
-- **Speak two languages at once.** A Russian + English mode keeps English terms in Latin script (“посмотри мой pull request”) and handles switches mid-dictation.
-- **Modes.** Keep what you said, tidy punctuation, fix grammar, or rewrite in a tone — per mode, with a preview of what changes. Switch with ⌃⌥M.
-- **Learn from your own sentences (optional).** After the text is inserted, a card can grow out of the capsule with the correction, a friendly explanation in your language, and an example on request. Correct text gets nothing. Save items for spaced practice. ⌃⌥L reopens the last tip.
-- **Native feel.** Liquid Glass or Ink capsule, light/dark themes, settings with search, Reduce Motion and VoiceOver respected.
-- **Private by default.** Audio never leaves the Mac. Editing and tips use a model you choose — free and local through [Ollama](https://ollama.com), or your own cloud key; *Local only* blocks every cloud request. No account, no telemetry.
 
 ## Requirements
 
@@ -69,17 +82,17 @@ Data lives in `~/Library/Application Support/Saywell` (settings, modes, history,
 | | |
 | --- | --- |
 | Interface | English, Русский, Deutsch, 简体中文 |
-| Recognition, tested | Russian, English, German, Chinese (Whisper); Russian, English, German (Parakeet); mixed Russian + English |
-| Recognition, supported by the models | about 100 languages with Whisper, 25 European languages with Parakeet; marked as less tested in the app |
-| Language tips | tested for Russian and English learners; other languages experimental |
+| Recognition | about 100 languages with Whisper (Chinese included), 25 European languages with Parakeet; several languages in one dictation |
+| Measured so far | Russian, English, German, Chinese and mixed-language speech; other languages are marked as less tested in the app |
+| Language tips | any language the chosen text model knows; most tested: English and Russian |
 
 ## Accuracy and speed
 
 Measured on an M4 Pro. Real speech: 100 Google FLEURS clips; mixed and code-switched speech: synthetic clips ([eval/results](eval/results)).
 
-| Recognizer | Per short phrase | Word errors RU / EN / DE (FLEURS) | Mixed RU+EN | English terms inside Russian |
+| Recognizer | Per short phrase | Word errors RU / EN / DE (FLEURS) | Mixed languages | Foreign terms in a sentence |
 | --- | --- | --- | --- | --- |
-| Whisper large-v3-turbo | ≈0.5 s | 4.1 / 3.6 / 4.4 % | 3.1–3.4 % | kept in Latin script |
+| Whisper large-v3-turbo | ≈0.5 s | 4.1 / 3.6 / 4.4 % | 3.1–3.4 % | kept as written |
 | Parakeet TDT 0.6B v3 | ≈0.1 s | 6.1 / 4.3 / 5.6 % | drops the other language | written phonetically |
 
 Your voice and microphone will differ; synthetic clips check plumbing, not natural accents.
