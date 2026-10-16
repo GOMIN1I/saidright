@@ -1,0 +1,31 @@
+{
+  "note": "Synthetic clips for engine-routing experiments (scripts/eval-routing.py). Every clip is recognised with the mode languages ru+en. 'inline' = Russian sentences with English terms inside, read by the Russian voice (as a Russian speaker would say them); 'mixed' = a sentence-level language switch without a pause.",
+  "items": [
+    {"id": "ru-1", "lang": "ru", "voice": "Milena", "parts": ["Сегодня я закончу отчёт и отправлю его до шести вечера."]},
+    {"id": "ru-2", "lang": "ru", "voice": "Milena", "parts": ["Позвони мне, пожалуйста, когда освободишься."]},
+    {"id": "ru-3", "lang": "ru", "voice": "Milena", "parts": ["Мы перенесли встречу на следующий вторник."]},
+    {"id": "ru-4", "lang": "ru", "voice": "Milena", "parts": ["Купи молоко, хлеб и немного сыра по дороге домой."]},
+    {"id": "ru-5", "lang": "ru", "voice": "Milena", "parts": ["Я думаю, что этот вариант лучше, но давай обсудим ещё раз."]},
+    {"id": "ru-6", "lang": "ru", "voice": "Milena", "parts": ["Нужно проверить, почему приложение так долго запускается."]},
+    {"id": "ru-7", "lang": "ru", "voice": "Milena", "parts": ["Завтра будет холодно, возьми тёплую куртку."]},
+    {"id": "ru-8", "lang": "ru", "voice": "Milena", "parts": ["Напомни мне позвонить врачу в пятницу утром."]},
+    {"id": "en-1", "lang": "en", "voice": "Samantha", "parts": ["I will finish the report today and send it before six."]},
+    {"id": "en-2", "lang": "en", "voice": "Samantha", "parts": ["Please call me back when you have a minute."]},
+    {"id": "en-3", "lang": "en", "voice": "Samantha", "parts": ["We moved the meeting to next Tuesday afternoon."]},
+    {"id": "en-4", "lang": "en", "voice": "Samantha", "parts": ["Let's start with the simplest option and see how it goes."]},
+    {"id": "en-5", "lang": "en", "voice": "Samantha", "parts": ["The application takes too long to start, can you check why?"]},
+    {"id": "en-6", "lang": "en", "voice": "Samantha", "parts": ["Thanks for your help, I could not have done it without you."]},
+    {"id": "inline-1", "lang": "inline", "voice": "Milena", "parts": ["Посмотри мой pull request, там всего три файла."]},
+    {"id": "inline-2", "lang": "inline", "voice": "Milena", "parts": ["Я написал в Slack, но никто не ответил."]},
+    {"id": "inline-3", "lang": "inline", "voice": "Milena", "parts": ["Давай сделаем code review после обеда."]},
+    {"id": "inline-4", "lang": "inline", "voice": "Milena", "parts": ["Обнови README и отправь изменения на GitHub."]},
+    {"id": "inline-5", "lang": "inline", "voice": "Milena", "parts": ["Этот feature flag надо выключить до понедельника."]},
+    {"id": "inline-6", "lang": "inline", "voice": "Milena", "parts": ["Открой Figma и посмотри новый дизайн."]},
+    {"id": "mixed-1", "lang": "mixed", "voice": ["Milena", "Samantha"], "parts": ["Я проверил логи.", "And the deploy failed again."]},
+    {"id": "mixed-2", "lang": "mixed", "voice": ["Milena", "Samantha"], "parts": ["Напиши клиенту.", "We will send the invoice tomorrow morning."]},
+    {"id": "mixed-3", "lang": "mixed", "voice": ["Samantha", "Milena"], "parts": ["Can you review my changes?", "Там всего три файла."]},
+    {"id": "mixed-4", "lang": "mixed", "voice": ["Milena", "Samantha", "Milena"], "parts": ["Сегодня обновим зависимости.", "Then run the tests.", "И вечером выкатим релиз."]},
+    {"id": "mixed-5", "lang": "mixed", "voice": ["Samantha", "Milena"], "parts": ["I need to finish the report first.", "Давай созвонимся после обеда."]},
+    {"id": "mixed-6", "lang": "mixed", "voice": ["Milena", "Samantha"], "parts": ["Встреча переносится.", "Let me know if Thursday works for you."]}
+  ]
+}

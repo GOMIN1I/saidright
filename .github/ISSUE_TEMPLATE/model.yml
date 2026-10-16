@@ -1,0 +1,21 @@
+name: Recognition quality or model request
+description: Wrong words, wrong language, or a request for another model/language
+labels: [recognition]
+body:
+  - type: markdown
+    attributes:
+      value: Describe the problem in words. Attach audio only if it is yours to share and contains nothing private.
+  - type: input
+    id: language
+    attributes: { label: Spoken language(s), placeholder: "Russian with English terms" }
+    validations: { required: true }
+  - type: textarea
+    id: said
+    attributes: { label: What you said vs what appeared }
+    validations: { required: true }
+  - type: dropdown
+    id: engine
+    attributes: { label: Recognizer, options: [Whisper (local), Apple dictation] }
+  - type: input
+    id: mic
+    attributes: { label: Microphone, placeholder: "built-in / AirPods / USB" }

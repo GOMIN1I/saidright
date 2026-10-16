@@ -1,0 +1,2 @@
+"NSMicrophoneUsageDescription" = "Saywell nimmt deine Stimme beim Diktieren auf und erkennt sie auf diesem Mac. Audio wird nicht hochgeladen.";
+"NSSpeechRecognitionUsageDescription" = "Saywell kann das integrierte Diktiermodell von Apple nutzen, um deine Sprache auf diesem Mac zu erkennen.";

@@ -1,0 +1,14 @@
+.build/
+build/
+dist/
+*.xcodeproj/xcuserdata/
+.swiftpm/
+.DS_Store
+*.dSYM
+# Never commit personal data or recordings
+*.wav
+!Tests/Fixtures/**/*.wav
+*.trace
+.claude/
+__pycache__/
+*.pyc

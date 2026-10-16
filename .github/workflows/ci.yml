@@ -1,0 +1,82 @@
+# Required checks for every pull request and every push to main. A red run blocks the merge
+# once the ruleset in docs/GITHUB.md is enabled. Free for public repositories.
+name: CI
+on:
+  push:
+    branches: [main]
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  test:
+    name: Tests and build
+    runs-on: macos-26
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Toolchain
+        run: swift --version
+      - name: Unit tests (SaywellCore)
+        run: swift test
+      - name: App builds and the bundle assembles (ad hoc)
+        run: SAYWELL_SIGN_IDENTITY=- SAYWELL_BUILD_DIR=build/ci scripts/build-app.sh
+  lint:
+    name: Strings, scripts and hygiene
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+      - name: Localization tables complete
+        run: python3 -I scripts/check-localization.py
+      - name: Python compiles
+        run: python3 -I -m py_compile Resources/recognizer.py scripts/*.py
+      - name: Shell scripts parse
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq zsh >/dev/null
+          for f in scripts/*.sh; do zsh -n "$f"; done
+      - name: Actions pinned to commits
+        run: |
+          if grep -nE 'uses: [^ ]+@(v[0-9]+|main|master)\s*$' .github/workflows/*.yml; then exit 1; fi
+      - name: No secrets or personal paths
+        run: |
+          PATTERNS='sk-[A-Za-z0-9_-]{20,}|sk-proj-|ghp_[A-Za-z0-9]{30,}|github_pat_|xox[bap]-|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----|/Users/[a-z][a-z0-9_-]+/'
+          if git ls-files -z | xargs -0 grep -nIE "$PATTERNS" -- | grep -vE '^(scripts/check\.sh|\.github/workflows/ci\.yml):'; then exit 1; fi
+  risk:
+    # Sets the review tier from the files a pull request touches (see docs/GITHUB.md):
+    #   low    – docs, site, screenshots: automated checks are enough
+    #   normal – app code: read the diff and the Claude review before merging
+    #   high   – hotkeys, recording, delivery, session, keys, worker, runtimes, signing,
+    #            workflows: a person tests the build on a Mac before merging
+    name: Review tier
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pull-requests: read
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+        run: |
+          files="$(gh pr diff "$PR" --repo "$GITHUB_REPOSITORY" --name-only)"
+          high='^(Sources/Saywell/Services/(Hotkeys|AudioRecorder|TextDelivery|Keychain|RuntimeInstaller|Recognizers)\.swift|Sources/SaywellCore/(ModifierDetector|Session)\.swift|Sources/Saywell/AppModel\.swift|Resources/(Info|entitlements)\.plist|Resources/recognizer\.py|Runtime/|\.github/|scripts/(build-app|make-dmg|set-bundle-id)\.sh|Package\.swift)'
+          low='^(docs/|site/|assets/|eval/|README|CHANGELOG|ROADMAP|CONTRIBUTING|SECURITY|NOTICE)'
+          if echo "$files" | grep -qE "$high"; then tier=high
+          elif echo "$files" | grep -qvE "$low"; then tier=normal
+          else tier=low; fi
+          echo "### Review tier: $tier" >> "$GITHUB_STEP_SUMMARY"
+          case "$tier" in
+            high)
+              { echo "A person must test this build on a Mac before merging. Sensitive files:"; echo "$files" | grep -E "$high" | sed 's/^/- /'; } >> "$GITHUB_STEP_SUMMARY"
+              echo "::warning title=Review tier high::Test this build on a Mac before merging (hotkeys, recording, delivery, keys, worker, signing or workflows changed)." ;;
+            normal) echo "Read the diff and the Claude review comments before merging." >> "$GITHUB_STEP_SUMMARY" ;;
+            low) echo "Documentation or site only; the automated checks are enough." >> "$GITHUB_STEP_SUMMARY" ;;
+          esac

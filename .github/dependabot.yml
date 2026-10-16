@@ -1,0 +1,11 @@
+# Keeps the pinned GitHub Actions current with weekly pull requests (each one goes through CI).
+# The Python runtime locks in Runtime/ are refreshed by hand: see docs/MODELS_AND_LICENSES.md.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      actions:
+        patterns: ['*']

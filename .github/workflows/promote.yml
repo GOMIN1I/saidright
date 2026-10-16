@@ -1,0 +1,38 @@
+# Step 2 of a release, started by hand: Actions → Promote → Run workflow.
+#   promote  – turns the tested pre-release into the latest release (the page now offers it)
+#   rollback – turns a release back into a pre-release; "latest" falls back to the previous
+#              release, so the page stops offering a broken build. With no earlier release
+#              (the very first one) the download button has nothing to offer until a fix ships.
+name: Promote
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Release tag, for example v0.5.0
+        required: true
+      action:
+        description: promote or rollback
+        type: choice
+        options: [promote, rollback]
+        default: promote
+permissions:
+  contents: read
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+          ACTION: ${{ inputs.action }}
+        run: |
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "Not a version tag: $TAG"; exit 1; }
+          if [ "$ACTION" = promote ]; then
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --prerelease=false --latest
+          else
+            gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --prerelease --latest=false
+          fi
+          gh release view "$TAG" --repo "$GITHUB_REPOSITORY" --json tagName,isPrerelease,url

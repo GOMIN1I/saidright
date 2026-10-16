@@ -1,0 +1,21 @@
+{
+  "note": "Synthetic speech generated locally with macOS voices (scripts/make-fixtures.sh). Smoke/regression set only: it does not represent natural voices, accents or real rooms. Generated audio is not committed.",
+  "languages": ["ru", "en"],
+  "items": [
+    {"id": "ru-short", "voice": "Milena", "parts": ["Привет, я буду через десять минут."], "keys": ["десять"], "lang": "ru"},
+    {"id": "ru-names-numbers", "voice": "Milena", "parts": ["Встреча с Анной Петровой перенесена на 15 марта в 14:30, кабинет 204."], "keys": ["Анной", "Петровой", "15", "204"], "lang": "ru"},
+    {"id": "ru-negation", "voice": "Milena", "parts": ["Я не буду отправлять этот файл, пока клиент не подтвердит бюджет."], "keys": ["не буду", "не подтвердит"], "lang": "ru"},
+    {"id": "ru-long-pauses", "voice": "Milena", "parts": ["Сначала нужно записать голос.", "Потом проверить пунктуацию.", "И только после этого отправить текст."], "pause": 1.6, "keys": ["пунктуацию"], "lang": "ru"},
+    {"id": "ru-quiet", "voice": "Milena", "parts": ["Это тихая фраза, которую легко потерять."], "gain_db": -24, "keys": ["тихая"], "lang": "ru"},
+    {"id": "ru-noise", "voice": "Milena", "parts": ["Проверка распознавания при фоновом шуме в кафе."], "noise_snr_db": 10, "keys": ["шуме"], "lang": "ru"},
+    {"id": "en-short", "voice": "Samantha", "parts": ["Can you send me the report by Friday?"], "keys": ["Friday"], "lang": "en"},
+    {"id": "en-learner-errors", "voice": "Samantha", "parts": ["Yesterday I go to the shop and buy a new microphone."], "keys": ["go", "buy"], "lang": "en"},
+    {"id": "en-tech", "voice": "Samantha", "parts": ["Push the commit to GitHub and open a pull request for the API refactor."], "keys": ["GitHub", "API"], "lang": "en"},
+    {"id": "en-negation-numbers", "voice": "Samantha", "parts": ["I don't think we need more than 3 servers for 2500 users."], "keys": ["don't", "3", "2500"], "lang": "en"},
+    {"id": "mixed-ru-en", "voice": ["Milena", "Samantha", "Milena"], "parts": ["Я сделал новую ветку,", "and pushed the changes,", "посмотри, пожалуйста, когда будет время."], "pause": 0.35, "keys": ["ветку", "pushed", "посмотри"], "lang": "mixed"},
+    {"id": "de-short", "voice": "Anna", "parts": ["Ich schicke dir die Unterlagen morgen früh."], "keys": ["Unterlagen"], "lang": "de"},
+    {"id": "zh-short", "voice": "Tingting", "parts": ["我明天上午九点给你打电话。"], "keys": ["明天"], "lang": "zh", "metric": "cer"},
+    {"id": "silence", "silence": 3.0, "parts": [], "keys": [], "lang": "none"},
+    {"id": "noise-only", "silence": 3.0, "noise_only_db": -35, "parts": [], "keys": [], "lang": "none"}
+  ]
+}

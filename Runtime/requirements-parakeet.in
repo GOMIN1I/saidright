@@ -1,0 +1,6 @@
+# Parakeet TDT recogniser (NVIDIA, via parakeet-mlx). Separate environment from Whisper so the
+# working Whisper runtime is never changed by installing it.
+# Regenerate: MACOSX_DEPLOYMENT_TARGET=14.0 uv pip compile Runtime/requirements-parakeet.in --python-version 3.11 --python-platform aarch64-apple-darwin --generate-hashes -o Runtime/requirements-parakeet.lock
+parakeet-mlx==0.5.3
+mlx==0.32.4
+soundfile

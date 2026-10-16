@@ -1,0 +1,2 @@
+"NSMicrophoneUsageDescription" = "Saywell записывает голос во время диктовки и распознаёт его на этом Mac. Аудио никуда не отправляется.";
+"NSSpeechRecognitionUsageDescription" = "Saywell может использовать встроенную модель диктовки Apple, чтобы распознавать речь на этом Mac.";
