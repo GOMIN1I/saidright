@@ -26,7 +26,7 @@ func draw(_ text: String, x: CGFloat, y: CGFloat, width: CGFloat, size: CGFloat,
     let height = ceil(string.boundingRect(with: NSSize(width: width, height: 1000), options: [.usesLineFragmentOrigin]).height)
     string.draw(with: NSRect(x: x, y: y, width: width, height: height), options: [.usesLineFragmentOrigin])
 }
-draw("Saywell", x: 80, y: 308, width: 640, size: 84, weight: .bold, color: .white)
+draw("Saidright", x: 80, y: 308, width: 640, size: 84, weight: .bold, color: .white)
 draw("Dictation that teaches you\nthe language you speak", x: 80, y: 168, width: 660, size: 44, weight: .semibold, color: NSColor(white: 1, alpha: 0.92))
 draw("Free · open source · runs on your Mac", x: 80, y: 104, width: 660, size: 26, weight: .regular, color: NSColor(white: 1, alpha: 0.62))
 

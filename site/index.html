@@ -3,13 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Saywell — dictation that teaches you the language</title>
+<title>Saidright — dictation that teaches you the language</title>
 <meta name="description" content="Free, open-source dictation for Mac that helps you learn the language you speak: talk in any app, and a friendly tip shows the one mistake worth fixing. Runs locally.">
-<meta property="og:title" content="Saywell — dictation that teaches you the language">
+<meta property="og:title" content="Saidright — dictation that teaches you the language">
 <meta property="og:description" content="Speak in any Mac app, get your text at the cursor and a friendly correction of the one mistake worth fixing. Free, open source, local.">
-<meta property="og:image" content="https://gomin1i.github.io/saywell/assets/social.png">
+<meta property="og:image" content="https://gomin1i.github.io/saidright/assets/social.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="assets/favicon.png">
+<link rel="canonical" href="https://gomin1i.github.io/saidright/">
+<meta property="og:url" content="https://gomin1i.github.io/saidright/">
 <style>
   :root {
     --bg: #0c1124; --bg2: #121a38; --panel: #161f42; --line: rgba(255,255,255,.09);
@@ -79,9 +81,11 @@
   .bars i { width: 3px; height: 4px; border-radius: 2px; background: var(--voice); box-shadow: 0 0 6px rgba(77,120,255,.6); transition: height .09s ease-out, background .3s ease; }
   .surface.processing .bars i { background: #ff5fa8; box-shadow: 0 0 6px rgba(255,95,168,.6); }
   .surface.done .bars i { background: var(--ok); box-shadow: none; }
+  .surface.done .bars { opacity: 0; }
   .surface.card .bars { opacity: 0; }
-  .tick { position: absolute; right: 10px; top: 9px; width: 16px; height: 16px; color: var(--ok); opacity: 0; transition: opacity .2s ease; }
-  .surface.done .tick { opacity: 1; }
+  /* Done: the bars fade out and one check mark sits in the middle of the capsule. */
+  .tick { position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; color: var(--ok); opacity: 0; transform: scale(.6); transition: opacity .2s ease, transform .25s cubic-bezier(.3,1.4,.5,1); }
+  .surface.done .tick { opacity: 1; transform: scale(1); }
   .surface.card .tick { opacity: 0; }
   .cardbody { position: absolute; inset: 0; padding: 14px 16px; opacity: 0; transition: opacity .22s ease .16s; font-size: 13px; line-height: 1.45; }
   .surface.card .cardbody { opacity: 1; }
@@ -115,7 +119,8 @@
   .shot img { display: block; width: 100%; height: auto; }
   .shot figcaption { font-size: 13px; color: var(--faint); padding: 10px 14px; }
   .stack { display: grid; gap: 18px; }
-  .tipshot { margin: 0; display: grid; place-items: center; background: radial-gradient(420px 260px at 50% 60%, rgba(255,90,78,.20), transparent 70%), var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
+  /* Stretches to the height of the cards beside it, so no empty band appears under it. */
+  .tipshot { margin: 0; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(420px 260px at 50% 60%, rgba(255,90,78,.20), transparent 70%), var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
   .tipshot img { width: min(100%, 410px); height: auto; filter: drop-shadow(0 18px 40px rgba(0,0,0,.35)); }
   .tipshot figcaption { font-size: 13px; color: var(--faint); margin-top: 10px; text-align: center; }
   .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
@@ -153,7 +158,7 @@
 <body>
 <nav>
   <div class="wrap">
-    <a class="brand" href="#top"><img src="assets/icon-512.png" alt="">Saywell</a>
+    <a class="brand" href="#top"><img src="assets/icon-512.png" alt="">Saidright</a>
     <div class="links">
       <a href="#learn" data-i18n="nav.learn">Learning</a>
       <a href="#features" data-i18n="nav.features">Features</a>
@@ -173,7 +178,7 @@
     <div>
       <span class="eyebrow"><b>●</b> <span data-i18n="hero.eyebrow">Free and open source · dictation + language coach for Mac</span></span>
       <h1 data-i18n-html="hero.title">Speak naturally.<br><em>Get better every time.</em></h1>
-      <p class="lead" data-i18n="hero.lead">Press one key in any app and talk — your words appear at the cursor. Speaking a language you're learning? Right after, Saywell shows the one mistake worth fixing, explained like a friend would. Every email and message becomes practice.</p>
+      <p class="lead" data-i18n="hero.lead">Press one key in any app and talk — your words appear at the cursor. Speaking a language you're learning? Right after, Saidright shows the one mistake worth fixing, explained like a friend would. Every email and message becomes practice.</p>
       <div class="cta">
         <a class="btn primary" href="#install" data-download>
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
@@ -209,9 +214,9 @@
 <section id="learn">
   <div class="wrap">
     <h2 data-i18n="l.title">Practise a language every time you speak</h2>
-    <p class="sub" data-i18n="l.sub">Most learners never get feedback on what they actually say. Saywell gives it inside the work you're already doing — no lessons to schedule, no app to switch to.</p>
+    <p class="sub" data-i18n="l.sub">Most learners never get feedback on what they actually say. Saidright gives it inside the work you're already doing — no lessons to schedule, no app to switch to.</p>
     <div class="shots" style="margin-bottom:18px">
-      <figure class="tipshot"><img src="assets/tip.png" alt="A Saywell tip card: “I am agree” becomes “I agree”, with a short explanation, a fuller reason and an example" loading="lazy"><figcaption data-i18n="l.capTip">A real tip from the app: the fix, a short reason, and more when you ask.</figcaption></figure>
+      <figure class="tipshot"><img src="assets/tip.png" alt="A Saidright tip card: “I am agree” becomes “I agree”, with a short explanation, a fuller reason and an example" loading="lazy"><figcaption data-i18n="l.capTip">A real tip from the app: the fix, a short reason, and more when you ask.</figcaption></figure>
       <div class="grid2">
         <div class="feat"><h3 data-i18n="l1.t">Your sentence, corrected</h3><p data-i18n="l1.p">Your text goes in exactly as you said it. Then a small card grows out of the capsule with the one correction worth knowing.</p></div>
         <div class="feat"><h3 data-i18n="l2.t">Explained like a friend</h3><p data-i18n="l2.p">One short reason in your own language, pitched to your level. Tap “Why?” for the rule and an example.</p></div>
@@ -222,9 +227,9 @@
       </div>
     </div>
     <div class="shots">
-      <figure class="shot"><img src="assets/learning.jpg" alt="Saywell learning settings: how tips appear, how long they stay, explanation length and level" loading="lazy"><figcaption data-i18n="l.cap1">Choose how tips appear, how long they stay, and how much they explain.</figcaption></figure>
+      <figure class="shot"><img src="assets/learning.jpg" alt="Saidright learning settings: how tips appear, how long they stay, explanation length and level" loading="lazy"><figcaption data-i18n="l.cap1">Choose how tips appear, how long they stay, and how much they explain.</figcaption></figure>
       <div class="stack">
-        <figure class="shot"><img src="assets/main-dark.jpg" alt="Saywell main window in dark mode, ready to dictate" loading="lazy"><figcaption data-i18n="l.cap2">The compact main window shows the active mode and what will happen.</figcaption></figure>
+        <figure class="shot"><img src="assets/main-dark.jpg" alt="Saidright main window in dark mode, ready to dictate" loading="lazy"><figcaption data-i18n="l.cap2">The compact main window shows the active mode and what will happen.</figcaption></figure>
         <p class="note" data-i18n-html="l.note">Tips use a text model you choose: free and fully local through <a href="https://ollama.com">Ollama</a>, or your own cloud key. Tips work in any language your model knows; English and Russian are the most thoroughly tested so far.</p>
       </div>
     </div>
@@ -237,13 +242,13 @@
     <p class="sub" data-i18n="f.sub">A small capsule while you speak, text where your cursor was — fast, private and shaped to your taste.</p>
     <div class="grid3">
       <div class="feat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="8" width="18" height="8" rx="4"/><path d="M9 11v2M12 10v4M15 9v6"/></svg></div>
-        <h3 data-i18n="f1.t">Works in every app</h3><p data-i18n="f1.p">Tap right ⌘, speak, tap again. Mail, Slack, your editor, a browser — the text goes into the field you were typing in, and Saywell tells you if it couldn't.</p></div>
+        <h3 data-i18n="f1.t">Works in every app</h3><p data-i18n="f1.p">Tap right ⌘, speak, tap again. Mail, Slack, your editor, a browser — the text goes into the field you were typing in, and Saidright tells you if it couldn't.</p></div>
       <div class="feat"><div class="ico g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
         <h3 data-i18n="f2.t">Private by design</h3><p data-i18n="f2.p">Speech is recognised on your Mac with Whisper or NVIDIA Parakeet. Audio never leaves it. Text editing and tips are optional and can run locally too.</p></div>
       <div class="feat"><div class="ico c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 3 4 14h7l-1 7 9-11h-7z"/></svg></div>
         <h3 data-i18n="f3.t">Fast</h3><p data-i18n="f3.p">Text usually appears about half a second after you stop speaking. Parakeet decodes a phrase in roughly 0.1 s on Apple silicon.</p></div>
       <div class="feat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 12h10M4 19h7"/></svg></div>
-        <h3 data-i18n="f4.t">Modes for each job</h3><p data-i18n="f4.p">Keep exactly what you said, tidy punctuation, fix grammar, or rewrite in a tone — per mode, with a preview of what changes. Switch with ⌃⌥M.</p></div>
+        <h3 data-i18n="f4.t">Smart formatting</h3><p data-i18n="f4.p">Dictate a few tasks and get a checklist, list things and get bullets, describe steps and get numbered steps. Ordinary sentences stay prose. Modes decide how much is edited; switch with ⌃⌥M.</p></div>
       <div class="feat"><div class="ico g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
         <h3 data-i18n="f5.t">Truly multilingual</h3><p data-i18n="f5.p">Around 100 languages, and you can switch between them mid-sentence. Foreign terms keep their own spelling, and nothing is translated behind your back.</p></div>
       <div class="feat"><div class="ico c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div>
@@ -286,11 +291,11 @@
 <section id="install">
   <div class="wrap">
     <h2 data-i18n="i.title">Install in a minute</h2>
-    <p class="sub" data-i18n="i.sub">Saywell is free and not notarized by Apple (that costs a yearly fee), so macOS asks you once to confirm that you trust it.</p>
+    <p class="sub" data-i18n="i.sub">Saidright is free and not notarized by Apple (that costs a yearly fee), so macOS asks you once to confirm that you trust it.</p>
     <div class="steps">
-      <div class="step"><div><h3 data-i18n="i1.t">Download and open the DMG</h3><p data-i18n-html="i1.p">Get <a href="#" data-download>Saywell.dmg</a> and drag Saywell into Applications.</p></div></div>
-      <div class="step"><div><h3 data-i18n="i2.t">Open it once</h3><p data-i18n="i2.p">Double-click Saywell. macOS says it can't verify the developer — click Done (not Move to Trash).</p></div></div>
-      <div class="step"><div><h3 data-i18n="i3.t">Allow it in System Settings</h3><p data-i18n="i3.p">System Settings → Privacy & Security → scroll down → “Saywell was blocked…” → Open Anyway, then confirm. You only do this once per version.</p></div></div>
+      <div class="step"><div><h3 data-i18n="i1.t">Download and open the DMG</h3><p data-i18n-html="i1.p">Get <a href="#" data-download>Saidright.dmg</a> and drag Saidright into Applications.</p></div></div>
+      <div class="step"><div><h3 data-i18n="i2.t">Open it once</h3><p data-i18n="i2.p">Double-click Saidright. macOS says it can't verify the developer — click Done (not Move to Trash).</p></div></div>
+      <div class="step"><div><h3 data-i18n="i3.t">Allow it in System Settings</h3><p data-i18n="i3.p">System Settings → Privacy & Security → scroll down → “Saidright was blocked…” → Open Anyway, then confirm. You only do this once per version.</p></div></div>
       <div class="step"><div><h3 data-i18n="i4.t">Follow the short introduction</h3><p data-i18n="i4.p">Pick your languages, download a recogniser inside the app, and allow Microphone, Input Monitoring and Accessibility. Then tap right ⌘ anywhere and speak.</p></div></div>
     </div>
     <p class="note" data-i18n-html="i.note">Want to check the file? Each release lists its SHA-256 checksum. Prefer to build it yourself? <a href="#" data-repo-link>The source is on GitHub</a> — <code>swift test && scripts/build-app.sh</code>.</p>
@@ -300,7 +305,7 @@
 <section id="faq">
   <div class="wrap">
     <h2 data-i18n="q.title">Questions</h2>
-    <details><summary data-i18n="q1.q">Is it really free?</summary><p data-i18n="q1.a">Yes. Saywell is open source under the Apache 2.0 licence. Local recognition and local tips cost nothing. Only an optional cloud text service you connect yourself bills you directly.</p></details>
+    <details><summary data-i18n="q1.q">Is it really free?</summary><p data-i18n="q1.a">Yes. Saidright is open source under the Apache 2.0 licence. Local recognition and local tips cost nothing. Only an optional cloud text service you connect yourself bills you directly.</p></details>
     <details><summary data-i18n="q2.q">Does it need the internet?</summary><p data-i18n="q2.a">Only to download a recogniser once. After that, dictation works offline.</p></details>
     <details><summary data-i18n="q3.q">Which Macs are supported?</summary><p data-i18n="q3.a">Macs with Apple silicon (M1 or later) on macOS 14 or later. It is tested most on the newest macOS. Intel Macs are not supported.</p></details>
     <details><summary data-i18n="q4.q">Why does macOS warn me?</summary><p data-i18n="q4.a">Apple's notarization requires a paid developer membership. This free preview is signed but not notarized, so macOS asks you to confirm it once in Privacy & Security.</p></details>
@@ -311,31 +316,31 @@
 
 <footer>
   <div class="wrap">
-    <div>Saywell · <span data-i18n="ft.licence">Open source, Apache 2.0</span> · <a href="#" data-repo-link>GitHub</a></div>
-    <div class="credits" data-i18n="ft.credits">Speech models: OpenAI Whisper (MIT) and NVIDIA Parakeet TDT 0.6B v3 (CC BY 4.0, © NVIDIA), downloaded on request and not part of the app. Built with MLX by Apple. Accuracy measured with Google FLEURS (CC BY 4.0). Saywell is not affiliated with Apple, OpenAI, NVIDIA or Google.</div>
+    <div>Saidright · <span data-i18n="ft.licence">Open source, Apache 2.0</span> · <a href="#" data-repo-link>GitHub</a></div>
+    <div class="credits" data-i18n="ft.credits">Speech models: OpenAI Whisper (MIT) and NVIDIA Parakeet TDT 0.6B v3 (CC BY 4.0, © NVIDIA), downloaded on request and not part of the app. Built with MLX by Apple. Accuracy measured with Google FLEURS (CC BY 4.0). Saidright is not affiliated with Apple, OpenAI, NVIDIA or Google.</div>
   </div>
 </footer>
 
 <script>
-  // Set once the GitHub repository exists, e.g. "yourname/saywell".
-  const REPO = "GOMIN1I/saywell";
+  // Set once the GitHub repository exists, e.g. "yourname/saidright".
+  const REPO = "GOMIN1I/saidright";
 
   const ru = {
     "nav.features": "Возможности", "nav.learn": "Обучение", "nav.privacy": "Приватность", "nav.install": "Установка",
     "hero.eyebrow": "Бесплатно и с открытым кодом · диктовка + языковой тренер для Mac",
     "hero.title": "Говори как есть.<br><em>Становись лучше с каждой фразой.</em>",
-    "hero.lead": "Нажми одну клавишу в любом приложении и говори — слова появятся у курсора. Говоришь на языке, который учишь? Сразу после Saywell покажет ту самую ошибку, которую стоит исправить, и объяснит её по-дружески. Каждое письмо и сообщение становится практикой.",
+    "hero.lead": "Нажми одну клавишу в любом приложении и говори — слова появятся у курсора. Говоришь на языке, который учишь? Сразу после Saidright покажет ту самую ошибку, которую стоит исправить, и объяснит её по-дружески. Каждое письмо и сообщение становится практикой.",
     "hero.download": "Скачать для Mac", "hero.how": "Как установить",
     "hero.fine": "Apple silicon · macOS 14 и новее · предварительная версия, не заверена Apple",
     "card.kind": "Aa  Грамматика", "card.why": "Говорят просто «I agree». Agree — это уже глагол, поэтому am перед ним не нужен.", "card.more": "Почему?", "card.save": "В тренировку", "card.ok": "Понятно",
     "f.title": "И диктовка, с которой не захочется расставаться", "f.sub": "Маленькая капсула, пока говоришь, текст там, где был курсор, — быстро, приватно и так, как нравится тебе.",
-    "f1.t": "Работает в любом приложении", "f1.p": "Нажми правый ⌘, скажи, нажми ещё раз. Почта, Slack, редактор, браузер — текст попадёт в поле, где ты печатал, а если не получится, Saywell честно скажет.",
+    "f1.t": "Работает в любом приложении", "f1.p": "Нажми правый ⌘, скажи, нажми ещё раз. Почта, Slack, редактор, браузер — текст попадёт в поле, где ты печатал, а если не получится, Saidright честно скажет.",
     "f2.t": "Приватно по устройству", "f2.p": "Речь распознаётся на твоём Mac моделями Whisper или NVIDIA Parakeet. Звук никуда не уходит. Правка текста и подсказки — по желанию и тоже могут работать локально.",
     "f3.t": "Быстро", "f3.p": "Текст обычно появляется примерно через полсекунды после конца фразы. Parakeet распознаёт фразу примерно за 0,1 с на Apple silicon.",
-    "f4.t": "Режимы под задачу", "f4.p": "Оставить как сказано, поправить пунктуацию, исправить грамматику или переписать в нужном тоне — в каждом режиме свой выбор с примером. Переключение — ⌃⌥M.",
+    "f4.t": "Умное оформление", "f4.p": "Надиктуй несколько задач — получишь чек-лист, перечисли вещи — список, опиши шаги — нумерованные шаги. Обычные фразы остаются текстом. Режимы решают, насколько править текст; переключение — ⌃⌥M.",
     "f5.t": "По-настоящему многоязычно", "f5.p": "Около 100 языков, и переключаться между ними можно прямо посреди фразы. Иностранные термины сохраняют своё написание, и ничего не переводится за твоей спиной.",
     "f6.t": "Настраивается под тебя", "f6.p": "Капсула Liquid Glass или спокойная Ink, палитры, размер, движение, звуки, светлая и тёмная тема, свои сочетания клавиш. Интерфейс на русском, английском, немецком и китайском.",
-    "l.title": "Практикуй язык каждый раз, когда говоришь", "l.sub": "Большинство изучающих язык никогда не получают обратной связи на то, что реально говорят. Saywell даёт её прямо в работе, которую ты и так делаешь, — без расписания уроков и без переключения приложений.",
+    "l.title": "Практикуй язык каждый раз, когда говоришь", "l.sub": "Большинство изучающих язык никогда не получают обратной связи на то, что реально говорят. Saidright даёт её прямо в работе, которую ты и так делаешь, — без расписания уроков и без переключения приложений.",
     "l.capTip": "Настоящая подсказка из приложения: исправление, короткая причина и подробности по запросу.",
     "l1.t": "Твоя фраза — исправленная", "l1.p": "Текст вставляется ровно так, как ты сказал. Потом из капсулы вырастает маленькая карточка с одним исправлением, которое стоит знать.",
     "l2.t": "Объяснение как от друга", "l2.p": "Одна короткая причина на твоём языке, под твой уровень. Нажми «Почему?» — будет правило и пример.",
@@ -354,20 +359,20 @@
     "p1.t": "Локальное распознавание", "p1.p": "Звук обрабатывается на Mac и удаляется после распознавания, если ты не решишь его сохранить.",
     "p2.t": "Помощь с текстом — по желанию", "p2.p": "Правка и подсказки используют выбранную тобой модель: бесплатную локальную через Ollama или свой облачный ключ. «Только на Mac» блокирует любые облачные запросы.",
     "p3.t": "Без аккаунта и слежки", "p3.p": "Без регистрации, аналитики и телеметрии. Ключи хранятся в Связке ключей macOS. Исходный код открыт.",
-    "i.title": "Установка за минуту", "i.sub": "Saywell бесплатный и не заверен Apple (это стоит денег каждый год), поэтому macOS один раз попросит подтвердить, что ты ему доверяешь.",
-    "i1.t": "Скачай и открой DMG", "i1.p": "Скачай <a href=\"#\" data-download>Saywell.dmg</a> и перетащи Saywell в «Программы».",
-    "i2.t": "Открой один раз", "i2.p": "Дважды щёлкни Saywell. macOS скажет, что не может проверить разработчика, — нажми «Готово» (не «В Корзину»).",
-    "i3.t": "Разреши в Системных настройках", "i3.p": "Системные настройки → Конфиденциальность и безопасность → прокрути вниз → «Saywell заблокировано…» → «Всё равно открыть» и подтверди. Это нужно один раз на версию.",
+    "i.title": "Установка за минуту", "i.sub": "Saidright бесплатный и не заверен Apple (это стоит денег каждый год), поэтому macOS один раз попросит подтвердить, что ты ему доверяешь.",
+    "i1.t": "Скачай и открой DMG", "i1.p": "Скачай <a href=\"#\" data-download>Saidright.dmg</a> и перетащи Saidright в «Программы».",
+    "i2.t": "Открой один раз", "i2.p": "Дважды щёлкни Saidright. macOS скажет, что не может проверить разработчика, — нажми «Готово» (не «В Корзину»).",
+    "i3.t": "Разреши в Системных настройках", "i3.p": "Системные настройки → Конфиденциальность и безопасность → прокрути вниз → «Saidright заблокировано…» → «Всё равно открыть» и подтверди. Это нужно один раз на версию.",
     "i4.t": "Пройди короткое знакомство", "i4.p": "Выбери языки, скачай распознаватель прямо в приложении и разреши Микрофон, Мониторинг ввода и Универсальный доступ. Потом нажимай правый ⌘ где угодно и говори.",
     "i.note": "Хочешь проверить файл? У каждого релиза указана контрольная сумма SHA-256. Хочешь собрать сам? <a href=\"#\" data-repo-link>Исходники на GitHub</a> — <code>swift test && scripts/build-app.sh</code>.",
     "q.title": "Вопросы",
-    "q1.q": "Это правда бесплатно?", "q1.a": "Да. Saywell — открытый проект под лицензией Apache 2.0. Локальное распознавание и локальные подсказки ничего не стоят. Платить придётся только облачному сервису, если ты сам его подключишь.",
+    "q1.q": "Это правда бесплатно?", "q1.a": "Да. Saidright — открытый проект под лицензией Apache 2.0. Локальное распознавание и локальные подсказки ничего не стоят. Платить придётся только облачному сервису, если ты сам его подключишь.",
     "q2.q": "Нужен ли интернет?", "q2.a": "Только чтобы один раз скачать распознаватель. Дальше диктовка работает без сети.",
     "q3.q": "Какие Mac поддерживаются?", "q3.a": "Mac на Apple silicon (M1 и новее) с macOS 14 и новее. Больше всего проверено на самой новой macOS. Mac на Intel не поддерживаются.",
     "q4.q": "Почему macOS предупреждает?", "q4.a": "Заверение (notarization) у Apple требует платного аккаунта разработчика. Эта бесплатная версия подписана, но не заверена, поэтому macOS один раз просит подтвердить её в «Конфиденциальность и безопасность».",
     "q5.q": "Оценивает ли он мой акцент?", "q5.a": "Нет. По расшифровке этого не понять. Подсказки касаются только явных ошибок грамматики и выбора слов, а возможная ошибка распознавания помечается отдельно и никогда не считается твоей.",
     "ft.licence": "Открытый код, Apache 2.0",
-    "ft.credits": "Модели речи: OpenAI Whisper (MIT) и NVIDIA Parakeet TDT 0.6B v3 (CC BY 4.0, © NVIDIA), скачиваются по запросу и не входят в приложение. Построено на MLX от Apple. Точность измерена на Google FLEURS (CC BY 4.0). Saywell не связан с Apple, OpenAI, NVIDIA или Google."
+    "ft.credits": "Модели речи: OpenAI Whisper (MIT) и NVIDIA Parakeet TDT 0.6B v3 (CC BY 4.0, © NVIDIA), скачиваются по запросу и не входят в приложение. Построено на MLX от Apple. Точность измерена на Google FLEURS (CC BY 4.0). Saidright не связан с Apple, OpenAI, NVIDIA или Google."
   };
 
   // ---- Language ----
@@ -380,7 +385,7 @@
       el.innerHTML = lang === "ru" && ru[key] ? ru[key] : originals.get(el);
     });
     document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
-    try { localStorage.setItem("saywell-lang", lang); } catch (e) {}
+    try { localStorage.setItem("saidright-lang", lang); } catch (e) {}
     wireLinks();
     startTyping(true);
   }
@@ -390,7 +395,7 @@
   function wireLinks() {
     const ready = !REPO.startsWith("OWNER/");
     document.querySelectorAll("[data-download]").forEach(a => {
-      a.href = ready ? `https://github.com/${REPO}/releases/latest/download/Saywell.dmg` : "#install";
+      a.href = ready ? `https://github.com/${REPO}/releases/latest/download/Saidright.dmg` : "#install";
     });
     document.querySelectorAll("[data-repo-link]").forEach(a => {
       a.href = ready ? `https://github.com/${REPO}` : "#install";
@@ -440,7 +445,7 @@
   }
 
   let saved = null;
-  try { saved = localStorage.getItem("saywell-lang"); } catch (e) {}
+  try { saved = localStorage.getItem("saidright-lang"); } catch (e) {}
   setLang(saved || ((navigator.language || "en").toLowerCase().startsWith("ru") ? "ru" : "en"));
 </script>
 </body>

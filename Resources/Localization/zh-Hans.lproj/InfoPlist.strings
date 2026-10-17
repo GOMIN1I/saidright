@@ -1,2 +1,2 @@
-"NSMicrophoneUsageDescription" = "Saywell 在你听写时录制语音，并在这台 Mac 上识别。音频不会上传。";
-"NSSpeechRecognitionUsageDescription" = "Saywell 可以使用 Apple 内置的设备端听写模型，在这台 Mac 上识别你的语音。";
+"NSMicrophoneUsageDescription" = "Saidright 在你听写时录制语音，并在这台 Mac 上识别。音频不会上传。";
+"NSSpeechRecognitionUsageDescription" = "Saidright 可以使用 Apple 内置的设备端听写模型，在这台 Mac 上识别你的语音。";

@@ -1,9 +1,9 @@
-Saywell
-Copyright 2026 The Saywell contributors
+Saidright
+Copyright 2026 The Saidright contributors
 
 This product is licensed under the Apache License, Version 2.0 (see LICENSE).
 
-Saywell does not include third-party model weights. When a person chooses a recogniser or a
+Saidright does not include third-party model weights. When a person chooses a recogniser or a
 text model inside the app, it is downloaded from its publisher:
 
 - NVIDIA Parakeet TDT 0.6B v3 — © NVIDIA Corporation, licensed under CC BY 4.0

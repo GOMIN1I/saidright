@@ -5,15 +5,15 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Saywell</string>
+	<string>Saidright</string>
 	<key>CFBundleExecutable</key>
-	<string>Saywell</string>
+	<string>Saidright</string>
 	<key>CFBundleIconFile</key>
 	<string>AppIcon</string>
 	<key>CFBundleIconName</key>
 	<string>AppIcon</string>
 	<key>CFBundleIdentifier</key>
-	<string>io.github.gomin1i.saywell</string>
+	<string>io.github.gomin1i.saidright</string>
 	<key>CFBundleLocalizations</key>
 	<array>
 		<string>en</string>
@@ -22,7 +22,7 @@
 		<string>zh-Hans</string>
 	</array>
 	<key>CFBundleName</key>
-	<string>Saywell</string>
+	<string>Saidright</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -31,10 +31,10 @@
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>Saywell automation</string>
+			<string>Saidright automation</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>saywell</string>
+				<string>saidright</string>
 			</array>
 		</dict>
 	</array>
@@ -47,11 +47,11 @@
 	<key>NSHighResolutionCapable</key>
 	<true/>
 	<key>NSMicrophoneUsageDescription</key>
-	<string>Saywell records your voice while you dictate and recognizes it on this Mac. Audio is not uploaded.</string>
+	<string>Saidright records your voice while you dictate and recognizes it on this Mac. Audio is not uploaded.</string>
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>Saywell can use Apple's on-device dictation model to recognize your speech on this Mac.</string>
+	<string>Saidright can use Apple's on-device dictation model to recognize your speech on this Mac.</string>
 	<key>NSSupportsAutomaticTermination</key>
 	<false/>
 </dict>

@@ -2,9 +2,9 @@
 
 Focused research to make decisions, not a market report. Sources are listed per section; third-party comparison pages are often written by competing vendors and are treated as weak evidence.
 
-## Products people would compare Saywell with
+## Products people would compare Saidright with
 
-| Product | Model of work | What it does well | Gap relevant to Saywell |
+| Product | Model of work | What it does well | Gap relevant to Saidright |
 | --- | --- | --- | --- |
 | Apple Dictation | Built into macOS, Fn/Globe | Zero setup, on-device on Apple silicon | No modes, no control over editing, no learning |
 | Superwhisper | Local Whisper + optional cloud, “modes” with prompts, paid | Mode switching, local recognition | Editing is silent; no explanation of what changed or why |
@@ -15,7 +15,7 @@ Focused research to make decisions, not a market report. Sources are listed per 
 
 Pattern: every dictation tool either inserts raw text or **silently** improves it. Learning products (spaced repetition, tutors) are separate apps with their own content. No reviewed product shows a learner *their own* everyday sentence with the precise change, distinguishes recognition errors from learner errors, and lets them practise that construction, while keeping the inserted text free of explanations.
 
-Saywell's differentiation, stated narrowly: **dictation with visible, bounded editing (four levels with integrity checks) plus optional feedback on your own sentences that never ends up in your text.** It is not claimed to be unique beyond this comparison.
+Saidright's differentiation, stated narrowly: **dictation with visible, bounded editing (four levels with integrity checks) plus optional feedback on your own sentences that never ends up in your text.** It is not claimed to be unique beyond this comparison.
 
 Decisions taken from this:
 
@@ -40,7 +40,7 @@ Locale lists above were read on this Mac with the Speech framework (`supportedLo
 
 ## Text model
 
-OpenAI's model list (developers.openai.com/api/docs/models, read 2026-10-16) shows `gpt-6-luna` as the most efficient model, $0.10 / $0.50 per million input/output tokens, and the only flagship accepting `reasoning.effort = none`. Structured Outputs (`text.format` with `json_schema`, `strict: true`) are supported by the Responses API. Saywell defaults to `gpt-6-luna` with no reasoning, `store: false`, and offers “List models” so the default is not hard-wired to one account. A short dictation (≈100 input + 100 output tokens plus instructions ≈ 600 tokens) costs roughly $0.0001.
+OpenAI's model list (developers.openai.com/api/docs/models, read 2026-10-16) shows `gpt-6-luna` as the most efficient model, $0.10 / $0.50 per million input/output tokens, and the only flagship accepting `reasoning.effort = none`. Structured Outputs (`text.format` with `json_schema`, `strict: true`) are supported by the Responses API. Saidright defaults to `gpt-6-luna` with no reasoning, `store: false`, and offers “List models” so the default is not hard-wired to one account. A short dictation (≈100 input + 100 output tokens plus instructions ≈ 600 tokens) costs roughly $0.0001.
 
 ## Name
 
@@ -48,7 +48,7 @@ Candidates checked with a preliminary web search (not a trademark search):
 
 | Name | Meaning | Collision found |
 | --- | --- | --- |
-| **Saywell** | “say it well”: speaking, and getting better at it | None for software found |
+| **Saidright** | “say it well”: speaking, and getting better at it | None for software found |
 | Sotto | sotto voce | Existing Mac dictation app (Sotto by Kitze) — rejected |
 | Utter | to speak | “utter” dictation app, “Utterly Voice” — rejected |
 | Sayso | on your say-so | Several voice-input products — rejected |
@@ -57,6 +57,6 @@ Candidates checked with a preliminary web search (not a trademark search):
 | Dictum | a said word | None found; generic Latin word, weak link to learning |
 | Inkling | ink + a small hint of understanding | Inkling is an established education brand — risky |
 
-Shortlist: **Saywell**, Dictum, Glossa. Recommendation: **Saywell** — two common English words, pronounceable in Russian, German and Chinese contexts, connects speaking with gradual improvement without “AI”, “Voice” or “Tutor”. Before public release the owner should run a trademark search and check domain/handle availability; nothing was registered.
+Shortlist: **Saidright**, Dictum, Glossa. Recommendation: **Saidright** — two common English words, pronounceable in Russian, German and Chinese contexts, connects speaking with gradual improvement without “AI”, “Voice” or “Tutor”. Before public release the owner should run a trademark search and check domain/handle availability; nothing was registered.
 
 Sources: [Sotto listings](https://www.stork.ai/en/sotto), [utter on the App Store](https://apps.apple.com/app/id6753176013), [Sayso releases](https://github.com/gearwithai/sayso/releases), [ParlaParla listing](https://marlvel.ai/api/llm/apps/productivity/parlaparla-ai-dictation), [Glossika app](https://apps.apple.com/us/app/glossika-language-learning/id1597902556?l=pt-BR).

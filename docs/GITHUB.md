@@ -4,7 +4,7 @@ Everything here is free for a public repository: GitHub Actions on standard runn
 
 ## The pipeline
 
-| Stage | In Saywell | Where |
+| Stage | In Saidright | Where |
 | --- | --- | --- |
 | **Before the pull request** — the work is verified | `scripts/check.sh` runs the same checks as CI locally; in Claude Code, `/code-review` and `/security-review` review the diff in a fresh context | your Mac |
 | **Required CI** | Unit tests, release build, app bundle assembly, string tables in four languages, Python and shell syntax, actions pinned to commits, scan for secrets and personal paths. Red blocks the merge | `.github/workflows/ci.yml` |
@@ -18,7 +18,7 @@ Everything here is free for a public repository: GitHub Actions on standard runn
 
 ## One-time setup
 
-1. **Account and repository.** Create a free GitHub account, then an empty **public** repository named `saywell` (no README, no licence; the project has them).
+1. **Account and repository.** Create a free GitHub account, then an empty **public** repository named `saidright` (no README, no licence; the project has them).
 2. **Command line.** `brew install gh`, then `gh auth login` (GitHub.com → HTTPS → log in with a browser).
 3. **First push.** Give the maintainer session your GitHub user name. It runs `scripts/set-bundle-id.sh <user>`, sets `REPO` in `site/index.html`, rebuilds, runs `scripts/check.sh`, refreshes the `public` branch, asks for a final yes and pushes `public` to `main`.
 4. **Repository settings** (on github.com, in the repository):
@@ -48,4 +48,16 @@ Wait for the checks and the review comments, answer or fix every finding, follow
 2. After it is merged: `git switch main && git pull && git tag v<version> && git push origin v<version>`. The workflow refuses a tag that does not match `VERSION`.
 3. Try the pre-release, then *Promote*. If something is wrong after promotion: *Promote* → `rollback`, fix, and tag the next patch version.
 
-Users verify a download with `shasum -a 256 -c Saywell.dmg.sha256` in the folder that holds both files.
+Users verify a download with `shasum -a 256 -c Saidright.dmg.sha256` in the folder that holds both files.
+
+## Website address
+
+The product page is served by GitHub Pages at **https://gomin1i.github.io/saidright/** (HTTPS, indexed by search engines, no cost, no renewal).
+
+Free custom domains were considered and not used (2026-10-17):
+
+- **is-a.dev / js.org** and similar community subdomains (`saidright.is-a.dev`): free, but registered through a pull request to a volunteer project, read as a hobby address, and js.org is only for JavaScript projects.
+- **eu.org**: free since 1996 and reputable, but approval is manual and takes weeks to months, and it needs separate DNS hosting.
+- **Free TLD promotions** (Freenom and successors): stopped or turned into paid renewals; not trustworthy for a product.
+
+A real domain (`saidright.app` and `saidright.io` looked unregistered; `saidright.com` is parked by a third party) costs about $10–20 a year. To use one later: buy it, add a `site/CNAME` file with the domain, point a `CNAME` DNS record to `gomin1i.github.io`, then set it in Settings → Pages → Custom domain and tick *Enforce HTTPS*.

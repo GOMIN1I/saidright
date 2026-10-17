@@ -2,7 +2,7 @@
 # unnotarized DMG on GitHub's macOS runner (free for public repositories) and publishes it
 # as a PRE-release. Pre-releases are not "latest", so the product page keeps offering the
 # previous version until you have tried the new one and promoted it (workflow "Promote").
-# The asset is always named Saywell.dmg so the page can link to releases/latest/download/Saywell.dmg.
+# The asset is always named Saidright.dmg so the page can link to releases/latest/download/Saidright.dmg.
 name: Release
 on:
   push:
@@ -24,16 +24,16 @@ jobs:
       - name: Tests
         run: swift test
       - name: Build (ad hoc)
-        run: SAYWELL_SIGN_IDENTITY=- SAYWELL_BUILD_DIR=build/public scripts/build-app.sh
+        run: SAIDRIGHT_SIGN_IDENTITY=- SAIDRIGHT_BUILD_DIR=build/public scripts/build-app.sh
       - name: DMG
         run: |
-          SAYWELL_APP=build/public/Saywell.app SAYWELL_DMG=dist/Saywell.dmg scripts/make-dmg.sh
-          (cd dist && shasum -a 256 Saywell.dmg | tee Saywell.dmg.sha256)
+          SAIDRIGHT_APP=build/public/Saidright.app SAIDRIGHT_DMG=dist/Saidright.dmg scripts/make-dmg.sh
+          (cd dist && shasum -a 256 Saidright.dmg | tee Saidright.dmg.sha256)
       - name: Pre-release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           NOTES="docs/release-notes/${GITHUB_REF_NAME#v}.md"
           [ -f "$NOTES" ] || NOTES=/dev/null
-          gh release create "$GITHUB_REF_NAME" dist/Saywell.dmg dist/Saywell.dmg.sha256 --repo "$GITHUB_REPOSITORY" \
-            --title "Saywell ${GITHUB_REF_NAME#v}" --notes-file "$NOTES" --prerelease --verify-tag
+          gh release create "$GITHUB_REF_NAME" dist/Saidright.dmg dist/Saidright.dmg.sha256 --repo "$GITHUB_REPOSITORY" \
+            --title "Saidright ${GITHUB_REF_NAME#v}" --notes-file "$NOTES" --prerelease --verify-tag

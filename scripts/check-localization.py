@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Checks that every UI string table is complete and consistent.
 
-- Collects keys used in Sources/Saywell via tr("...") and expands dynamic keys
+- Collects keys used in Sources/Saidright via tr("...") and expands dynamic keys
   (tr("cleanup.\\(level.rawValue)")) from the enum values listed below.
 - Verifies that en, ru, de and zh-Hans define exactly that set.
 - Verifies that format specifiers match the English source for every key.
@@ -13,7 +13,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-SOURCES = ROOT / 'Sources' / 'Saywell'
+SOURCES = ROOT / 'Sources' / 'Saidright'
 TABLES = ROOT / 'Resources' / 'Localization'
 LANGS = ['en', 'ru', 'de', 'zh-Hans']
 

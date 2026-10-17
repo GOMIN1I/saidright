@@ -1,7 +1,7 @@
 # Architecture
 
 ```
-┌──────────────────────── Saywell.app (SwiftUI + AppKit) ────────────────────────┐
+┌──────────────────────── Saidright.app (SwiftUI + AppKit) ────────────────────────┐
 │ UI: MainView · ResultView · FeedbackView · Settings window (sidebar + search)  │
 │     Appearance · Onboarding · History · Practice                               │
 │     Capsule (NSPanel + CapsuleModel): recording → processing → delivered →     │
@@ -19,7 +19,7 @@
 │   ├─ OllamaService   local text models (detect, list, pull with progress)     │
 │   └─ SpeechService   AVSpeechSynthesizer per language; Sound cues             │
 │                                                                                │
-│ SaywellCore (platform-neutral, unit tested)                                    │
+│ SaidrightCore (platform-neutral, unit tested)                                    │
 │   Modes (RecognizerChoice incl. auto) · SessionMachine · ModifierDetector     │
 │   EditorPrompt · IntegrityReport · TextProvider (OpenAI / compatible)          │
 │   TutorPrompt · FeedbackValidator · CapsuleHints · ReviewScheduler · TextDiff │
@@ -78,7 +78,7 @@ At session start `TextDelivery` captures the frontmost app and its focused AX el
 
 ## Persistence
 
-`~/Library/Application Support/Saywell/` (0700): `settings.json`, `modes.json`, `history.json` (all versioned, atomic writes, 0600), `Recordings/` (UUID.wav only; deletion refuses any other name), `Logs/` (no transcripts or keys), `Runtime/`, `Models/`, `Cache/`. Unreadable files are copied aside before defaults are used. The Govori 0.2 library is imported once, read-only, with recordings copied; the Govori runtime and model are used in place.
+`~/Library/Application Support/Saidright/` (0700): `settings.json`, `modes.json`, `history.json` (all versioned, atomic writes, 0600), `Recordings/` (UUID.wav only; deletion refuses any other name), `Logs/` (no transcripts or keys), `Runtime/`, `Models/`, `Cache/`. Unreadable files are copied aside before defaults are used. The Govori 0.2 library is imported once, read-only, with recordings copied; the Govori runtime and model are used in place.
 
 ## Why these boundaries
 

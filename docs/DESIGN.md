@@ -12,7 +12,7 @@ An instrument, not a dashboard. The product is mostly invisible: a small capsule
 | B. Studio dark | Forced-dark translucent window (the Govori prototype) | Looked atmospheric on one wallpaper; failed contrast on bright wallpapers and ignored the system appearance |
 | C. Paper | Warm off-white reading surfaces, serif examples for language feedback | Pleasant for learning, but a second visual language inside a utility app; kept only as the idea of a calm *reading surface* for feedback |
 
-## Tokens (`Sources/Saywell/UI/DesignSystem.swift`)
+## Tokens (`Sources/Saidright/UI/DesignSystem.swift`)
 
 | Group | Tokens |
 | --- | --- |
@@ -79,9 +79,9 @@ Sequence: recording → processing → delivered (text already inserted) → opt
 
 ## Identity
 
-The mark (`Sources/Saywell/UI/Branding.swift`, `AppIconArt`) is drawn once in SwiftUI and rendered to every size by `scripts/make-icon.sh`: a deep-indigo squircle, a warm-white capsule, three rising blue bars, and a coral I-beam cursor that crosses the capsule's edge with a thin cut so both shapes stay crisp. Variants: Standard, Light (indigo capsule on warm paper), Graphite (monochrome). At 16 px it reads as a capsule with a vertical stroke. The menu bar template repeats the outline, two bars and the cursor.
+The mark (`Sources/Saidright/UI/Branding.swift`, `AppIconArt`) is drawn once in SwiftUI and rendered to every size by `scripts/make-icon.sh`: a deep-indigo squircle, a warm-white capsule, three rising blue bars, and a coral I-beam cursor that crosses the capsule's edge with a thin cut so both shapes stay crisp. Variants: Standard, Light (indigo capsule on warm paper), Graphite (monochrome). At 16 px it reads as a capsule with a vertical stroke. The menu bar template repeats the outline, two bars and the cursor.
 
-macOS limits: a signed app cannot switch its Finder/Launchpad icon by theme through a supported API. Saywell changes only the Dock icon while running (`NSApp.applicationIconImage`). Automatic light/dark/tinted icons need an Icon Composer `.icon` compiled by Xcode's `actool`; the SwiftPM build here produces `.icns`, so that is a follow-up.
+macOS limits: a signed app cannot switch its Finder/Launchpad icon by theme through a supported API. Saidright changes only the Dock icon while running (`NSApp.applicationIconImage`). Automatic light/dark/tinted icons need an Icon Composer `.icon` compiled by Xcode's `actool`; the SwiftPM build here produces `.icns`, so that is a follow-up.
 
 ## Verification still to do
 

@@ -1,4 +1,4 @@
-/* Saywell — 简体中文 */
+/* Saidright — 简体中文 */
 
 /* Windows and menus */
 "window.history" = "历史记录";
@@ -9,9 +9,9 @@
 "menu.startStop" = "开始或结束听写";
 "menu.cancel" = "取消听写";
 "menu.mode" = "模式：%@";
-"menu.open" = "打开 Saywell";
+"menu.open" = "打开 Saidright";
 "menu.settings" = "设置…";
-"menu.quit" = "退出 Saywell";
+"menu.quit" = "退出 Saidright";
 
 /* Main window */
 "main.settings" = "设置";
@@ -47,10 +47,10 @@
 
 /* Delivery */
 "delivery.verified" = "已插入到 %@。";
-"delivery.unverified" = "已粘贴到 %@。该 App 不允许 Saywell 确认结果。";
-"delivery.kept" = "已保留在 Saywell 中。";
+"delivery.unverified" = "已粘贴到 %@。该 App 不允许 Saidright 确认结果。";
+"delivery.kept" = "已保留在 Saidright 中。";
 "delivery.copied" = "已拷贝到剪贴板。";
-"delivery.startedInApp" = "听写在 Saywell 中开始，文本已在剪贴板中。";
+"delivery.startedInApp" = "听写在 Saidright 中开始，文本已在剪贴板中。";
 "delivery.focusChanged" = "焦点已移到其他字段，因此未粘贴。文本在剪贴板中。";
 "delivery.noDestination" = "没有活跃的文本字段。文本在剪贴板中。";
 "delivery.noPermission" = "辅助功能权限已关闭，因此文本被拷贝而非插入。";
@@ -61,9 +61,9 @@
 "capsule.recording" = "正在录音";
 "capsule.processing" = "正在处理";
 "capsule.done" = "文本已插入";
-"capsule.doneElsewhere" = "文本已在 Saywell 或剪贴板中";
+"capsule.doneElsewhere" = "文本已在 Saidright 或剪贴板中";
 "capsule.noSpeech" = "未检测到语音";
-"capsule.error" = "出现问题，请在 Saywell 中查看详情。";
+"capsule.error" = "出现问题，请在 Saidright 中查看详情。";
 "capsule.cancelled" = "已取消";
 "capsule.preview" = "预览";
 "capsule.stateRecording" = "录音";
@@ -99,7 +99,7 @@
 "modes.delete" = "删除";
 "modes.export" = "导出…";
 "modes.import" = "导入…";
-"modes.importFailed" = "此文件不是 Saywell 模式导出文件。";
+"modes.importFailed" = "此文件不是 Saidright 模式导出文件。";
 "modes.copySuffix" = "副本";
 "modes.edit" = "模式设置";
 "modes.name" = "名称";
@@ -147,6 +147,9 @@
 "tone.neutral" = "中性";
 "tone.formal" = "正式";
 "tone.concise" = "简洁";
+"modes.smartStructure" = "智能排版";
+"modes.smartStructureDetail" = "任务、条目和步骤会变成清单和列表。普通句子保持原样。";
+"syn.structure" = "列表 清单 要点 markdown 标题 表格 结构 排版";
 "rules.fillers" = "去掉空洞的语气词（嗯、呃、um）";
 "rules.repetitions" = "去掉无意的重复";
 "rules.profanity" = "保留粗口";
@@ -159,15 +162,15 @@
 "learning.detailed" = "详细";
 "learning.onDemand" = "按需";
 "learning.off.detail" = "没有语言反馈，也没有额外请求。";
-"learning.hint.detail" = "听写后，在 Saywell 中显示一条最有用的纠正。";
-"learning.detailed.detail" = "在 Saywell 中显示所有明确的纠正及解释。";
+"learning.hint.detail" = "听写后，在 Saidright 中显示一条最有用的纠正。";
+"learning.detailed.detail" = "在 Saidright 中显示所有明确的纠正及解释。";
 "learning.onDemand.detail" = "不自动进行。需要时再请求分析。";
 "output.insert" = "插入";
 "output.copy" = "拷贝";
 "output.keep" = "保留在 App 中";
 "output.insert.detail" = "插入到你开始说话时处于活跃状态的字段。解释永远不会被插入。";
 "output.copy.detail" = "仅拷贝到剪贴板。";
-"output.keep.detail" = "留在 Saywell 中，用于练习或草稿。";
+"output.keep.detail" = "留在 Saidright 中，用于练习或草稿。";
 
 "lang.auto" = "自动";
 "lang.coverageHelp" = "· 测试较少；·· 实验性";
@@ -261,7 +264,7 @@
 
 /* Notices and errors */
 "notice.micGrantedPressAgain" = "已允许麦克风。再按一次按键即可听写。";
-"notice.micDenied" = "麦克风权限已关闭。请在“系统设置 → 隐私与安全性 → 麦克风”中允许 Saywell。";
+"notice.micDenied" = "麦克风权限已关闭。请在“系统设置 → 隐私与安全性 → 麦克风”中允许 Saidright。";
 "notice.inputChanged" = "录音期间麦克风发生变化，已录下的内容正在处理。";
 "notice.installRecognizer" = "尚未安装语音识别。";
 "notice.recognizerFailed" = "识别器无法启动。请在识别设置中查看详情。";
@@ -314,11 +317,11 @@
 "engine.whisperFacts" = "约 1.6 GB 模型文件，另加 0.6 GB 运行环境。适用于 Apple 芯片；安装后可离线使用。最适合混合语言。";
 "engine.whisperFooter" = "OpenAI Whisper（MIT 许可证）。在这台 Mac 上运行；音频不会离开它。";
 "engine.usingLegacy" = "正在使用这台 Mac 上已安装的兼容识别器，没有下载任何内容。";
-"engine.usingOwn" = "由 Saywell 安装：占用 %@。";
+"engine.usingOwn" = "由 Saidright 安装：占用 %@。";
 "engine.restart" = "重新启动";
 "engine.repair" = "重新安装";
 "engine.remove" = "移除";
-"engine.removeConfirm" = "移除由 Saywell 安装的识别器？之后可以重新安装。";
+"engine.removeConfirm" = "移除由 Saidright 安装的识别器？之后可以重新安装。";
 "engine.apple" = "Apple 听写（内建）";
 "engine.appleShort" = "Apple";
 "engine.appleFooter" = "内置于 macOS 26 及更高版本。每个模式一种语言。";
@@ -330,7 +333,7 @@
 "matrix.language" = "语言";
 "matrix.learning" = "语言帮助";
 "matrix.tts" = "语音";
-"matrix.legend" = "已测试：已在 Saywell 中验证。模型：模型支持。实验性：可能可用，质量未知。";
+"matrix.legend" = "已测试：已在 Saidright 中验证。模型：模型支持。实验性：可能可用，质量未知。";
 "coverage.tested" = "已测试";
 "coverage.modelSupported" = "模型";
 "coverage.experimental" = "实验性";
@@ -368,7 +371,7 @@
 "settings.privacy" = "隐私与数据";
 "settings.advanced" = "高级";
 "settings.interfaceLanguage" = "界面语言";
-"settings.interfaceLanguageFooter" = "说话语言和学习语言按模式设置。系统菜单会在 Saywell 重启后更新。";
+"settings.interfaceLanguageFooter" = "说话语言和学习语言按模式设置。系统菜单会在 Saidright 重启后更新。";
 "settings.language" = "语言";
 "settings.systemLanguage" = "跟随系统";
 "settings.permissions" = "权限";
@@ -384,16 +387,16 @@
 "perm.mic" = "麦克风";
 "perm.micDetail" = "用于听写时录音。只有胶囊可见时才会录音。";
 "perm.listen" = "输入监控";
-"perm.listenDetail" = "用于识别右侧 ⌘ 等单个按键。Saywell 只检查该按键，不记录你的输入。";
+"perm.listenDetail" = "用于识别右侧 ⌘ 等单个按键。Saidright 只检查该按键，不记录你的输入。";
 "perm.ax" = "辅助功能";
 "perm.axDetail" = "用于把文本粘贴到你正在使用的字段，并确认文本已到达。";
 "perm.granted" = "已允许";
 "perm.allow" = "允许…";
 "perm.footer" = "每项权限单独检查，更改后数秒内更新。没有输入监控时，组合键仍然可用。";
 "perm.adhocWarning" = "更新后，macOS 可能会再次请求这些权限。如果开关看似已开启却不起作用，请在系统设置中将其关闭后再打开。";
-"perm.tapFailed" = "已允许输入监控，但按键监听无法启动。请退出并重新打开 Saywell。";
+"perm.tapFailed" = "已允许输入监控，但按键监听无法启动。请退出并重新打开 Saidright。";
 "keytest.title" = "按键测试";
-"keytest.prompt" = "检查 Saywell 是否真的收到了你的按键。";
+"keytest.prompt" = "检查 Saidright 是否真的收到了你的按键。";
 "keytest.pressNow" = "现在请按 %@…";
 "keytest.passed" = "已收到按键，听写快捷键可用。";
 "keytest.start" = "测试";
@@ -460,7 +463,7 @@
 "text.importLegacy" = "使用 Govori 保存的密钥";
 "text.importLegacyDetail" = "macOS 会请你允许访问。旧条目不会被更改。";
 "text.importButton" = "导入";
-"text.importOK" = "密钥已导入 Saywell 的钥匙串条目。";
+"text.importOK" = "密钥已导入 Saidright 的钥匙串条目。";
 "text.importNone" = "未找到 Govori 密钥，或未允许访问。";
 "text.listModels" = "列出模型";
 "text.modelsFound" = "此密钥可用的模型：%ld";
@@ -508,10 +511,10 @@
 
 "adv.delivery" = "文本插入";
 "adv.restoreClipboard" = "插入后恢复剪贴板";
-"adv.restoreClipboardDetail" = "Saywell 通过剪贴板粘贴，然后恢复你之前的剪贴板内容。";
+"adv.restoreClipboardDetail" = "Saidright 通过剪贴板粘贴，然后恢复你之前的剪贴板内容。";
 "adv.automation" = "自动化";
-"adv.automationToggle" = "允许 saywell:// 链接";
-"adv.automationFooter" = "允许快捷指令和脚本开始、结束或取消听写，以及切换模式（saywell://toggle、saywell://mode?name=提示词）。任何 App 都能打开此类链接，因此不用时请保持关闭。";
+"adv.automationToggle" = "允许 saidright:// 链接";
+"adv.automationFooter" = "允许快捷指令和脚本开始、结束或取消听写，以及切换模式（saidright://toggle、saidright://mode?name=提示词）。任何 App 都能打开此类链接，因此不用时请保持关闭。";
 "adv.diagnostics" = "诊断";
 "adv.diagnosticsFooter" = "不包含转写、音频或密钥。可用于报告问题。";
 "adv.copyDiagnostics" = "拷贝诊断信息";
@@ -521,7 +524,7 @@
 "onb.skip" = "跳过";
 "onb.back" = "返回";
 "onb.next" = "继续";
-"onb.finish" = "开始使用 Saywell";
+"onb.finish" = "开始使用 Saidright";
 "onb.stepOf" = "第 %1$ld 步，共 %2$ld 步";
 "onb.welcome.title" = "用说话代替打字";
 "onb.welcome.body" = "在任意 App 中按下按键，说话，文字就会出现在你正在输入的位置。模式决定文本编辑的程度，以及是否给出简短的语言提示。";
@@ -529,15 +532,15 @@
 "onb.welcome.optional" = "编辑和语言帮助是可选的，只会把文本发送到你选择的服务。";
 "onb.welcome.cost" = "无需账户。你连接的云服务会直接向你收费。";
 "onb.lang.title" = "你说哪些语言？";
-"onb.lang.body" = "选择你听写时使用的语言。Saywell 逐句判断语言，混合说话按原样保留，不做任何翻译。";
+"onb.lang.body" = "选择你听写时使用的语言。Saidright 逐句判断语言，混合说话按原样保留，不做任何翻译。";
 "onb.lang.learning" = "我在学一门语言，希望偶尔得到提示";
-"onb.lang.learningNote" = "提示显示在胶囊或 Saywell 中，绝不会进入你的文本。可以按模式关闭。";
+"onb.lang.learningNote" = "提示显示在胶囊或 Saidright 中，绝不会进入你的文本。可以按模式关闭。";
 "onb.asr.title" = "语音识别";
 "onb.asr.recommend" = "推荐用于这台 Mac：Whisper large-v3-turbo，本地运行。能很好地处理多种语言和混合语言。";
 "onb.asr.ready" = "本地识别器已安装并就绪。";
 "onb.asr.appleAlternative" = "现在无法下载？Apple 内建听写可在每个模式中识别一种语言，之后可在模式设置中选择。";
 "onb.perm.title" = "权限";
-"onb.perm.body" = "准备好后逐项允许。后两项 macOS 会打开系统设置：在那里开启 Saywell 后返回。";
+"onb.perm.body" = "准备好后逐项允许。后两项 macOS 会打开系统设置：在那里开启 Saidright 后返回。";
 "onb.perm.limited" = "每一项都可以跳过：没有输入监控时用 ⌃⌥空格；没有辅助功能时，文本会被拷贝供你粘贴。";
 "onb.try.title" = "试一试";
 "onb.try.body" = "按 %@ 或按钮，说一句话，然后再按一次。";
@@ -586,7 +589,7 @@
 "learn.capsule" = "胶囊中的提示";
 "learn.capsuleFooter" = "文本会先插入。只有当模式开启学习且确有值得一提的内容时才会出现提示。显示哪些错误可在“模式 → 学习”中设置。";
 "learn.presentation" = "提示方式";
-"learn.presentationDetail" = "从胶囊展开卡片，或显示一个等待点击的小标记，或只在 Saywell 窗口中显示。";
+"learn.presentationDetail" = "从胶囊展开卡片，或显示一个等待点击的小标记，或只在 Saidright 窗口中显示。";
 "presentation.card" = "卡片";
 "presentation.indicator" = "低调标记";
 "presentation.window" = "仅在窗口中";
@@ -639,7 +642,7 @@
 "look.showDetail" = "关闭后听写照常工作，只在窗口中查看结果。";
 "look.customHint" = "选择颜色会切换为自定义配色。";
 "look.icon" = "应用图标";
-"look.iconFooter" = "Saywell 运行时，程序坞显示你选择的图标。访达和启动台始终显示标准图标。";
+"look.iconFooter" = "Saidright 运行时，程序坞显示你选择的图标。访达和启动台始终显示标准图标。";
 "icon.standard" = "标准";
 "icon.light" = "浅色";
 "icon.mono" = "石墨";
@@ -647,14 +650,14 @@
 "models.speechFooter" = "在本机运行。每个模式各自选择识别器；未经你点击不会下载任何内容。";
 "install.retry" = "重试";
 "onb.uiLanguageNote" = "仅影响界面。你说的语言和学习的语言在接下来选择。";
-"onb.lang.mixed" = "Saywell 会识别这些语言，并按你说的原样保留混合语句。";
+"onb.lang.mixed" = "Saidright 会识别这些语言，并按你说的原样保留混合语句。";
 "onb.lang.single" = "单一语言的识别最可靠。之后可以再添加。";
 "onb.learn.title" = "在学一门语言吗？";
-"onb.learn.body" = "可选。当你用这门语言听写时，Saywell 可以直接在胶囊中指出真正的错误，并附上简短友好的解释。文本始终先插入。";
+"onb.learn.body" = "可选。当你用这门语言听写时，Saidright 可以直接在胶囊中指出真正的错误，并附上简短友好的解释。文本始终先插入。";
 "onb.learn.skip" = "以后再说";
 "onb.learn.provider" = "解释需要文本模型：免费的本地模型（例如通过 Ollama）或付费的云端密钥。之后可在“文本与 AI”中设置；没有它也能听写。";
-"onb.asr.foundShared" = "本机已有兼容的语音识别器。Saywell 可以立即使用，现在无需下载。";
-"onb.asr.sharedNote" = "它属于另一个应用，删除该应用时它也会被删除。你可以随时在“设置 → 识别”中安装 Saywell 自己的副本。";
+"onb.asr.foundShared" = "本机已有兼容的语音识别器。Saidright 可以立即使用，现在无需下载。";
+"onb.asr.sharedNote" = "它属于另一个应用，删除该应用时它也会被删除。你可以随时在“设置 → 识别”中安装 Saidright 自己的副本。";
 "onb.asr.network" = "下载需要联网一次；之后识别可离线运行。可随时取消。";
 "onb.asr.more" = "其他识别器及其大小和语言覆盖，见“设置 → 识别”。";
 "onb.try.hint" = "看看胶囊中的语言提示是什么样子。";
@@ -721,7 +724,7 @@
 "ollama.getIt" = "获取 Ollama";
 "ollama.checkAgain" = "重新检查";
 "ollama.running" = "Ollama %@ 正在本机运行。";
-"ollama.tested" = "已在 Saywell 中测试";
+"ollama.tested" = "已在 Saidright 中测试";
 "ollama.pullFailed" = "下载未完成。请确认 Ollama 仍在运行，然后重试。";
 "ollama.confirmTitle" = "在 Ollama 中下载 %@？";
 "ollama.confirmDetail" = "约 %1$@。可用空间：%2$@。可以取消；模型也可供其他使用 Ollama 的应用使用。";
@@ -749,7 +752,7 @@
 "models.useAutoHelp" = "将使用 Whisper 的模式设为“自动”：单语言模式改用 Parakeet，混合语言模式保留 Whisper。";
 
 "adv.credits" = "致谢与许可";
-"adv.creditsFooter" = "Saywell 以 Apache 2.0 许可证开源。模型在你请求时从其发布者处下载，并不包含在应用中。";
+"adv.creditsFooter" = "Saidright 以 Apache 2.0 许可证开源。模型在你请求时从其发布者处下载，并不包含在应用中。";
 "syn.credits" = "关于 许可证 开源 致谢 nvidia openai";
 
 "shortcut.lastTip" = "显示上一条提示";

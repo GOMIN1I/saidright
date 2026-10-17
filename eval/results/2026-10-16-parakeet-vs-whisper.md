@@ -1,6 +1,6 @@
 # Parakeet TDT 0.6B v3 vs Whisper — 2026-10-16
 
-Apple M4 Pro, 24 GB, macOS 27.0. Each engine ran in its own worker process through `Resources/recognizer.py` (the app's own code path: shared energy VAD, hallucination filter; Whisper with per-region language ID restricted to RU+EN like the owner's modes, DE/ZH clips with their own language; Parakeet has no language parameter). One warm-up clip, then timed sequentially; the regular Saywell (Whisper loaded) was running at the same time. Reproduce with `scripts/compare-asr.py`.
+Apple M4 Pro, 24 GB, macOS 27.0. Each engine ran in its own worker process through `Resources/recognizer.py` (the app's own code path: shared energy VAD, hallucination filter; Whisper with per-region language ID restricted to RU+EN like the owner's modes, DE/ZH clips with their own language; Parakeet has no language parameter). One warm-up clip, then timed sequentially; the regular Saidright (Whisper loaded) was running at the same time. Reproduce with `scripts/compare-asr.py`.
 
 Clips:
 - **FLEURS dev** (google/fleurs, CC-BY-4.0, read speech by real speakers): first 25 utterances each for ru_ru, en_us, de_de, cmn_hans_cn, 4–27 s. FLEURS English is recorded very quietly (RMS ≈ −60 dBFS), so the main table uses copies peak-normalised to −3 dBFS; the raw table below shows what the current VAD does with the quiet originals.
@@ -77,5 +77,5 @@ Changes measured here: VAD thresholds follow the recording's own noise floor (ab
 - Mixed RU/EN without pauses: Whisper 25 % → **3.1 %** WER (e.g. “Давай созвонимся после обеда. I need to finish the report first.” now complete). One English word was still misheard (“pull request” → “pool”).
 - Noise, hum, clicks, silence: no text from either engine (0/10).
 - Whisper mean latency unchanged (0.71 s); a recovery pass adds ≈0.4–1.5 s only on recordings where speech was actually missing.
-- Parakeet figures here are before Saywell's number normalisation (applied in the app, `NumberNormalizer`), so its RU/EN rates include “пятнадцатое” vs “15” differences; in the app “two thousand five hundred” → “2500”, “пятнадцатое марта … двести четыре” → “15 марта … 204” (verified end to end).
+- Parakeet figures here are before Saidright's number normalisation (applied in the app, `NumberNormalizer`), so its RU/EN rates include “пятнадцатое” vs “15” differences; in the app “two thousand five hundred” → “2500”, “пятнадцатое марта … двести четыре” → “15 марта … 204” (verified end to end).
 - Parakeet still drops or transliterates the other language inside mixed recordings (41.5 %), which is why “Automatic” keeps Whisper for multi-language modes.

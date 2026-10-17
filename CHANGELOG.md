@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.6.0 — 2026-10-17
+
+- **New name: Saidright** (previously Saywell, a name another dictation app already uses). The data folder moves to `~/Library/Application Support/Saidright` on first launch, saved keys are carried over from the Keychain, exported mode files from Saywell still import. macOS asks for Microphone, Input Monitoring and Accessibility once more because the app identity changed.
+- **Smart formatting** (on by default in modes that edit text): tasks become a checklist, several things a list, steps a numbered list, separate topics get headings, repeated attributes a table — written as Markdown. Ordinary sentences stay prose. The layout is checked against what you said: nothing may be added, dropped or repeated, otherwise the plain edit is kept.
+- Practice window: the empty state is centred.
+- Product page: the capsule's done check mark is centred; no empty band beside the learning cards.
+
 ## 0.5.0 — 2026-10-17 (developer preview, first public release)
 
 - Faster Whisper: language ID, decoding and the timestamp passes share one encoder pass (same transcripts; a short mixed-language phrase ≈0.95 s → ≈0.5 s).
@@ -36,7 +43,7 @@
 - Editor: explicit Do/Do-not lists per level; digits stay digits.
 - Compatible servers get `reasoning_effort: none` (configurable) so thinking models answer within budget.
 - ⌘-scroll no longer counts as a single ⌘ tap.
-- Dictation started from Saywell's window offers “Insert into <previous app>”.
+- Dictation started from Saidright's window offers “Insert into <previous app>”.
 - Restored introduction window closes itself unless requested.
 
 ## 0.3.0 — 2026-10-16 (developer preview, renamed from Govori)

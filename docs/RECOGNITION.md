@@ -1,6 +1,6 @@
 # How recognition works
 
-Saywell has three recognizers. Each mode chooses one, or *Automatic*. From the user's point of view a mode is "one recognizer that understands my languages"; this page explains what happens underneath and why it is built this way.
+Saidright has three recognizers. Each mode chooses one, or *Automatic*. From the user's point of view a mode is "one recognizer that understands my languages"; this page explains what happens underneath and why it is built this way.
 
 ## The engines
 
@@ -38,7 +38,7 @@ That is the obvious "universal" design: identify the language first, send one-la
 
 | Policy | RU | EN | RU with English terms | RU/EN switch | All | Time |
 | --- | --- | --- | --- | --- | --- | --- |
-| Whisper (what Saywell does) | 1.6 % | 1.6 % | 11.9 % | 3.4 % | **4.0 %** | 0.48 s |
+| Whisper (what Saidright does) | 1.6 % | 1.6 % | 11.9 % | 3.4 % | **4.0 %** | 0.48 s |
 | Parakeet for everything | 0.0 % | 0.0 % | 28.6 % | 44.8 % | 17.0 % | 0.07 s |
 | Language ID → Parakeet when one language | 0.0 % | 0.0 % | 28.6 % | 36.2 % | 14.8 % | 0.42 s |
 
@@ -63,6 +63,6 @@ Conclusion: for mixed-language speech, one strong multilingual model with langua
 S="$HOME/Library/Application Support"
 python3 -I scripts/eval-routing.py \
   --whisper "<python with mlx-whisper>:<whisper-turbo model dir>" \
-  --parakeet "$S/Saywell/Runtime-Parakeet/bin/python3:$S/Saywell/Models/parakeet-tdt-0.6b-v3" \
+  --parakeet "$S/Saidright/Runtime-Parakeet/bin/python3:$S/Saidright/Models/parakeet-tdt-0.6b-v3" \
   --out eval/results/<date>-routing.md
 ```

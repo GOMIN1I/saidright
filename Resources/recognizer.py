@@ -1,4 +1,4 @@
-"""Saywell local recogniser worker (MLX Whisper or NVIDIA Parakeet TDT via parakeet-mlx).
+"""Saidright local recogniser worker (MLX Whisper or NVIDIA Parakeet TDT via parakeet-mlx).
 
 JSON lines on stdin/stdout. Every request has an "id"; every reply echoes it and has a
 "type" (progress | transcript | ready | error | pong). Nothing else is written to stdout.
@@ -86,7 +86,7 @@ class Worker:
         recovery check each run the audio encoder on the same window; it is the most expensive
         step. The key is the exact window content, so a hit returns exactly what a new pass
         would compute."""
-        if getattr(encoder_class, '_saywell_cached', False):
+        if getattr(encoder_class, '_saidright_cached', False):
             return
         original = encoder_class.__call__
         np = self.np
@@ -104,7 +104,7 @@ class Worker:
             return features
 
         encoder_class.__call__ = cached
-        encoder_class._saywell_cached = True
+        encoder_class._saidright_cached = True
 
     def window_mel(self, segment):
         """The first 30-second window exactly as mlx_whisper.transcribe builds it, so language

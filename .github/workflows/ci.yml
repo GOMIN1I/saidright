@@ -21,10 +21,10 @@ jobs:
           persist-credentials: false
       - name: Toolchain
         run: swift --version
-      - name: Unit tests (SaywellCore)
+      - name: Unit tests (SaidrightCore)
         run: swift test
       - name: App builds and the bundle assembles (ad hoc)
-        run: SAYWELL_SIGN_IDENTITY=- SAYWELL_BUILD_DIR=build/ci scripts/build-app.sh
+        run: SAIDRIGHT_SIGN_IDENTITY=- SAIDRIGHT_BUILD_DIR=build/ci scripts/build-app.sh
   lint:
     name: Strings, scripts and hygiene
     runs-on: ubuntu-latest
@@ -67,7 +67,7 @@ jobs:
           PR: ${{ github.event.pull_request.number }}
         run: |
           files="$(gh pr diff "$PR" --repo "$GITHUB_REPOSITORY" --name-only)"
-          high='^(Sources/Saywell/Services/(Hotkeys|AudioRecorder|TextDelivery|Keychain|RuntimeInstaller|Recognizers)\.swift|Sources/SaywellCore/(ModifierDetector|Session)\.swift|Sources/Saywell/AppModel\.swift|Resources/(Info|entitlements)\.plist|Resources/recognizer\.py|Runtime/|\.github/|scripts/(build-app|make-dmg|set-bundle-id)\.sh|Package\.swift)'
+          high='^(Sources/Saidright/Services/(Hotkeys|AudioRecorder|TextDelivery|Keychain|RuntimeInstaller|Recognizers)\.swift|Sources/SaidrightCore/(ModifierDetector|Session)\.swift|Sources/Saidright/AppModel\.swift|Resources/(Info|entitlements)\.plist|Resources/recognizer\.py|Runtime/|\.github/|scripts/(build-app|make-dmg|set-bundle-id)\.sh|Package\.swift)'
           low='^(docs/|site/|assets/|eval/|README|CHANGELOG|ROADMAP|CONTRIBUTING|SECURITY|NOTICE)'
           if echo "$files" | grep -qE "$high"; then tier=high
           elif echo "$files" | grep -qvE "$low"; then tier=normal

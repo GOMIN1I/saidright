@@ -1,11 +1,11 @@
 #!/bin/zsh
-# Renders the app icon from the SwiftUI source (Sources/Saywell/UI/Branding.swift, AppIconArt)
+# Renders the app icon from the SwiftUI source (Sources/Saidright/UI/Branding.swift, AppIconArt)
 # so the bundle icon, Dock variants and in-app previews share one geometry.
 #   scripts/make-icon.sh        → Resources/AppIcon.icns and assets/brand/*.png
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-swift build --package-path "$ROOT" --product Saywell >/dev/null
-BIN="$(swift build --package-path "$ROOT" --show-bin-path)/Saywell"
+swift build --package-path "$ROOT" --product Saidright >/dev/null
+BIN="$(swift build --package-path "$ROOT" --show-bin-path)/Saidright"
 TMP="$(mktemp -d)"
 for variant in standard light mono; do
   "$BIN" --render-icon "$TMP/$variant.iconset" "$variant"

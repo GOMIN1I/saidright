@@ -1,2 +1,2 @@
-"NSMicrophoneUsageDescription" = "Saywell records your voice while you dictate and recognizes it on this Mac. Audio is not uploaded.";
-"NSSpeechRecognitionUsageDescription" = "Saywell can use Apple's on-device dictation model to recognize your speech on this Mac.";
+"NSMicrophoneUsageDescription" = "Saidright records your voice while you dictate and recognizes it on this Mac. Audio is not uploaded.";
+"NSSpeechRecognitionUsageDescription" = "Saidright can use Apple's on-device dictation model to recognize your speech on this Mac.";

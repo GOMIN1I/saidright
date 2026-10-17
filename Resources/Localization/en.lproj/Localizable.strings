@@ -1,4 +1,4 @@
-/* Saywell — English (source language). Keep keys sorted by area. */
+/* Saidright — English (source language). Keep keys sorted by area. */
 
 /* Windows and menus */
 "window.history" = "History";
@@ -9,9 +9,9 @@
 "menu.startStop" = "Start or stop dictation";
 "menu.cancel" = "Cancel dictation";
 "menu.mode" = "Mode: %@";
-"menu.open" = "Open Saywell";
+"menu.open" = "Open Saidright";
 "menu.settings" = "Settings…";
-"menu.quit" = "Quit Saywell";
+"menu.quit" = "Quit Saidright";
 
 /* Main window */
 "main.settings" = "Settings";
@@ -47,10 +47,10 @@
 
 /* Delivery */
 "delivery.verified" = "Inserted into %@.";
-"delivery.unverified" = "Pasted into %@. The app does not let Saywell confirm it.";
-"delivery.kept" = "Kept in Saywell.";
+"delivery.unverified" = "Pasted into %@. The app does not let Saidright confirm it.";
+"delivery.kept" = "Kept in Saidright.";
 "delivery.copied" = "Copied to the clipboard.";
-"delivery.startedInApp" = "Started in Saywell, so the text is on the clipboard.";
+"delivery.startedInApp" = "Started in Saidright, so the text is on the clipboard.";
 "delivery.focusChanged" = "Focus moved to another field, so nothing was pasted. The text is on the clipboard.";
 "delivery.noDestination" = "No text field was active. The text is on the clipboard.";
 "delivery.noPermission" = "Accessibility access is off, so the text was copied instead of inserted.";
@@ -61,9 +61,9 @@
 "capsule.recording" = "Recording";
 "capsule.processing" = "Processing";
 "capsule.done" = "Text inserted";
-"capsule.doneElsewhere" = "Text ready in Saywell or on the clipboard";
+"capsule.doneElsewhere" = "Text ready in Saidright or on the clipboard";
 "capsule.noSpeech" = "No speech detected";
-"capsule.error" = "Something went wrong. See Saywell for details.";
+"capsule.error" = "Something went wrong. See Saidright for details.";
 "capsule.cancelled" = "Cancelled";
 "capsule.preview" = "Preview";
 "capsule.stateRecording" = "Recording";
@@ -99,7 +99,7 @@
 "modes.delete" = "Delete";
 "modes.export" = "Export…";
 "modes.import" = "Import…";
-"modes.importFailed" = "This file is not a Saywell mode export.";
+"modes.importFailed" = "This file is not a Saidright mode export.";
 "modes.copySuffix" = "copy";
 "modes.edit" = "Mode settings";
 "modes.name" = "Name";
@@ -147,6 +147,9 @@
 "tone.neutral" = "Neutral";
 "tone.formal" = "Formal";
 "tone.concise" = "Concise";
+"modes.smartStructure" = "Smart formatting";
+"modes.smartStructureDetail" = "Tasks, items and steps become checklists and lists. Ordinary sentences stay as they are.";
+"syn.structure" = "list checklist bullets markdown headings table structure format";
 "rules.fillers" = "Remove empty fillers (um, uh, э-э)";
 "rules.repetitions" = "Remove accidental repetitions";
 "rules.profanity" = "Keep strong language";
@@ -159,15 +162,15 @@
 "learning.detailed" = "Detailed";
 "learning.onDemand" = "On request";
 "learning.off.detail" = "No language feedback and no extra requests.";
-"learning.hint.detail" = "After dictating, the single most useful correction appears in Saywell.";
-"learning.detailed.detail" = "All clear corrections with explanations, shown in Saywell.";
+"learning.hint.detail" = "After dictating, the single most useful correction appears in Saidright.";
+"learning.detailed.detail" = "All clear corrections with explanations, shown in Saidright.";
 "learning.onDemand.detail" = "Nothing automatic. Ask for analysis when you want it.";
 "output.insert" = "Insert";
 "output.copy" = "Copy";
 "output.keep" = "Keep in app";
 "output.insert.detail" = "Into the field that was active when you started speaking. Explanations are never inserted.";
 "output.copy.detail" = "Onto the clipboard only.";
-"output.keep.detail" = "Stays in Saywell, for practice or drafts.";
+"output.keep.detail" = "Stays in Saidright, for practice or drafts.";
 
 "lang.auto" = "Auto";
 "lang.coverageHelp" = "· less tested; ·· experimental";
@@ -261,7 +264,7 @@
 
 /* Notices and errors */
 "notice.micGrantedPressAgain" = "Microphone allowed. Press the key again to dictate.";
-"notice.micDenied" = "Microphone access is off. Allow Saywell in System Settings → Privacy & Security → Microphone.";
+"notice.micDenied" = "Microphone access is off. Allow Saidright in System Settings → Privacy & Security → Microphone.";
 "notice.inputChanged" = "The microphone changed during recording. What was captured so far is being processed.";
 "notice.installRecognizer" = "Speech recognition is not installed yet.";
 "notice.recognizerFailed" = "The recognizer could not start. Open recognition settings for details.";
@@ -314,11 +317,11 @@
 "engine.whisperFacts" = "About 1.6 GB of model files plus a 0.6 GB runtime. Apple silicon; works offline after setup. The best choice for mixed-language speech.";
 "engine.whisperFooter" = "OpenAI Whisper (MIT license). Runs on this Mac; audio never leaves it.";
 "engine.usingLegacy" = "Using a compatible recognizer that is already installed on this Mac. Nothing was downloaded.";
-"engine.usingOwn" = "Installed by Saywell: %@ on disk.";
+"engine.usingOwn" = "Installed by Saidright: %@ on disk.";
 "engine.restart" = "Restart";
 "engine.repair" = "Reinstall";
 "engine.remove" = "Remove";
-"engine.removeConfirm" = "Remove the recognizer installed by Saywell? You can install it again later.";
+"engine.removeConfirm" = "Remove the recognizer installed by Saidright? You can install it again later.";
 "engine.apple" = "Apple dictation (built in)";
 "engine.appleShort" = "Apple";
 "engine.appleFooter" = "Built into macOS 26 and later. One language per mode.";
@@ -330,7 +333,7 @@
 "matrix.language" = "Language";
 "matrix.learning" = "Language help";
 "matrix.tts" = "Voice";
-"matrix.legend" = "Tested: verified with Saywell. Model: supported by the model. Experimental: may work, quality unknown.";
+"matrix.legend" = "Tested: verified with Saidright. Model: supported by the model. Experimental: may work, quality unknown.";
 "coverage.tested" = "Tested";
 "coverage.modelSupported" = "Model";
 "coverage.experimental" = "Experimental";
@@ -368,7 +371,7 @@
 "settings.privacy" = "Privacy & Data";
 "settings.advanced" = "Advanced";
 "settings.interfaceLanguage" = "Interface language";
-"settings.interfaceLanguageFooter" = "Spoken and learning languages are set per mode. System menus follow after Saywell restarts.";
+"settings.interfaceLanguageFooter" = "Spoken and learning languages are set per mode. System menus follow after Saidright restarts.";
 "settings.language" = "Language";
 "settings.systemLanguage" = "System";
 "settings.permissions" = "Permissions";
@@ -384,16 +387,16 @@
 "perm.mic" = "Microphone";
 "perm.micDetail" = "To record while you dictate. Recording happens only while the capsule is visible.";
 "perm.listen" = "Input Monitoring";
-"perm.listenDetail" = "To notice a single key such as right ⌘. Saywell only checks for that key; it does not record typing.";
+"perm.listenDetail" = "To notice a single key such as right ⌘. Saidright only checks for that key; it does not record typing.";
 "perm.ax" = "Accessibility";
 "perm.axDetail" = "To paste into the field you were using and confirm the text arrived.";
 "perm.granted" = "Allowed";
 "perm.allow" = "Allow…";
 "perm.footer" = "Each permission is checked on its own and updates within a couple of seconds after you change it. Without Input Monitoring, the key combination still works.";
 "perm.adhocWarning" = "After an update, macOS may ask for these permissions again. If a switch looks on but does not work, turn it off and on again in System Settings.";
-"perm.tapFailed" = "Input Monitoring is allowed but the key listener could not start. Quit and reopen Saywell.";
+"perm.tapFailed" = "Input Monitoring is allowed but the key listener could not start. Quit and reopen Saidright.";
 "keytest.title" = "Key test";
-"keytest.prompt" = "Check that Saywell really receives your key.";
+"keytest.prompt" = "Check that Saidright really receives your key.";
 "keytest.pressNow" = "Press %@ now…";
 "keytest.passed" = "Key received. Dictation shortcut works.";
 "keytest.start" = "Test";
@@ -460,7 +463,7 @@
 "text.importLegacy" = "Use the key saved by Govori";
 "text.importLegacyDetail" = "macOS will ask you to allow access. The old entry is not changed.";
 "text.importButton" = "Import";
-"text.importOK" = "Key imported into Saywell's Keychain entry.";
+"text.importOK" = "Key imported into Saidright's Keychain entry.";
 "text.importNone" = "No Govori key was found, or access was not allowed.";
 "text.listModels" = "List models";
 "text.modelsFound" = "Models available to this key: %ld";
@@ -508,10 +511,10 @@
 
 "adv.delivery" = "Text delivery";
 "adv.restoreClipboard" = "Restore the clipboard after inserting";
-"adv.restoreClipboardDetail" = "Saywell pastes through the clipboard and then puts your previous clipboard back.";
+"adv.restoreClipboardDetail" = "Saidright pastes through the clipboard and then puts your previous clipboard back.";
 "adv.automation" = "Automation";
-"adv.automationToggle" = "Allow saywell:// links";
-"adv.automationFooter" = "Lets Shortcuts and scripts start, stop or cancel dictation and switch modes (saywell://toggle, saywell://mode?name=Prompt). Any app can open such a link, so keep this off unless you use it.";
+"adv.automationToggle" = "Allow saidright:// links";
+"adv.automationFooter" = "Lets Shortcuts and scripts start, stop or cancel dictation and switch modes (saidright://toggle, saidright://mode?name=Prompt). Any app can open such a link, so keep this off unless you use it.";
 "adv.diagnostics" = "Diagnostics";
 "adv.diagnosticsFooter" = "Contains no transcripts, audio or keys. Useful for bug reports.";
 "adv.copyDiagnostics" = "Copy diagnostics";
@@ -521,7 +524,7 @@
 "onb.skip" = "Skip";
 "onb.back" = "Back";
 "onb.next" = "Continue";
-"onb.finish" = "Start using Saywell";
+"onb.finish" = "Start using Saidright";
 "onb.stepOf" = "Step %1$ld of %2$ld";
 "onb.welcome.title" = "Speak instead of typing";
 "onb.welcome.body" = "Press a key in any app, speak, and your words appear where you were typing. Modes decide how much the text is edited and whether you get a short language tip.";
@@ -529,15 +532,15 @@
 "onb.welcome.optional" = "Editing and language help are optional and send only text to a service you choose.";
 "onb.welcome.cost" = "No account needed. Cloud services you connect bill you directly.";
 "onb.lang.title" = "Which languages do you speak?";
-"onb.lang.body" = "Choose the languages you dictate in. Saywell detects which one you use per phrase and keeps mixed speech as spoken. Nothing is translated.";
+"onb.lang.body" = "Choose the languages you dictate in. Saidright detects which one you use per phrase and keeps mixed speech as spoken. Nothing is translated.";
 "onb.lang.learning" = "I'm learning a language and want occasional tips";
-"onb.lang.learningNote" = "Tips appear in the capsule or in Saywell, never inside your text. You can turn them off per mode.";
+"onb.lang.learningNote" = "Tips appear in the capsule or in Saidright, never inside your text. You can turn them off per mode.";
 "onb.asr.title" = "Speech recognition";
 "onb.asr.recommend" = "Recommended for this Mac: Whisper large-v3-turbo, running locally. It handles many languages and mixed speech well.";
 "onb.asr.ready" = "The local recognizer is installed and ready.";
 "onb.asr.appleAlternative" = "No download possible right now? Apple's built-in dictation works for one language per mode. Choose it later in a mode's settings.";
 "onb.perm.title" = "Permissions";
-"onb.perm.body" = "Allow each one when you are ready. macOS opens System Settings for the last two; turn on Saywell there and come back.";
+"onb.perm.body" = "Allow each one when you are ready. macOS opens System Settings for the last two; turn on Saidright there and come back.";
 "onb.perm.limited" = "You can skip any of them: without Input Monitoring use ⌃⌥Space; without Accessibility the text is copied for you to paste.";
 "onb.try.title" = "Try it";
 "onb.try.body" = "Press %@ or the button, say a sentence, then press again.";
@@ -586,7 +589,7 @@
 "learn.capsule" = "Tips in the capsule";
 "learn.capsuleFooter" = "Your text is inserted first. A tip appears only when a mode has learning on and there is something worth knowing. Choose which mistakes count in Modes → Learning.";
 "learn.presentation" = "How tips appear";
-"learn.presentationDetail" = "A card opens from the capsule, or a small marker waits for a click, or tips stay in the Saywell window.";
+"learn.presentationDetail" = "A card opens from the capsule, or a small marker waits for a click, or tips stay in the Saidright window.";
 "presentation.card" = "Card";
 "presentation.indicator" = "Subtle marker";
 "presentation.window" = "Window only";
@@ -609,7 +612,7 @@
 "level.advanced" = "Advanced";
 "look.windows" = "Windows";
 "look.theme" = "Theme";
-"look.themeDetail" = "Follow macOS, or keep Saywell light or dark.";
+"look.themeDetail" = "Follow macOS, or keep Saidright light or dark.";
 "theme.system" = "System";
 "theme.light" = "Light";
 "theme.dark" = "Dark";
@@ -639,7 +642,7 @@
 "look.showDetail" = "When off, dictation still works; you only see the result in the window.";
 "look.customHint" = "Picking a colour switches to your own colours.";
 "look.icon" = "App icon";
-"look.iconFooter" = "The Dock shows your choice while Saywell is running. Finder and Launchpad always show the standard icon.";
+"look.iconFooter" = "The Dock shows your choice while Saidright is running. Finder and Launchpad always show the standard icon.";
 "icon.standard" = "Standard";
 "icon.light" = "Light";
 "icon.mono" = "Graphite";
@@ -647,14 +650,14 @@
 "models.speechFooter" = "Runs on this Mac. Each mode picks its recognizer; nothing is downloaded without your click.";
 "install.retry" = "Try again";
 "onb.uiLanguageNote" = "Only the interface. You choose the languages you speak and learn next.";
-"onb.lang.mixed" = "Saywell listens for these languages and keeps mixed sentences as you said them.";
+"onb.lang.mixed" = "Saidright listens for these languages and keeps mixed sentences as you said them.";
 "onb.lang.single" = "One language gives the most reliable recognition. You can add more later.";
 "onb.learn.title" = "Learning a language?";
-"onb.learn.body" = "Optional. After you dictate in that language, Saywell can point out a real mistake with a short, friendly explanation, right in the capsule. Your text is always inserted first.";
+"onb.learn.body" = "Optional. After you dictate in that language, Saidright can point out a real mistake with a short, friendly explanation, right in the capsule. Your text is always inserted first.";
 "onb.learn.skip" = "Not now";
 "onb.learn.provider" = "Explanations need a text model: a free local one (for example via Ollama) or a paid cloud key. Set it up later in Text & AI; dictation works without it.";
-"onb.asr.foundShared" = "A compatible speech recognizer is already on this Mac. Saywell can use it right away — nothing to download now.";
-"onb.asr.sharedNote" = "It belongs to another app, so removing that app removes it too. You can install Saywell’s own copy any time in Settings → Recognition.";
+"onb.asr.foundShared" = "A compatible speech recognizer is already on this Mac. Saidright can use it right away — nothing to download now.";
+"onb.asr.sharedNote" = "It belongs to another app, so removing that app removes it too. You can install Saidright’s own copy any time in Settings → Recognition.";
 "onb.asr.network" = "The download needs an internet connection once; after that, recognition works offline. You can cancel at any time.";
 "onb.asr.more" = "Other recognizers, with sizes and language coverage, are in Settings → Recognition.";
 "onb.try.hint" = "See how a language tip looks in the capsule.";
@@ -721,7 +724,7 @@
 "ollama.getIt" = "Get Ollama";
 "ollama.checkAgain" = "Check again";
 "ollama.running" = "Ollama %@ is running on this Mac.";
-"ollama.tested" = "tested with Saywell";
+"ollama.tested" = "tested with Saidright";
 "ollama.pullFailed" = "The download did not finish. Check that Ollama is still open and try again.";
 "ollama.confirmTitle" = "Download %@ in Ollama?";
 "ollama.confirmDetail" = "About %1$@. Free space: %2$@. You can cancel; the model stays available to other apps that use Ollama.";
@@ -749,7 +752,7 @@
 "models.useAutoHelp" = "Sets modes that use Whisper to Automatic: one-language modes switch to Parakeet, mixed-language modes stay on Whisper.";
 
 "adv.credits" = "Acknowledgements and licences";
-"adv.creditsFooter" = "Saywell is open source under the Apache License 2.0. Models are downloaded from their publishers when you ask and are not part of the app.";
+"adv.creditsFooter" = "Saidright is open source under the Apache License 2.0. Models are downloaded from their publishers when you ask and are not part of the app.";
 "syn.credits" = "about license licence attribution open source nvidia openai";
 
 "shortcut.lastTip" = "Show last tip";

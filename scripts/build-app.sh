@@ -1,12 +1,12 @@
 #!/bin/zsh
-# Builds build/Saywell.app from source.
+# Builds build/Saidright.app from source.
 #
 #   scripts/build-app.sh                 release build, signed with an Apple Development
 #                                        identity if one exists, otherwise ad hoc
-#   SAYWELL_SIGN_IDENTITY="Developer ID Application: …" scripts/build-app.sh
-#   SAYWELL_CONFIGURATION=debug scripts/build-app.sh
+#   SAIDRIGHT_SIGN_IDENTITY="Developer ID Application: …" scripts/build-app.sh
+#   SAIDRIGHT_CONFIGURATION=debug scripts/build-app.sh
 #
-#   SAYWELL_SIGN_IDENTITY=- SAYWELL_BUILD_DIR=build/public scripts/build-app.sh
+#   SAIDRIGHT_SIGN_IDENTITY=- SAIDRIGHT_BUILD_DIR=build/public scripts/build-app.sh
 #                                        ad hoc build for public downloads (no personal
 #                                        certificate or team id inside the app)
 #
@@ -15,21 +15,21 @@
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
-CONFIG="${SAYWELL_CONFIGURATION:-release}"
+CONFIG="${SAIDRIGHT_CONFIGURATION:-release}"
 VERSION="$(cat "$ROOT/VERSION")"
-BUILD_NUMBER="${SAYWELL_BUILD_NUMBER:-$(git -C "$ROOT" rev-list --count HEAD 2>/dev/null || echo 1)}"
-# SAYWELL_BUILD_DIR builds elsewhere (e.g. a public ad hoc build) without replacing build/Saywell.app.
-OUT="${SAYWELL_BUILD_DIR:-$ROOT/build}"
-APP="$OUT/Saywell.app"
+BUILD_NUMBER="${SAIDRIGHT_BUILD_NUMBER:-$(git -C "$ROOT" rev-list --count HEAD 2>/dev/null || echo 1)}"
+# SAIDRIGHT_BUILD_DIR builds elsewhere (e.g. a public ad hoc build) without replacing build/Saidright.app.
+OUT="${SAIDRIGHT_BUILD_DIR:-$ROOT/build}"
+APP="$OUT/Saidright.app"
 # The bundle id lives only in Resources/Info.plist (change it with scripts/set-bundle-id.sh).
 BUNDLE_ID="$(/usr/libexec/PlistBuddy -c 'Print CFBundleIdentifier' "$ROOT/Resources/Info.plist")"
 
-swift build -c "$CONFIG" --package-path "$ROOT" --product Saywell
-BIN="$(swift build -c "$CONFIG" --package-path "$ROOT" --show-bin-path)/Saywell"
+swift build -c "$CONFIG" --package-path "$ROOT" --product Saidright
+BIN="$(swift build -c "$CONFIG" --package-path "$ROOT" --show-bin-path)/Saidright"
 
 rm -rf "$APP"
 mkdir -p "$APP/Contents/MacOS" "$APP/Contents/Resources"
-cp "$BIN" "$APP/Contents/MacOS/Saywell"
+cp "$BIN" "$APP/Contents/MacOS/Saidright"
 sed -e "s/__VERSION__/$VERSION/" -e "s/__BUILD__/$BUILD_NUMBER/" "$ROOT/Resources/Info.plist" > "$APP/Contents/Info.plist"
 cp "$ROOT/Resources/recognizer.py" "$ROOT/Resources/AppIcon.icns" "$APP/Contents/Resources/"
 # macOS 26+: Icon Composer icon with automatic dark and tinted appearances (Assets.car).
@@ -51,7 +51,7 @@ for lproj in "$ROOT"/Resources/Localization/*.lproj; do
 done
 xattr -cr "$APP" 2>/dev/null || true
 
-IDENTITY="${SAYWELL_SIGN_IDENTITY:-}"
+IDENTITY="${SAIDRIGHT_SIGN_IDENTITY:-}"
 if [[ -z "$IDENTITY" ]]; then
   IDENTITY="$(security find-identity -v -p codesigning 2>/dev/null | sed -nE 's/^[[:space:]]+[0-9]+\) ([A-F0-9]{40}) "(Developer ID Application|Apple Development):.*/\1/p' | head -1)"
 fi

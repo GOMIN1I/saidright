@@ -14,7 +14,7 @@ The release build is arm64 only. Do not advertise Intel support.
 
 | Component | Version | Licence | How it reaches the user |
 | --- | --- | --- | --- |
-| Saywell source | 0.5.0 | **Apache-2.0** (`LICENSE`, `NOTICE`) | GitHub |
+| Saidright source | 0.5.0 | **Apache-2.0** (`LICENSE`, `NOTICE`) | GitHub |
 | OpenAI Whisper large-v3-turbo weights | MLX conversion `mlx-community/whisper-large-v3-turbo` @ `a4aaeec0` | MIT (Whisper); conversion published under the same terms on Hugging Face | Downloaded by the app from Hugging Face on request, SHA-256 checked against the repository metadata; not bundled |
 | mlx-whisper | 0.4.3 | MIT | Installed from PyPI via the hashed lock |
 | MLX | 0.32.4 | MIT | PyPI |
@@ -25,7 +25,7 @@ The release build is arm64 only. Do not advertise Intel support.
 | Apple Speech, AVFoundation | system | Apple SDK terms | Part of macOS |
 | macOS voices (TTS, test fixtures) | system | Apple licence | Not redistributed; fixtures are generated locally and not committed |
 
-Nothing third-party is presented as Saywell's own work; the recognition model is OpenAI Whisper.
+Nothing third-party is presented as Saidright's own work; the recognition model is OpenAI Whisper.
 
 `torch` is deliberately not installed: `mlx_whisper` only imports it for checkpoint conversion (`torch_whisper.py`). This saves ~530 MB compared with the Govori setup.
 

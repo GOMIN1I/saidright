@@ -1,4 +1,4 @@
-/* Saywell — Deutsch */
+/* Saidright — Deutsch */
 
 /* Windows and menus */
 "window.history" = "Verlauf";
@@ -9,9 +9,9 @@
 "menu.startStop" = "Diktat starten oder beenden";
 "menu.cancel" = "Diktat abbrechen";
 "menu.mode" = "Modus: %@";
-"menu.open" = "Saywell öffnen";
+"menu.open" = "Saidright öffnen";
 "menu.settings" = "Einstellungen …";
-"menu.quit" = "Saywell beenden";
+"menu.quit" = "Saidright beenden";
 
 /* Main window */
 "main.settings" = "Einstellungen";
@@ -47,10 +47,10 @@
 
 /* Delivery */
 "delivery.verified" = "In %@ eingefügt.";
-"delivery.unverified" = "In %@ eingefügt. Die App erlaubt Saywell keine Bestätigung.";
-"delivery.kept" = "In Saywell behalten.";
+"delivery.unverified" = "In %@ eingefügt. Die App erlaubt Saidright keine Bestätigung.";
+"delivery.kept" = "In Saidright behalten.";
 "delivery.copied" = "In die Zwischenablage kopiert.";
-"delivery.startedInApp" = "In Saywell gestartet – der Text liegt in der Zwischenablage.";
+"delivery.startedInApp" = "In Saidright gestartet – der Text liegt in der Zwischenablage.";
 "delivery.focusChanged" = "Der Fokus ist in ein anderes Feld gewechselt, daher wurde nichts eingefügt. Der Text liegt in der Zwischenablage.";
 "delivery.noDestination" = "Es war kein Textfeld aktiv. Der Text liegt in der Zwischenablage.";
 "delivery.noPermission" = "Bedienungshilfen-Zugriff ist aus, daher wurde der Text kopiert statt eingefügt.";
@@ -61,9 +61,9 @@
 "capsule.recording" = "Aufnahme";
 "capsule.processing" = "Verarbeitung";
 "capsule.done" = "Text eingefügt";
-"capsule.doneElsewhere" = "Text liegt in Saywell oder in der Zwischenablage bereit";
+"capsule.doneElsewhere" = "Text liegt in Saidright oder in der Zwischenablage bereit";
 "capsule.noSpeech" = "Keine Sprache erkannt";
-"capsule.error" = "Etwas ist schiefgelaufen. Details in Saywell.";
+"capsule.error" = "Etwas ist schiefgelaufen. Details in Saidright.";
 "capsule.cancelled" = "Abgebrochen";
 "capsule.preview" = "Vorschau";
 "capsule.stateRecording" = "Aufnahme";
@@ -99,7 +99,7 @@
 "modes.delete" = "Löschen";
 "modes.export" = "Exportieren …";
 "modes.import" = "Importieren …";
-"modes.importFailed" = "Diese Datei ist kein Saywell-Modusexport.";
+"modes.importFailed" = "Diese Datei ist kein Saidright-Modusexport.";
 "modes.copySuffix" = "Kopie";
 "modes.edit" = "Moduseinstellungen";
 "modes.name" = "Name";
@@ -147,6 +147,9 @@
 "tone.neutral" = "Neutral";
 "tone.formal" = "Förmlich";
 "tone.concise" = "Knapp";
+"modes.smartStructure" = "Intelligente Formatierung";
+"modes.smartStructureDetail" = "Aufgaben, Aufzählungen und Schritte werden zu Checklisten und Listen. Normale Sätze bleiben, wie sie sind.";
+"syn.structure" = "liste checkliste aufzählung markdown überschrift tabelle struktur";
 "rules.fillers" = "Leere Füllwörter entfernen (ähm, äh, um)";
 "rules.repetitions" = "Versehentliche Wiederholungen entfernen";
 "rules.profanity" = "Derbe Sprache beibehalten";
@@ -159,15 +162,15 @@
 "learning.detailed" = "Ausführlich";
 "learning.onDemand" = "Auf Anfrage";
 "learning.off.detail" = "Keine Sprachrückmeldung und keine zusätzlichen Anfragen.";
-"learning.hint.detail" = "Nach dem Diktat erscheint in Saywell die eine nützlichste Korrektur.";
-"learning.detailed.detail" = "Alle eindeutigen Korrekturen mit Erklärungen, angezeigt in Saywell.";
+"learning.hint.detail" = "Nach dem Diktat erscheint in Saidright die eine nützlichste Korrektur.";
+"learning.detailed.detail" = "Alle eindeutigen Korrekturen mit Erklärungen, angezeigt in Saidright.";
 "learning.onDemand.detail" = "Nichts automatisch. Analyse nur, wenn du sie anforderst.";
 "output.insert" = "Einfügen";
 "output.copy" = "Kopieren";
 "output.keep" = "In der App behalten";
 "output.insert.detail" = "In das Feld, das beim Sprechbeginn aktiv war. Erklärungen werden nie eingefügt.";
 "output.copy.detail" = "Nur in die Zwischenablage.";
-"output.keep.detail" = "Bleibt in Saywell, zum Üben oder für Entwürfe.";
+"output.keep.detail" = "Bleibt in Saidright, zum Üben oder für Entwürfe.";
 
 "lang.auto" = "Auto";
 "lang.coverageHelp" = "· weniger getestet; ·· experimentell";
@@ -261,7 +264,7 @@
 
 /* Notices and errors */
 "notice.micGrantedPressAgain" = "Mikrofon erlaubt. Drücke die Taste erneut, um zu diktieren.";
-"notice.micDenied" = "Mikrofonzugriff ist aus. Erlaube Saywell unter Systemeinstellungen → Datenschutz & Sicherheit → Mikrofon.";
+"notice.micDenied" = "Mikrofonzugriff ist aus. Erlaube Saidright unter Systemeinstellungen → Datenschutz & Sicherheit → Mikrofon.";
 "notice.inputChanged" = "Das Mikrofon hat sich während der Aufnahme geändert. Das bisher Aufgenommene wird verarbeitet.";
 "notice.installRecognizer" = "Die Spracherkennung ist noch nicht installiert.";
 "notice.recognizerFailed" = "Die Spracherkennung konnte nicht starten. Details in den Erkennungseinstellungen.";
@@ -314,11 +317,11 @@
 "engine.whisperFacts" = "Etwa 1,6 GB Modelldateien plus 0,6 GB Laufzeitumgebung. Apple Silicon; nach der Einrichtung offline. Die beste Wahl für gemischte Sprache.";
 "engine.whisperFooter" = "OpenAI Whisper (MIT-Lizenz). Läuft auf diesem Mac; Audio verlässt ihn nie.";
 "engine.usingLegacy" = "Verwendet eine kompatible Erkennung, die bereits auf diesem Mac installiert ist. Nichts wurde geladen.";
-"engine.usingOwn" = "Von Saywell installiert: %@ auf dem Datenträger.";
+"engine.usingOwn" = "Von Saidright installiert: %@ auf dem Datenträger.";
 "engine.restart" = "Neu starten";
 "engine.repair" = "Neu installieren";
 "engine.remove" = "Entfernen";
-"engine.removeConfirm" = "Die von Saywell installierte Erkennung entfernen? Du kannst sie später erneut installieren.";
+"engine.removeConfirm" = "Die von Saidright installierte Erkennung entfernen? Du kannst sie später erneut installieren.";
 "engine.apple" = "Apple-Diktat (integriert)";
 "engine.appleShort" = "Apple";
 "engine.appleFooter" = "In macOS 26 und neuer integriert. Eine Sprache pro Modus.";
@@ -330,7 +333,7 @@
 "matrix.language" = "Sprache";
 "matrix.learning" = "Sprachhilfe";
 "matrix.tts" = "Stimme";
-"matrix.legend" = "Getestet: mit Saywell geprüft. Modell: vom Modell unterstützt. Experimentell: kann funktionieren, Qualität unbekannt.";
+"matrix.legend" = "Getestet: mit Saidright geprüft. Modell: vom Modell unterstützt. Experimentell: kann funktionieren, Qualität unbekannt.";
 "coverage.tested" = "Getestet";
 "coverage.modelSupported" = "Modell";
 "coverage.experimental" = "Experimentell";
@@ -368,7 +371,7 @@
 "settings.privacy" = "Datenschutz";
 "settings.advanced" = "Erweitert";
 "settings.interfaceLanguage" = "Sprache der Oberfläche";
-"settings.interfaceLanguageFooter" = "Sprech- und Lernsprachen legst du pro Modus fest. Systemmenüs folgen nach einem Neustart von Saywell.";
+"settings.interfaceLanguageFooter" = "Sprech- und Lernsprachen legst du pro Modus fest. Systemmenüs folgen nach einem Neustart von Saidright.";
 "settings.language" = "Sprache";
 "settings.systemLanguage" = "System";
 "settings.permissions" = "Berechtigungen";
@@ -384,16 +387,16 @@
 "perm.mic" = "Mikrofon";
 "perm.micDetail" = "Zum Aufnehmen während des Diktierens. Aufgenommen wird nur, solange die Kapsel sichtbar ist.";
 "perm.listen" = "Eingabeüberwachung";
-"perm.listenDetail" = "Um eine einzelne Taste wie das rechte ⌘ zu bemerken. Saywell prüft nur diese Taste und zeichnet keine Eingaben auf.";
+"perm.listenDetail" = "Um eine einzelne Taste wie das rechte ⌘ zu bemerken. Saidright prüft nur diese Taste und zeichnet keine Eingaben auf.";
 "perm.ax" = "Bedienungshilfen";
 "perm.axDetail" = "Um in das Feld einzufügen, das du benutzt hast, und zu bestätigen, dass der Text angekommen ist.";
 "perm.granted" = "Erlaubt";
 "perm.allow" = "Erlauben …";
 "perm.footer" = "Jede Berechtigung wird einzeln geprüft und aktualisiert sich wenige Sekunden nach einer Änderung. Ohne Eingabeüberwachung funktioniert die Tastenkombination weiterhin.";
 "perm.adhocWarning" = "Nach einem Update fragt macOS eventuell erneut nach diesen Berechtigungen. Wenn ein Schalter an aussieht, aber nicht wirkt, schalte ihn in den Systemeinstellungen aus und wieder ein.";
-"perm.tapFailed" = "Eingabeüberwachung ist erlaubt, aber die Tastenerkennung konnte nicht starten. Beende Saywell und öffne es erneut.";
+"perm.tapFailed" = "Eingabeüberwachung ist erlaubt, aber die Tastenerkennung konnte nicht starten. Beende Saidright und öffne es erneut.";
 "keytest.title" = "Tastentest";
-"keytest.prompt" = "Prüfe, ob Saywell deine Taste wirklich empfängt.";
+"keytest.prompt" = "Prüfe, ob Saidright deine Taste wirklich empfängt.";
 "keytest.pressNow" = "Drücke jetzt %@ …";
 "keytest.passed" = "Taste empfangen. Der Diktat-Kurzbefehl funktioniert.";
 "keytest.start" = "Testen";
@@ -460,7 +463,7 @@
 "text.importLegacy" = "Von Govori gespeicherten Schlüssel verwenden";
 "text.importLegacyDetail" = "macOS fragt nach deiner Erlaubnis. Der alte Eintrag bleibt unverändert.";
 "text.importButton" = "Importieren";
-"text.importOK" = "Schlüssel in den Schlüsselbundeintrag von Saywell importiert.";
+"text.importOK" = "Schlüssel in den Schlüsselbundeintrag von Saidright importiert.";
 "text.importNone" = "Kein Govori-Schlüssel gefunden oder Zugriff nicht erlaubt.";
 "text.listModels" = "Modelle auflisten";
 "text.modelsFound" = "Für diesen Schlüssel verfügbare Modelle: %ld";
@@ -508,10 +511,10 @@
 
 "adv.delivery" = "Texteinfügung";
 "adv.restoreClipboard" = "Zwischenablage nach dem Einfügen wiederherstellen";
-"adv.restoreClipboardDetail" = "Saywell fügt über die Zwischenablage ein und legt danach deren vorherigen Inhalt zurück.";
+"adv.restoreClipboardDetail" = "Saidright fügt über die Zwischenablage ein und legt danach deren vorherigen Inhalt zurück.";
 "adv.automation" = "Automatisierung";
-"adv.automationToggle" = "saywell://-Links erlauben";
-"adv.automationFooter" = "Erlaubt Kurzbefehlen und Skripten, Diktate zu starten, zu beenden oder abzubrechen und Modi zu wechseln (saywell://toggle, saywell://mode?name=Prompt). Jede App kann einen solchen Link öffnen, daher nur aktivieren, wenn du es nutzt.";
+"adv.automationToggle" = "saidright://-Links erlauben";
+"adv.automationFooter" = "Erlaubt Kurzbefehlen und Skripten, Diktate zu starten, zu beenden oder abzubrechen und Modi zu wechseln (saidright://toggle, saidright://mode?name=Prompt). Jede App kann einen solchen Link öffnen, daher nur aktivieren, wenn du es nutzt.";
 "adv.diagnostics" = "Diagnose";
 "adv.diagnosticsFooter" = "Enthält keine Transkripte, kein Audio und keine Schlüssel. Nützlich für Fehlerberichte.";
 "adv.copyDiagnostics" = "Diagnose kopieren";
@@ -521,7 +524,7 @@
 "onb.skip" = "Überspringen";
 "onb.back" = "Zurück";
 "onb.next" = "Weiter";
-"onb.finish" = "Saywell verwenden";
+"onb.finish" = "Saidright verwenden";
 "onb.stepOf" = "Schritt %1$ld von %2$ld";
 "onb.welcome.title" = "Sprechen statt tippen";
 "onb.welcome.body" = "Drücke in einer beliebigen App eine Taste, sprich, und deine Worte erscheinen dort, wo du geschrieben hast. Modi legen fest, wie stark der Text bearbeitet wird und ob du einen kurzen Sprachtipp bekommst.";
@@ -529,15 +532,15 @@
 "onb.welcome.optional" = "Bearbeitung und Sprachhilfe sind optional und senden nur Text an einen Dienst deiner Wahl.";
 "onb.welcome.cost" = "Kein Konto nötig. Verbundene Cloud-Dienste rechnen direkt mit dir ab.";
 "onb.lang.title" = "Welche Sprachen sprichst du?";
-"onb.lang.body" = "Wähle die Sprachen, in denen du diktierst. Saywell erkennt pro Satz, welche du verwendest, und lässt gemischte Sprache wie gesprochen. Nichts wird übersetzt.";
+"onb.lang.body" = "Wähle die Sprachen, in denen du diktierst. Saidright erkennt pro Satz, welche du verwendest, und lässt gemischte Sprache wie gesprochen. Nichts wird übersetzt.";
 "onb.lang.learning" = "Ich lerne eine Sprache und möchte gelegentlich Tipps";
-"onb.lang.learningNote" = "Tipps erscheinen in der Kapsel oder in Saywell, nie in deinem Text. Du kannst sie pro Modus ausschalten.";
+"onb.lang.learningNote" = "Tipps erscheinen in der Kapsel oder in Saidright, nie in deinem Text. Du kannst sie pro Modus ausschalten.";
 "onb.asr.title" = "Spracherkennung";
 "onb.asr.recommend" = "Empfohlen für diesen Mac: Whisper large-v3-turbo, läuft lokal. Kommt gut mit vielen Sprachen und gemischter Sprache zurecht.";
 "onb.asr.ready" = "Die lokale Spracherkennung ist installiert und bereit.";
 "onb.asr.appleAlternative" = "Gerade kein Download möglich? Apples integriertes Diktat funktioniert mit einer Sprache pro Modus. Du kannst es später in den Moduseinstellungen wählen.";
 "onb.perm.title" = "Berechtigungen";
-"onb.perm.body" = "Erlaube jede, wenn du bereit bist. Für die letzten beiden öffnet macOS die Systemeinstellungen; aktiviere dort Saywell und kehre zurück.";
+"onb.perm.body" = "Erlaube jede, wenn du bereit bist. Für die letzten beiden öffnet macOS die Systemeinstellungen; aktiviere dort Saidright und kehre zurück.";
 "onb.perm.limited" = "Du kannst jede überspringen: Ohne Eingabeüberwachung nutzt du ⌃⌥Leertaste; ohne Bedienungshilfen wird der Text zum Einfügen kopiert.";
 "onb.try.title" = "Ausprobieren";
 "onb.try.body" = "Drücke %@ oder die Taste, sag einen Satz und drücke erneut.";
@@ -586,7 +589,7 @@
 "learn.capsule" = "Tipps in der Kapsel";
 "learn.capsuleFooter" = "Dein Text wird zuerst eingefügt. Ein Tipp erscheint nur, wenn der Modus Lernen nutzt und es etwas Lohnendes gibt. Welche Fehler zählen, legst du unter Modi → Lernen fest.";
 "learn.presentation" = "Darstellung";
-"learn.presentationDetail" = "Eine Karte öffnet sich aus der Kapsel, ein kleiner Marker wartet auf einen Klick, oder Tipps bleiben im Saywell-Fenster.";
+"learn.presentationDetail" = "Eine Karte öffnet sich aus der Kapsel, ein kleiner Marker wartet auf einen Klick, oder Tipps bleiben im Saidright-Fenster.";
 "presentation.card" = "Karte";
 "presentation.indicator" = "Dezenter Marker";
 "presentation.window" = "Nur im Fenster";
@@ -639,7 +642,7 @@
 "look.showDetail" = "Aus: Diktieren funktioniert weiter, das Ergebnis siehst du nur im Fenster.";
 "look.customHint" = "Eine Farbe wählen schaltet auf eigene Farben.";
 "look.icon" = "App-Symbol";
-"look.iconFooter" = "Das Dock zeigt deine Wahl, solange Saywell läuft. Finder und Launchpad zeigen immer das Standardsymbol.";
+"look.iconFooter" = "Das Dock zeigt deine Wahl, solange Saidright läuft. Finder und Launchpad zeigen immer das Standardsymbol.";
 "icon.standard" = "Standard";
 "icon.light" = "Hell";
 "icon.mono" = "Graphit";
@@ -647,14 +650,14 @@
 "models.speechFooter" = "Läuft auf diesem Mac. Jeder Modus wählt seine Erkennung; ohne deinen Klick wird nichts geladen.";
 "install.retry" = "Erneut versuchen";
 "onb.uiLanguageNote" = "Nur die Oberfläche. Die Sprachen, die du sprichst und lernst, wählst du gleich.";
-"onb.lang.mixed" = "Saywell erwartet diese Sprachen und lässt gemischte Sätze so, wie du sie gesagt hast.";
+"onb.lang.mixed" = "Saidright erwartet diese Sprachen und lässt gemischte Sätze so, wie du sie gesagt hast.";
 "onb.lang.single" = "Eine Sprache ergibt die zuverlässigste Erkennung. Weitere kannst du später hinzufügen.";
 "onb.learn.title" = "Lernst du eine Sprache?";
-"onb.learn.body" = "Optional. Wenn du in dieser Sprache diktierst, kann Saywell einen echten Fehler mit einer kurzen, freundlichen Erklärung direkt in der Kapsel zeigen. Dein Text wird immer zuerst eingefügt.";
+"onb.learn.body" = "Optional. Wenn du in dieser Sprache diktierst, kann Saidright einen echten Fehler mit einer kurzen, freundlichen Erklärung direkt in der Kapsel zeigen. Dein Text wird immer zuerst eingefügt.";
 "onb.learn.skip" = "Nicht jetzt";
 "onb.learn.provider" = "Erklärungen brauchen ein Textmodell: ein kostenloses lokales (z. B. über Ollama) oder einen kostenpflichtigen Cloud-Schlüssel. Später unter „Text & KI“ einrichten; Diktieren funktioniert auch ohne.";
-"onb.asr.foundShared" = "Eine passende Spracherkennung ist bereits auf diesem Mac. Saywell kann sie sofort nutzen – jetzt ist kein Download nötig.";
-"onb.asr.sharedNote" = "Sie gehört zu einer anderen App; wird diese entfernt, ist auch die Erkennung weg. Eine eigene Kopie für Saywell kannst du jederzeit unter Einstellungen → Erkennung installieren.";
+"onb.asr.foundShared" = "Eine passende Spracherkennung ist bereits auf diesem Mac. Saidright kann sie sofort nutzen – jetzt ist kein Download nötig.";
+"onb.asr.sharedNote" = "Sie gehört zu einer anderen App; wird diese entfernt, ist auch die Erkennung weg. Eine eigene Kopie für Saidright kannst du jederzeit unter Einstellungen → Erkennung installieren.";
 "onb.asr.network" = "Der Download braucht einmal eine Internetverbindung; danach funktioniert die Erkennung offline. Du kannst jederzeit abbrechen.";
 "onb.asr.more" = "Weitere Erkennungen mit Größe und Sprachabdeckung findest du unter Einstellungen → Erkennung.";
 "onb.try.hint" = "So sieht ein Sprachtipp in der Kapsel aus.";
@@ -721,7 +724,7 @@
 "ollama.getIt" = "Ollama holen";
 "ollama.checkAgain" = "Erneut prüfen";
 "ollama.running" = "Ollama %@ läuft auf diesem Mac.";
-"ollama.tested" = "mit Saywell getestet";
+"ollama.tested" = "mit Saidright getestet";
 "ollama.pullFailed" = "Der Download wurde nicht beendet. Prüfe, ob Ollama noch offen ist, und versuche es erneut.";
 "ollama.confirmTitle" = "%@ in Ollama laden?";
 "ollama.confirmDetail" = "Etwa %1$@. Frei: %2$@. Abbrechen ist möglich; das Modell steht auch anderen Apps mit Ollama zur Verfügung.";
@@ -749,7 +752,7 @@
 "models.useAutoHelp" = "Stellt Modi mit Whisper auf „Automatisch“: einsprachige nutzen Parakeet, gemischte bleiben bei Whisper.";
 
 "adv.credits" = "Danksagungen und Lizenzen";
-"adv.creditsFooter" = "Saywell ist Open Source unter der Apache-Lizenz 2.0. Modelle werden auf Wunsch von ihren Herausgebern geladen und sind nicht Teil der App.";
+"adv.creditsFooter" = "Saidright ist Open Source unter der Apache-Lizenz 2.0. Modelle werden auf Wunsch von ihren Herausgebern geladen und sind nicht Teil der App.";
 "syn.credits" = "über lizenz quellen open source nvidia openai";
 
 "shortcut.lastTip" = "Letzten Tipp zeigen";

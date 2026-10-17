@@ -14,7 +14,7 @@ step "Unit tests"
 swift test
 
 step "App target builds (release)"
-swift build -c release --product Saywell
+swift build -c release --product Saidright
 
 step "Localization tables"
 python3 -I scripts/check-localization.py

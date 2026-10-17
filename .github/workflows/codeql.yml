@@ -31,7 +31,7 @@ jobs:
           build-mode: ${{ matrix.language == 'swift' && 'manual' || 'none' }}
           queries: security-extended
       - if: matrix.language == 'swift'
-        run: swift build -c release --product Saywell
+        run: swift build -c release --product Saidright
       - uses: github/codeql-action/analyze@6f2ac81f5cd81fe351a197ba0b00d91d03cd2aee # v4
         with:
           category: /language:${{ matrix.language }}
