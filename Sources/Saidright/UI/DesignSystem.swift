@@ -201,7 +201,8 @@ final class AuroraView: NSView {
         guard state.map({ $0 != (dark, moving, lights) }) ?? true else { return }
         state = (dark, moving, lights)
         CATransaction.begin(); CATransaction.setDisableActions(true)
-        base.colors = (dark ? [0x18225A, 0x0E1430, 0x0B1028] : [0xF6F7FE, 0xEEF1FB, 0xE7EBF9]).map { Self.cg($0, 1) }
+        let baseHexes: [UInt32] = dark ? [0x18225A, 0x0E1430, 0x0B1028] : [0xF6F7FE, 0xEEF1FB, 0xE7EBF9]
+        base.colors = baseHexes.map { Self.cg($0, 1) }
         base.startPoint = CGPoint(x: 0, y: 1); base.endPoint = CGPoint(x: 0.3, y: 0)
         let palette: [(UInt32, CGFloat)] = dark ? [(0x3D6BFF, 0.50), (0x7B5CFF, 0.30), (0xFF5257, 0.26)] : [(0x8FB0FF, 0.42), (0xC4B5FF, 0.34), (0xFF8E92, 0.24)]
         for (blob, (hex, alpha)) in zip(blobs, palette) {
@@ -251,7 +252,10 @@ final class AuroraView: NSView {
     }
 
     private static func cg(_ hex: UInt32, _ alpha: CGFloat) -> CGColor {
-        CGColor(srgbRed: CGFloat((hex >> 16) & 0xFF) / 255, green: CGFloat((hex >> 8) & 0xFF) / 255, blue: CGFloat(hex & 0xFF) / 255, alpha: alpha)
+        let red = CGFloat((hex >> 16) & 0xFF) / 255
+        let green = CGFloat((hex >> 8) & 0xFF) / 255
+        let blue = CGFloat(hex & 0xFF) / 255
+        return CGColor(srgbRed: red, green: green, blue: blue, alpha: alpha)
     }
 }
 

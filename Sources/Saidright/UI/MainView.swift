@@ -255,9 +255,8 @@ final class HaloView: NSView {
         conic.type = .conic
         conic.startPoint = CGPoint(x: 0.5, y: 0.5)
         conic.endPoint = CGPoint(x: 0.5, y: 0)
-        conic.colors = [0x3D6BFF, 0x7B5CFF, 0xFF5257, 0x5BC8FF, 0x3D6BFF].map {
-            CGColor(srgbRed: CGFloat(($0 >> 16) & 0xFF) / 255, green: CGFloat(($0 >> 8) & 0xFF) / 255, blue: CGFloat($0 & 0xFF) / 255, alpha: 1)
-        }
+        let hexes: [UInt32] = [0x3D6BFF, 0x7B5CFF, 0xFF5257, 0x5BC8FF, 0x3D6BFF]
+        conic.colors = hexes.map(Self.color)
         layer?.addSublayer(conic)
     }
     required init?(coder: NSCoder) { fatalError() }
@@ -270,6 +269,13 @@ final class HaloView: NSView {
         conic.bounds = CGRect(x: 0, y: 0, width: side, height: side)
         conic.position = CGPoint(x: bounds.midX, y: bounds.midY)
         CATransaction.commit()
+    }
+
+    private static func color(_ hex: UInt32) -> CGColor {
+        let red = CGFloat((hex >> 16) & 0xFF) / 255
+        let green = CGFloat((hex >> 8) & 0xFF) / 255
+        let blue = CGFloat(hex & 0xFF) / 255
+        return CGColor(srgbRed: red, green: green, blue: blue, alpha: 1)
     }
 
     func spin(_ speed: Double) {
