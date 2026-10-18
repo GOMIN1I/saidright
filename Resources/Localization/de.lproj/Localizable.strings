@@ -448,6 +448,11 @@
 "text.costFooter" = "Bearbeitung und Sprachhilfe senden den Transkripttext (nie Audio) an den gewählten Dienst. Cloud-Dienste können pro Anfrage Kosten berechnen.";
 "text.service" = "Dienst";
 "text.compatible" = "Kompatibler Server";
+"text.groq" = "Groq (empfohlen)";
+"text.groqModelDetail" = "Empfohlen: openai/gpt-oss-120b – schnell und genau. „Modelle auflisten“ zeigt, was dein Schlüssel nutzen kann.";
+"text.groqKey" = "Kostenloser Schlüssel";
+"text.groqKeyDetail" = "Erstelle ihn unter console.groq.com → API Keys und füge ihn unten ein. Kostenlos: etwa 1000 Anfragen und 200 000 Tokens pro Tag.";
+"text.groqKeyOpen" = "Groq öffnen";
 "text.model" = "Modell";
 "text.modelDetail" = "Mit „Modelle auflisten“ siehst du, welche Modelle dein Schlüssel nutzen kann.";
 "text.baseURL" = "Serveradresse";

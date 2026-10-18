@@ -99,6 +99,33 @@ import Testing
         }
     }
 
+    @Test func tableRequestInOwnWords() throws {
+        let source = "Создай таблицу со столбцами ChatGPT, Gemini, Copilot, где будут такие строчки как цена, качество, производительность."
+        let json = #"{"format":"structured","title":"","blocks":[{"type":"table","text":"","items":[],"rows":[["","ChatGPT","Gemini","Copilot"],["Цена","","",""],["Качество","","",""],["Производительность","","",""]]}]}"#
+        #expect(SmartStructure.parse(json, source: source, allowTitle: true) != nil)
+        // A greeting and a deadline around the request still have to survive.
+        let wrapped = "Привет! " + source + " Нужно к пятнице."
+        let dropped = #"{"format":"structured","title":"","blocks":[{"type":"paragraph","text":"Привет!","items":[],"rows":[]},{"type":"table","text":"","items":[],"rows":[["","ChatGPT","Gemini","Copilot"],["Цена","","",""]]}]}"#
+        #expect(SmartStructure.parse(dropped, source: wrapped, allowTitle: true) == nil)
+    }
+
+    @Test func plainTextForAppsWithoutMarkdown() throws {
+        #expect(TextFlavor.forApp(bundleID: "md.obsidian") == .markdown)
+        #expect(TextFlavor.forApp(bundleID: "com.microsoft.VSCode") == .markdown)
+        #expect(TextFlavor.forApp(bundleID: "ru.keepcoder.Telegram") == .plain)
+        #expect(TextFlavor.forApp(bundleID: "com.anthropic.claudefordesktop") == .plain)
+        #expect(TextFlavor.forApp(bundleID: nil) == .markdown)
+        let blocks = [
+            SmartStructure.Block(kind: .paragraph, text: "Нужно сделать:"),
+            SmartStructure.Block(kind: .checklist, items: ["Позвонить врачу", "Оплатить интернет"]),
+            SmartStructure.Block(kind: .bullets, items: ["Молоко", "Хлеб"]),
+            SmartStructure.Block(kind: .heading, text: "Работа"),
+        ]
+        #expect(SmartStructure.render(title: "", blocks: blocks, flavor: .plain) == "Нужно сделать:\n\n1. Позвонить врачу\n2. Оплатить интернет\n\n• Молоко\n• Хлеб\n\nРабота")
+        #expect(SmartStructure.render(title: "", blocks: blocks).contains("- [ ] Позвонить врачу"))
+        #expect(IntegrityReport.withoutMarkdown("• Молоко\n1. Хлеб") == "Молоко Хлеб")
+    }
+
     @Test func tableThatDropsAColumnIsStillRejected() {
         let source = "Составь таблицу со столбцами Grok, Gemini и Copilot где будет проводиться сравнение по критериям цена, производительность, качество"
         let json = #"{"format":"structured","title":"","blocks":[{"type":"table","text":"","items":[],"rows":[["","Grok","Gemini"],["цена","",""]]}]}"#

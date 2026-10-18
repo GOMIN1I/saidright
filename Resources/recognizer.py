@@ -22,6 +22,10 @@ SAMPLE_RATE = 16000
 # least this length (measured on the owner's recordings, docs/RECOGNITION.md).
 AHEAD_PAUSE = 1.0
 AHEAD_MIN_CHUNK = 4.0
+# When this much finished speech is still waiting (people who rarely pause for a full second),
+# a shorter pause is enough to cut, so the part left after the stop stays short.
+AHEAD_BACKLOG = 12.0
+AHEAD_SHORT_PAUSE = 0.6
 
 # Phrases Whisper is known to produce on silence or noise. Only dropped when they are the
 # whole output of a segment with little voiced audio, never from real speech.
@@ -518,7 +522,8 @@ class Worker:
         # (region ends already include 0.24 s of padding), either before the next phrase or
         # before the end of what has been recorded. Short pauses inside a sentence are never
         # cut: Whisper drops or misreads words when a sentence is split.
-        pause = int((AHEAD_PAUSE - 0.24) * SAMPLE_RATE)
+        backlog = (len(audio) - state['cut']) / SAMPLE_RATE
+        pause = int(((AHEAD_SHORT_PAUSE if backlog >= AHEAD_BACKLOG else AHEAD_PAUSE) - 0.24) * SAMPLE_RATE)
         finished = []
         for i, (a, b) in enumerate(regions):
             following = regions[i + 1][0] + int(0.24 * SAMPLE_RATE) if i + 1 < len(regions) else len(audio)

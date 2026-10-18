@@ -160,7 +160,7 @@ struct ModeEditor: View {
                     TextEditor(text: $mode.extraInstructions).font(DS.Font.mono).frame(height: 80).scrollContentBackground(.hidden).padding(4).background(DS.Palette.readingSurface, in: RoundedRectangle(cornerRadius: DS.Radius.small))
                     if mode.cleanup != .off {
                         DisclosureGroup(tr("modes.viewInstructions")) {
-                            Text(EditorPrompt.system(for: mode)).font(DS.Font.mono).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
+                            Text(EditorPrompt.system(for: mode, formatsLists: EditorPrompt.editorFormats(mode, text: ""))).font(DS.Font.mono).textSelection(.enabled).fixedSize(horizontal: false, vertical: true)
                         }.font(DS.Font.caption)
                     }
                 }

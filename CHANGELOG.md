@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0 — 2026-10-18
+
+- **Deep indigo at night.** The dark theme uses the product page's colours — night indigo, voice blue and a faint coral — instead of the washed-out violet and rose, and the window colour now reaches the title bar (no grey band behind the window buttons).
+- **Tables from your own words.** Any request for a table becomes one: “Создай таблицу сравнения …”, columns without values, rows named “строчки”, “по критериям …”. The request itself only has to hand over the names it lists; everything else you said is still checked word by word.
+- **Lists that fit the app.** Notes apps, code editors and terminals get Markdown; messengers, mail, browsers and AI chats get plain text — tasks and steps numbered 1. 2. 3., other lists with •, no “- [ ]”. Tables stay tables.
+- **Faster long dictations.** Recognition ahead also cuts at shorter pauses once 12 s of speech are waiting (long real recordings: 2.1 s → 0.8 s after the stop on average, worst case 6.4 s → 1.3 s). Rewriting lays out lists in the same request instead of a second one.
+- **Groq is the recommended default for new installs**: Settings → Text & AI lists “Groq (recommended)” first, with `openai/gpt-oss-120b` — the fastest editor that passed every faithfulness check (≈0.4 s per short phrase vs ≈1.0 s for OpenAI gpt-6-luna) — and a link to create a free key. OpenAI, a local Ollama model and any OpenAI-compatible server stay available; saved settings are not changed. A Groq key saved earlier as a compatible server is picked up automatically.
+- The session log shows how much audio was recognised ahead (it always showed 0).
+
 ## 1.0.0 — 2026-10-18
 
 - **Main window without an empty band.** The mode switcher and settings button share the title bar's row with the close, minimise and zoom buttons, which are visible again in every window.

@@ -448,6 +448,11 @@
 "text.costFooter" = "编辑和语言帮助会把转写文本（绝不是音频）发送到所选服务。云服务可能按请求收费。";
 "text.service" = "服务";
 "text.compatible" = "兼容服务器";
+"text.groq" = "Groq（推荐）";
+"text.groqModelDetail" = "推荐 openai/gpt-oss-120b：快速且忠实。“列出模型”可查看你的密钥能使用哪些模型。";
+"text.groqKey" = "免费密钥";
+"text.groqKeyDetail" = "在 console.groq.com → API Keys 创建后粘贴到下方。免费额度：每天约 1000 次请求和 200,000 个 token。";
+"text.groqKeyOpen" = "打开 Groq";
 "text.model" = "模型";
 "text.modelDetail" = "点按“列出模型”可查看你的密钥能使用哪些模型。";
 "text.baseURL" = "服务器地址";

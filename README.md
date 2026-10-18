@@ -74,7 +74,7 @@ Everything is in **Settings** (⌘,), with search:
 - **Modes** — spoken languages, recognizer (*Automatic*, Whisper, Parakeet, Apple), how much the text is edited, learning tips, where the text goes.
 - **Shortcuts** — the dictation key or combination, toggle or hold-to-talk, mode switching.
 - **Recognition** — install or remove recognizers, personal vocabulary for Whisper.
-- **Text & AI** — editing and tips through a local Ollama model or an OpenAI-compatible service; *Local only*.
+- **Text & AI** — editing and tips through Groq (recommended default: `openai/gpt-oss-120b`, fastest in our tests, free key), OpenAI, a local Ollama model or any OpenAI-compatible service; *Local only*.
 - **Learning, Appearance, Privacy & Data, Advanced** — tip presentation, capsule look, history retention and export, automation links, diagnostics.
 
 Data lives in `~/Library/Application Support/Saidright` (settings, modes, history, downloaded models). Keys are in the Keychain.

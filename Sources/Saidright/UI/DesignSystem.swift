@@ -146,13 +146,19 @@ struct BrandWindow: ViewModifier {
 struct WindowBackdrop: View {
     var brand: Bool
     var body: some View {
-        if brand { AuroraBackground() } else { Color(nsColor: .windowBackgroundColor) }
+        Group {
+            if brand { AuroraBackground() } else { Color(nsColor: .windowBackgroundColor) }
+        }
+        // Windows whose content is pulled into the hidden title bar (the main window) are laid
+        // out below it; reaching up keeps the title-bar band in the window colour instead of the
+        // system's grey backdrop. The window clips what lies above its top edge.
+        .padding(.top, -60)
     }
 }
 
-/// Saidright's living background, the product page's hero brought into the app: deep indigo
-/// (light: airy mist) with three soft lights — voice blue, violet and rose — drifting slowly
-/// like breath. Core Animation moves the lights in the render server, so the app itself does no
+/// Saidright's living background, the product page's hero brought into the app: deep night
+/// indigo (light: airy mist) with soft lights — voice blue, the icon's indigo and a faint coral
+/// low on the right — drifting slowly like breath. Core Animation moves the lights in the render server, so the app itself does no
 /// per-frame work; still with Reduce Motion, plain with Reduce Transparency.
 struct AuroraBackground: View {
     @Environment(\.colorScheme) private var scheme
@@ -201,13 +207,15 @@ final class AuroraView: NSView {
         guard state.map({ $0 != (dark, moving, lights) }) ?? true else { return }
         state = (dark, moving, lights)
         CATransaction.begin(); CATransaction.setDisableActions(true)
-        let baseHexes: [UInt32] = dark ? [0x18225A, 0x0E1430, 0x0B1028] : [0xF6F7FE, 0xEEF1FB, 0xE7EBF9]
+        // Dark: the site hero (#19245A → #0E1430 night) with the voice blue, the icon's indigo
+        // and a faint coral. Normal blending keeps it deep; screen blending washed it out.
+        let baseHexes: [UInt32] = dark ? [0x19245A, 0x111A44, 0x0E1430] : [0xF6F7FE, 0xEEF1FB, 0xE7EBF9]
         base.colors = baseHexes.map { Self.cg($0, 1) }
         base.startPoint = CGPoint(x: 0, y: 1); base.endPoint = CGPoint(x: 0.3, y: 0)
-        let palette: [(UInt32, CGFloat)] = dark ? [(0x3D6BFF, 0.50), (0x7B5CFF, 0.30), (0xFF5257, 0.26)] : [(0x8FB0FF, 0.42), (0xC4B5FF, 0.34), (0xFF8E92, 0.24)]
+        let palette: [(UInt32, CGFloat)] = dark ? [(0x3D6BFF, 0.34), (0x2A3A78, 0.75), (0xFF5A4E, 0.12)] : [(0x8FB0FF, 0.42), (0xC4B5FF, 0.34), (0xFF8E92, 0.24)]
         for (blob, (hex, alpha)) in zip(blobs, palette) {
             blob.colors = [Self.cg(hex, alpha), Self.cg(hex, 0)]
-            blob.compositingFilter = dark ? "screenBlendMode" : nil
+            blob.compositingFilter = nil
             blob.isHidden = !lights
         }
         CATransaction.commit()
@@ -220,15 +228,19 @@ final class AuroraView: NSView {
         layoutBlobs()
     }
 
-    /// Lights sit at fixed spots relative to the window (top-left blue, right violet, bottom-right rose).
+    /// Lights sit where the product page has them: blue right of centre, indigo top-left, a small
+    /// coral glow bottom-right (light mode keeps its original three spots).
     private func layoutBlobs() {
         CATransaction.begin(); CATransaction.setDisableActions(true)
         base.frame = bounds
-        let r = max(bounds.width, bounds.height) * 0.78
-        let spots: [CGPoint] = [CGPoint(x: 0.22, y: 0.72), CGPoint(x: 0.80, y: 0.76), CGPoint(x: 0.80, y: 0.10)]
-        for (blob, spot) in zip(blobs, spots) {
+        let side = max(bounds.width, bounds.height)
+        let dark = state?.0 ?? true
+        let spots: [CGPoint] = dark ? [CGPoint(x: 0.72, y: 0.62), CGPoint(x: 0.08, y: 0.90), CGPoint(x: 0.90, y: 0.15)] : [CGPoint(x: 0.22, y: 0.72), CGPoint(x: 0.80, y: 0.76), CGPoint(x: 0.80, y: 0.10)]
+        let sizes: [CGFloat] = dark ? [0.62, 0.70, 0.40] : [0.78, 0.78, 0.78]
+        for (i, blob) in blobs.enumerated() {
+            let r = side * sizes[i]
             blob.bounds = CGRect(x: 0, y: 0, width: r * 2, height: r * 2)
-            blob.position = CGPoint(x: bounds.width * spot.x, y: bounds.height * spot.y)
+            blob.position = CGPoint(x: bounds.width * spots[i].x, y: bounds.height * spots[i].y)
         }
         CATransaction.commit()
     }

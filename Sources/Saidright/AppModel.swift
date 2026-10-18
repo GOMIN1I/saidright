@@ -386,7 +386,9 @@ struct Notice: Equatable, Identifiable {
         var edit = EditResult(output: raw, edited: nil, issues: [], failure: nil)
         if mode.cleanup.usesEditor {
             advance(id, .editing)
-            edit = await TextPipeline.edit(raw: raw, mode: mode, provider: { try self.makeProvider() })
+            // Lists are written as Markdown only for apps that show it (TextFlavor).
+            let flavor = mode.output == .insert && snapshot.trigger == .hotkey ? TextFlavor.forApp(bundleID: snapshot.destination?.bundleID) : .markdown
+            edit = await TextPipeline.edit(raw: raw, mode: mode, flavor: flavor, provider: { try self.makeProvider() })
             guard machine.isCurrent(id), !Task.isCancelled else { return }
         }
         timing.editingEnded = Date()
@@ -440,7 +442,7 @@ struct Notice: Equatable, Identifiable {
     func providerUnavailable(for mode: Mode) -> Bool {
         guard mode.needsProviderAutomatically else { return false }
         if provider.localOnly && !provider.isOnDevice { return true }
-        if provider.kind == .openAI && !hasCredential { return true }
+        if provider.requiresCredential && !hasCredential { return true }
         return false
     }
 
@@ -700,7 +702,7 @@ struct Notice: Equatable, Identifiable {
 
     func requestFeedback(automatic: Bool) {
         guard var r = result else { return }
-        if (provider.localOnly && !provider.isOnDevice) || (provider.kind == .openAI && !hasCredential) {
+        if (provider.localOnly && !provider.isOnDevice) || (provider.requiresCredential && !hasCredential) {
             r.feedbackState = .skippedNoProvider
             result = r
             return

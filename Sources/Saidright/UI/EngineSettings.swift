@@ -205,11 +205,26 @@ struct TextSettings: View {
         SettingsGroup(title: tr("text.provider"), footer: tr("text.costFooter")) {
             SettingRow(title: tr("text.service")) {
                 Picker(tr("text.service"), selection: $model.settings.provider.kind) {
+                    Text(tr("text.groq")).tag(ProviderKind.groq)
                     Text("OpenAI").tag(ProviderKind.openAI)
                     Text(tr("text.compatible")).tag(ProviderKind.compatible)
                 }.labelsHidden().fixedSize()
             }
-            if model.settings.provider.kind == .openAI {
+            if model.settings.provider.kind == .groq {
+                SettingRow(title: tr("text.model"), detail: tr("text.groqModelDetail")) {
+                    HStack {
+                        TextField(ProviderSettings.recommendedGroqModel, text: $model.settings.provider.groqModel).textFieldStyle(.roundedBorder).frame(width: 200)
+                        if !models.isEmpty {
+                            Menu("") { ForEach(models, id: \.self) { m in Button(m) { model.settings.provider.groqModel = m } } }.fixedSize()
+                        }
+                    }
+                }
+                if !model.hasCredential {
+                    SettingRow(title: tr("text.groqKey"), detail: tr("text.groqKeyDetail")) {
+                        Link(tr("text.groqKeyOpen"), destination: URL(string: "https://console.groq.com/keys")!).buttonStyle(PillButtonStyle())
+                    }
+                }
+            } else if model.settings.provider.kind == .openAI {
                 SettingRow(title: tr("text.model"), detail: tr("text.modelDetail")) {
                     HStack {
                         TextField(tr("text.model"), text: $model.settings.provider.openAIModel).textFieldStyle(.roundedBorder).frame(width: 160)

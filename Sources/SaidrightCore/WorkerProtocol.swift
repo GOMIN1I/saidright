@@ -49,7 +49,8 @@ public enum WorkerProtocol {
         case "transcript":
             return .transcript(id: id, text: object["text"] as? String ?? "", languages: object["languages"] as? [String] ?? [], seconds: object["seconds"] as? Double ?? 0, cold: object["cold"] as? Bool ?? false, segments: object["segments"] as? Int ?? 0)
         case "ready":
-            return .ready(id: id, seconds: object["seconds"] as? Double ?? 0)
+            // An "ahead" reply reports the audio recognised so far; "prepare" reports its load time.
+            return .ready(id: id, seconds: object["ahead"] as? Double ?? object["seconds"] as? Double ?? 0)
         case "error":
             return .failure(id: id, code: object["code"] as? String ?? "unknown", message: String((object["message"] as? String ?? "").prefix(400)))
         case "pong":

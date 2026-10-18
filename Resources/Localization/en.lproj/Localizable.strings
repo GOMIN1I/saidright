@@ -448,6 +448,11 @@
 "text.costFooter" = "Editing and language help send the transcript text (never audio) to the chosen service. Cloud services may charge per request.";
 "text.service" = "Service";
 "text.compatible" = "Compatible server";
+"text.groq" = "Groq (recommended)";
+"text.groqModelDetail" = "Recommended: openai/gpt-oss-120b — fast and faithful. “List models” shows what your key can use.";
+"text.groqKey" = "Free key";
+"text.groqKeyDetail" = "Create one at console.groq.com → API Keys and paste it below. Free tier: about 1,000 requests and 200,000 tokens a day.";
+"text.groqKeyOpen" = "Open Groq";
 "text.model" = "Model";
 "text.modelDetail" = "Use “List models” to see which models your key can access.";
 "text.baseURL" = "Server address";

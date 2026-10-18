@@ -160,22 +160,29 @@ public enum SmartStructure {
         // Nothing dictated may disappear: almost every meaningful word must still be there.
         let renderedWords = blocks.flatMap { block in words(([block.text] + block.items + block.rows.flatMap { $0 }).joined(separator: " ")) }
         let rendered = Set(renderedWords.map(stem))
-        // The words that asked for a table are an instruction, not content: the sentence that
-        // contains the request is left out of the coverage check (no other words may be invented).
-        let content = blocks.contains(where: { $0.kind == .table }) ? withoutTableRequest(source) : source
-        let meaningful = words(content).filter { $0.count >= 4 }
+        // A spoken table request is an instruction, not content. Its sentence only has to hand
+        // over the names it lists (columns, rows: "ChatGPT, Gemini, Copilot") and at least half
+        // of its other words; every other sentence is checked as strictly as prose.
+        let hasTable = blocks.contains(where: { $0.kind == .table })
+        let (content, request) = hasTable ? splitTableRequest(source) : (source, "")
+        if !request.isEmpty {
+            if tableRequestNames(request).contains(where: { !matches($0, rendered) }) { return nil }
+            let rest = words(request).filter { $0.count >= 4 && !isTableRequestWord($0) }
+            if !rest.isEmpty && Double(rest.filter { matches($0, rendered) }.count) / Double(rest.count) < 0.5 { return nil }
+        }
+        let meaningful = words(content).filter { $0.count >= 4 && !(hasTable && isTableRequestWord($0)) }
         if !meaningful.isEmpty && Double(meaningful.filter { matches($0, rendered) }.count) / Double(meaningful.count) < 0.85 { return nil }
         // A table repeats its column names in every row, which hides dropped words from the
         // share above: count distinct words, allowing one in ten to change ("долларов" → "$").
-        if content != source {
+        if hasTable {
             let distinct = Set(meaningful)
             if distinct.filter({ !matches($0, rendered) }).count > max(1, distinct.count / 10) { return nil }
         }
-        // …and nothing may be said twice (a sentence repeated as a list item).
-        // The request words a model keeps as an introduction ("Создай таблицу сравнения:") were
-        // left out of `meaningful` above, so they are not counted here either.
-        let renderedMeaningful = renderedWords.filter { $0.count >= 4 && (content == source || !isTableRequestWord($0)) }.count
-        if renderedMeaningful > max(meaningful.count + 2, Int(Double(meaningful.count) * 1.15)) { return nil }
+        // …and nothing may be said twice (a sentence repeated as a list item). Request words a
+        // model keeps as an introduction ("Создай таблицу сравнения:") are not counted.
+        let spoken = words(hasTable ? withoutTableRequest(source) : source).filter { $0.count >= 4 }.count
+        let renderedMeaningful = renderedWords.filter { $0.count >= 4 && (!hasTable || !isTableRequestWord($0)) }.count
+        if renderedMeaningful > max(spoken + 2, Int(Double(spoken) * 1.15)) { return nil }
         var title = clean(object["title"] as? String ?? "")
         // A title is the only text not taken from the dictation: it must at least be in its script.
         if !allowTitle || words(title).count > 3 || script(of: title) != script(of: source) { title = "" }
@@ -206,17 +213,20 @@ public enum SmartStructure {
         return (title, blocks)
     }
 
-    public static func render(title: String, blocks: [Block]) -> String {
+    /// Markdown, or for apps that do not show Markdown plain text: tasks and steps numbered,
+    /// other lists with "•", headings as plain lines. A requested table stays a pipe table.
+    public static func render(title: String, blocks: [Block], flavor: TextFlavor = .markdown) -> String {
+        let plain = flavor == .plain
         var parts: [String] = []
-        if !title.isEmpty { parts.append("## " + title) }
+        if !title.isEmpty { parts.append(plain ? title : "## " + title) }
         for block in blocks {
             switch block.kind {
             case .paragraph: parts.append(block.text)
-            case .heading: parts.append("## " + block.text)
-            case .quote: parts.append("> " + block.text)
-            case .checklist: parts.append(block.items.map { "- [ ] " + $0 }.joined(separator: "\n"))
-            case .bullets: parts.append(block.items.map { "- " + $0 }.joined(separator: "\n"))
-            case .numbered: parts.append(block.items.enumerated().map { "\($0.offset + 1). " + $0.element }.joined(separator: "\n"))
+            case .heading: parts.append(plain ? block.text : "## " + block.text)
+            case .quote: parts.append(plain ? "«" + block.text + "»" : "> " + block.text)
+            case .checklist: parts.append(plain ? numbered(block.items) : block.items.map { "- [ ] " + $0 }.joined(separator: "\n"))
+            case .bullets: parts.append(block.items.map { (plain ? "• " : "- ") + $0 }.joined(separator: "\n"))
+            case .numbered: parts.append(numbered(block.items))
             case .table:
                 let width = block.rows.map(\.count).max() ?? 0
                 let rows = block.rows.map { row in "| " + (row + Array(repeating: "", count: width - row.count)).map { $0.replacingOccurrences(of: "|", with: "/") }.joined(separator: " | ") + " |" }
@@ -224,6 +234,10 @@ public enum SmartStructure {
             }
         }
         return parts.joined(separator: "\n\n")
+    }
+
+    private static func numbered(_ items: [String]) -> String {
+        items.enumerated().map { "\($0.offset + 1). " + $0.element }.joined(separator: "\n")
     }
 
     // MARK: Helpers
@@ -259,6 +273,7 @@ public enum SmartStructure {
     static let tableRequestWords: Set<String> = [
         "нужна", "нужен", "нужно", "сделай", "сделать", "создай", "составь", "давай", "сравнение", "сравни", "критериям", "критерии", "критерий", "строки", "строка", "строкой", "строке", "строку", "строках",
         // Where a value goes ("в первой строке цена …") is an instruction too.
+        "строчки", "строчка", "строчку", "строчках", "такие", "такой", "такая",
         "первой", "первая", "первую", "второй", "вторая", "вторую", "третьей", "третья", "третью", "четвёртой", "четвертой", "последней",
         "first", "second", "third", "fourth", "last", "row", "line", "ersten", "zweiten", "dritten", "zeile",
         "один", "одним", "два", "двумя", "три", "тремя", "четыре", "четырьмя", "пять", "пятью",
@@ -291,6 +306,42 @@ public enum SmartStructure {
 
     static func isTableRequestWord(_ word: String) -> Bool {
         tableRequestWords.contains(word) || tableRequestStems.contains(where: word.hasPrefix) || tableWords.contains { $0 != "列" && word.hasPrefix($0) }
+    }
+
+    /// The source split into the sentences that do not ask for a table, and those that do.
+    static func splitTableRequest(_ text: String) -> (rest: String, request: String) {
+        var rest: [String] = [], request: [String] = []
+        var sentence = ""
+        func flush() {
+            let s = sentence.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !s.isEmpty else { return }
+            if requestsTable(s) { request.append(s) } else { rest.append(s) }
+            sentence = ""
+        }
+        for ch in text {
+            sentence.append(ch)
+            if ".!?…。！？\n".contains(ch) { flush() }
+        }
+        flush()
+        return (rest.joined(separator: " "), request.joined(separator: " "))
+    }
+
+    /// Names a table request lists: capitalised words (not the first of the sentence), words in
+    /// Latin letters inside other text, and words with digits ("ChatGPT", "Gemini", "чаджи 5").
+    static func tableRequestNames(_ request: String) -> [String] {
+        var names: [String] = []
+        for sentence in request.split(whereSeparator: { ".!?…。！？".contains($0) }) {
+            let tokens = sentence.split { !$0.isLetter && !$0.isNumber }.map(String.init)
+            let script = SmartStructure.script(of: String(sentence))
+            for (i, token) in tokens.enumerated() {
+                let word = token.lowercased().replacingOccurrences(of: "ё", with: "е")
+                guard !isTableRequestWord(word) else { continue }
+                let capitalised = i > 0 && token.first?.isUppercase == true
+                let latinInOther = script != "latin" && token.unicodeScalars.contains { ("a"..."z").contains($0) || ("A"..."Z").contains($0) }
+                if capitalised || latinInOther || token.contains(where: \.isNumber) { names.append(word) }
+            }
+        }
+        return names
     }
 
     /// The source without the words that ask for a table.

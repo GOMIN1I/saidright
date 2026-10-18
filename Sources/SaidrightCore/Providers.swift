@@ -3,6 +3,10 @@ import Foundation
 /// Where text processing goes. Each provider has its own credential slot; a credential is
 /// only ever sent to its own provider's host.
 public enum ProviderKind: String, Codable, CaseIterable, Sendable {
+    /// api.groq.com, OpenAI-compatible Chat Completions. The recommended default: the fastest
+    /// editor that passed every faithfulness check (eval/results/2026-10-18-editing-speed.md),
+    /// with a free tier.
+    case groq
     /// api.openai.com, Responses API, strict JSON schema.
     case openAI
     /// Any OpenAI-compatible Chat Completions endpoint (another vendor or a local server).
@@ -10,8 +14,9 @@ public enum ProviderKind: String, Codable, CaseIterable, Sendable {
 }
 
 public struct ProviderSettings: Codable, Equatable, Sendable {
-    public var kind: ProviderKind = .openAI
+    public var kind: ProviderKind = .groq
     public var openAIModel: String = "gpt-6-luna"
+    public var groqModel: String = ProviderSettings.recommendedGroqModel
     /// Base URL for a compatible server, e.g. http://localhost:11434/v1
     public var compatibleBaseURL: String = ""
     public var compatibleModel: String = ""
@@ -21,14 +26,31 @@ public struct ProviderSettings: Codable, Equatable, Sendable {
     /// Hard switch: when true, no text provider request may leave the Mac.
     public var localOnly: Bool = false
 
+    public static let groqBaseURL = "https://api.groq.com/openai/v1/"
+    public static let recommendedGroqModel = "openai/gpt-oss-120b"
+
     public init() {}
 
-    public var model: String { kind == .openAI ? openAIModel : compatibleModel }
+    public var model: String {
+        switch kind {
+        case .groq: groqModel
+        case .openAI: openAIModel
+        case .compatible: compatibleModel
+        }
+    }
+
+    /// Cloud services need a key; a server on this Mac may run without one.
+    public var requiresCredential: Bool { kind != .compatible }
+
+    /// Groq always answers without long thinking (fast, and gpt-oss then gets "low").
+    var sendsNoReasoning: Bool { kind == .groq || compatibleNoReasoning }
 
     /// Keychain account that holds the credential for the active provider.
     public var credentialAccount: String {
         switch kind {
         case .openAI: "openai"
+        // The same slot a Groq key saved as a compatible server used, so it carries over.
+        case .groq: "compatible:api.groq.com"
         case .compatible: "compatible:" + (URL(string: compatibleBaseURL)?.host ?? "unknown")
         }
     }
@@ -36,6 +58,7 @@ public struct ProviderSettings: Codable, Equatable, Sendable {
     public var endpointHost: String? {
         switch kind {
         case .openAI: "api.openai.com"
+        case .groq: "api.groq.com"
         case .compatible: URL(string: compatibleBaseURL)?.host
         }
     }
@@ -118,7 +141,11 @@ public struct TextProvider: Sendable {
     /// billed or sent. The shared session keeps the connection for the real request.
     public static func warmUp(_ settings: ProviderSettings, session: URLSession = .shared) async {
         guard !settings.isOnDevice, !(settings.localOnly && !settings.isOnDevice) else { return }
-        let base = settings.kind == .openAI ? "https://api.openai.com/v1/" : settings.compatibleBaseURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        let base = switch settings.kind {
+        case .openAI: "https://api.openai.com/v1/"
+        case .groq: ProviderSettings.groqBaseURL
+        case .compatible: settings.compatibleBaseURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
         guard let url = URL(string: base), url.scheme == "https" else { return }
         var request = URLRequest(url: url, timeoutInterval: 5)
         request.httpMethod = "HEAD"
@@ -143,16 +170,16 @@ public struct TextProvider: Sendable {
                 b["text"] = ["format": ["type": "json_schema", "name": name, "strict": true, "schema": schema]]
             }
             body = b
-        case .compatible:
+        case .compatible, .groq:
             var b: [String: Any] = [
                 "model": model,
                 "messages": [["role": "system", "content": system], ["role": "user", "content": user]],
                 // Thinking models spend part of the budget before answering; without the
                 // no-thinking switch the answer would otherwise be cut off (truncated).
-                "max_tokens": settings.compatibleNoReasoning ? maxOutputTokens : maxOutputTokens + 4000,
+                "max_tokens": settings.sendsNoReasoning ? maxOutputTokens : maxOutputTokens + 4000,
                 "temperature": 0.2,
             ]
-            if settings.compatibleNoReasoning { b["reasoning_effort"] = Self.lowestReasoningEffort(model) }
+            if settings.sendsNoReasoning { b["reasoning_effort"] = Self.lowestReasoningEffort(model) }
             if let (name, schema) = schema {
                 b["response_format"] = ["type": "json_schema", "json_schema": ["name": name, "strict": true, "schema": schema]]
             }
@@ -169,6 +196,7 @@ public struct TextProvider: Sendable {
         let base: String
         switch settings.kind {
         case .openAI: base = "https://api.openai.com/v1/"
+        case .groq: base = ProviderSettings.groqBaseURL
         case .compatible:
             var b = settings.compatibleBaseURL.trimmingCharacters(in: .whitespacesAndNewlines)
             guard let url = URL(string: b), let scheme = url.scheme, ["http", "https"].contains(scheme), url.host != nil else { throw ProviderError.invalidConfiguration("baseURL") }
@@ -182,7 +210,7 @@ public struct TextProvider: Sendable {
         request.httpMethod = body == nil ? "GET" : "POST"
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         let key = (credential ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-        if settings.kind == .openAI && key.isEmpty { throw ProviderError.missingCredential }
+        if settings.requiresCredential && key.isEmpty { throw ProviderError.missingCredential }
         if !key.isEmpty { request.setValue("Bearer \(key)", forHTTPHeaderField: "Authorization") }
         if let body { request.httpBody = try JSONSerialization.data(withJSONObject: body) }
         return request

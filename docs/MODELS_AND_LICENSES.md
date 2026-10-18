@@ -42,7 +42,8 @@ Separate roles: **speech recognition** (always local) and **text editing / learn
 | Text | Ollama `gemma4:e2b` | 4.59 GB (registry manifest) | — | multilingual; small model, explanations sometimes need the translation fallback | Tested here |
 | Text | Ollama `qwen3:4b` | 2.50 GB | — | multilingual | Offered; not tested |
 | Text | Ollama `gemma4:e4b` | 6.58 GB | — | multilingual | Offered; not tested |
-| Text | OpenAI (Responses API, strict JSON schema) | — | — | — | Request builder unit-tested; not run with a real key |
+| Text | **Groq `openai/gpt-oss-120b` (default)** — Chat Completions, strict JSON schema, reasoning effort “low” | — | — | RU/EN/mixed: passed every faithfulness check; ≈0.4 s per short phrase | Tested with a real free key (`eval/results/2026-10-18-editing-speed.md`); free tier ≈1 000 requests and 200 000 tokens a day |
+| Text | OpenAI `gpt-6-luna` (Responses API, strict JSON schema) | — | — | ≈1.0 s per short phrase | Tested with a real key |
 
 Sizes were read on 2026-10-16 from the Hugging Face API (`/api/models/<repo>?blobs=true`, pinned revision) and the Ollama registry manifests (`registry.ollama.ai/v2/library/<name>/manifests/<tag>`). Whisper downloads are checked against each file's published SHA-256; Ollama verifies layer digests itself. Licences: Whisper weights MIT; Gemma models under the Gemma terms; Qwen3 per its model card — re-check before recommending in public material.
 
