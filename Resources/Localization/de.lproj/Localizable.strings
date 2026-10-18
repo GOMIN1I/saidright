@@ -448,6 +448,9 @@
 "text.costFooter" = "Bearbeitung und Sprachhilfe senden den Transkripttext (nie Audio) an den gewählten Dienst. Cloud-Dienste können pro Anfrage Kosten berechnen.";
 "text.service" = "Dienst";
 "text.compatible" = "Kompatibler Server";
+"text.instant" = "Sofort einfügen";
+"text.instantDetail" = "Der erkannte Text erscheint sofort und wird kurz darauf durch die bearbeitete Fassung ersetzt – nur wenn du dazwischen nichts getippt oder geklickt hast.";
+"notice.instantKept" = "Das Feld hat sich geändert, bevor die Bearbeitung fertig war; der unbearbeitete Text bleibt. Die bearbeitete Fassung steht im Ergebnis.";
 "text.groq" = "Groq (empfohlen)";
 "text.groqModelDetail" = "Empfohlen: openai/gpt-oss-120b – schnell und genau. „Modelle auflisten“ zeigt, was dein Schlüssel nutzen kann.";
 "text.groqKey" = "Kostenloser Schlüssel";
@@ -580,6 +583,13 @@
 "capsule.save" = "Später üben";
 "capsule.saved" = "Gespeichert";
 "capsule.gotIt" = "Verstanden";
+"capsule.replace" = "Ersetzen";
+"capsule.replaceHelp" = "Den eingefügten Text durch die korrigierte Fassung ersetzen";
+"notice.correctionCopied" = "Der Text im Feld hat sich geändert, daher wurde nichts ersetzt. Die korrigierte Fassung ist in der Zwischenablage.";
+"learn.applyCorrections" = "Korrekturen aus Tipps";
+"learn.applyCorrectionsDetail" = "Per Taste auf der Karte oder automatisch im eingefügten Text (nur wenn du seitdem nichts getippt oder geklickt hast).";
+"correction.button" = "Taste auf der Karte";
+"correction.automatic" = "Automatisch";
 "capsule.keepMine" = "Meins war richtig";
 "capsule.misheard" = "Ich habe es richtig gesagt";
 "capsule.misheardNote" = "Vielleicht hat die Erkennung dich falsch verstanden – kein Fehler von dir. Es zählt nicht zu deinen Themen.";

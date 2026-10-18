@@ -336,6 +336,15 @@ public enum FeedbackValidator {
         return regex.firstMatch(in: text, range: range).flatMap { Range($0.range, in: text) }
     }
 
+    /// The inserted text with the tip's clear learner-error fixes applied (grammar, vocabulary,
+    /// slips; not uncertain ones, not style). Applied excerpt by excerpt, so an edit made to the
+    /// rest of the text stays. Nil when nothing in `text` changes.
+    public static func corrected(_ text: String, by feedback: Feedback) -> String? {
+        let fixes = feedback.items.filter { $0.kind.isLearnerError && !$0.uncertain && $0.original != $0.suggestion }
+        let result = applying(fixes, to: text)
+        return result == text ? nil : result
+    }
+
     /// Applies non-style suggestions to the transcript in order of appearance.
     public static func applying(_ items: [FeedbackItem], to transcript: String) -> String {
         var text = transcript

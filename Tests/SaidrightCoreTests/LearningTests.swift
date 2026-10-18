@@ -271,3 +271,16 @@ private func item(_ original: String, _ suggestion: String, kind: String = "gram
         #expect(TutorPrompt.explanationsMatchLanguage(feedback("需要用过去时 went。"), explanationLanguage: "zh-Hans"))
     }
 }
+
+@Suite struct TipCorrections {
+    func item(_ o: String, _ s: String, _ kind: FeedbackKind, uncertain: Bool = false) -> FeedbackItem {
+        FeedbackItem(original: o, suggestion: s, kind: kind, explanation: "", rule: "", example: "", uncertain: uncertain, topic: "")
+    }
+
+    @Test func fixesApplyToTheInsertedText() {
+        let feedback = Feedback(corrected: "", items: [item("I go", "I went", .grammar), item("bigly", "very", .vocabulary, uncertain: true), item("nice", "lovely", .style)], alternative: "", practice: nil, learningLanguage: "en", explanationLanguage: "ru", discarded: 0)
+        // The editor already capitalised and punctuated; only the clear learner error changes.
+        #expect(FeedbackValidator.corrected("Yesterday I go to the shop. It was nice and bigly.", by: feedback) == "Yesterday I went to the shop. It was nice and bigly.")
+        #expect(FeedbackValidator.corrected("Nothing to fix here.", by: feedback) == nil)
+    }
+}

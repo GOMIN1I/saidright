@@ -448,6 +448,9 @@
 "text.costFooter" = "编辑和语言帮助会把转写文本（绝不是音频）发送到所选服务。云服务可能按请求收费。";
 "text.service" = "服务";
 "text.compatible" = "兼容服务器";
+"text.instant" = "立即插入";
+"text.instantDetail" = "识别出的文字会立刻出现，片刻后替换为编辑后的版本——前提是这期间你没有输入或点击。";
+"notice.instantKept" = "编辑完成前文本框已发生变化，因此保留了未编辑的文字。编辑后的版本在结果中。";
 "text.groq" = "Groq（推荐）";
 "text.groqModelDetail" = "推荐 openai/gpt-oss-120b：快速且忠实。“列出模型”可查看你的密钥能使用哪些模型。";
 "text.groqKey" = "免费密钥";
@@ -580,6 +583,13 @@
 "capsule.save" = "稍后练习";
 "capsule.saved" = "已保存";
 "capsule.gotIt" = "明白了";
+"capsule.replace" = "替换";
+"capsule.replaceHelp" = "用修改后的版本替换已插入的文字";
+"notice.correctionCopied" = "文本框中的文字已改变，因此没有替换。修改后的版本已复制到剪贴板。";
+"learn.applyCorrections" = "提示中的修改";
+"learn.applyCorrectionsDetail" = "通过卡片上的按钮，或自动应用到已插入的文字（仅当插入后你没有输入或点击）。";
+"correction.button" = "卡片上的按钮";
+"correction.automatic" = "自动";
 "capsule.keepMine" = "我原来是对的";
 "capsule.misheard" = "我说得没错";
 "capsule.misheardNote" = "这可能是识别器听错了，而不是你的错误，不会计入你的学习主题。";

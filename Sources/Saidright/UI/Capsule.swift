@@ -9,6 +9,8 @@ struct CapsuleHint: Equatable {
     var items: [FeedbackItem]
     var index = 0
     var expanded = false
+    /// The inserted text can be replaced with the tip's fixes (card button).
+    var fixable = false
     var current: FeedbackItem? { items.indices.contains(index) ? items[index] : nil }
 }
 
@@ -68,6 +70,12 @@ struct CapsuleHint: Equatable {
     var onSaveItem: ((UUID, UUID) -> Void)?
     var onVerdict: ((UUID, UUID, UserVerdict) -> Void)?
     var onOpenApp: ((UUID) -> Void)?
+    var onApplyCorrection: ((UUID) -> Void)?
+
+    /// The tip's fixes were applied (or could not be): the card's Replace button goes away.
+    func markCorrectionHandled(_ recordID: UUID) {
+        if hint?.recordID == recordID { hint?.fixable = false }
+    }
 
     private var hideTask: Task<Void, Never>?
 
@@ -634,6 +642,11 @@ struct HintCard: View {
                 .contentTransition(.identity)
                 .help(tr("capsule.moreHelp"))
             Spacer(minLength: 4)
+            if hint.fixable {
+                Button(tr("capsule.replace")) { model.onApplyCorrection?(hint.recordID) }
+                    .buttonStyle(CardButtonStyle(ink: ink, prominent: true))
+                    .help(tr("capsule.replaceHelp"))
+            }
             if item.kind.isLearnerError {
                 Button(item.savedForReview ? tr("capsule.saved") : tr("capsule.save")) { model.onSaveItem?(hint.recordID, item.id); model.resolveCurrentHint() }
                     .buttonStyle(CardButtonStyle(ink: ink)).disabled(item.savedForReview)

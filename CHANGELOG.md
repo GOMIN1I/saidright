@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.2.0 — 2026-10-18
+
+- **Instant insert** (Text & AI, off by default). The recognised text appears the moment you stop; the edited version replaces it a moment later — only if nothing was typed or clicked in between and the text is still where it was put. The replacement goes to that app alone.
+- **Fix it in one click.** A tip's card has a **Replace** button that puts the corrected version into the text you just inserted; Learning → *Fixes from tips* can apply clear fixes automatically instead. Only the wrong words change; uncertain and style tips never do, and text you kept typing after is never touched.
+- **Real tables and lists in formatted-text apps.** Notes, Pages, Keynote, Word, Outlook, OneNote, Mail and TextEdit receive a real table and real lists (HTML on the clipboard next to the text).
+
 ## 1.1.0 — 2026-10-18
 
 - **Deep indigo at night.** The dark theme uses the product page's colours — night indigo, voice blue and a faint coral — instead of the washed-out violet and rose, and the window colour now reaches the title bar (no grey band behind the window buttons).

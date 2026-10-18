@@ -203,3 +203,20 @@ import Testing
         #expect(try library.importModes(from: Data(json.utf8)).count == 4)
     }
 }
+
+@Suite struct RichTextTests {
+    @Test func tableAndListsBecomeHTML() {
+        let text = "Нужно:\n\n1. Позвонить врачу\n2. Оплатить интернет\n\n| | ChatGPT | Claude |\n| --- | --- | --- |\n| Цена | 20 | 20 |"
+        #expect(RichText.hasLayout(text))
+        let html = RichText.html(text)
+        #expect(html.contains("<ol><li>Позвонить врачу</li><li>Оплатить интернет</li></ol>"))
+        #expect(html.contains("<table"))
+        #expect(html.contains(">ChatGPT</th>"))
+        #expect(html.contains(">Цена</td>"))
+        #expect(!html.contains("---"))
+        #expect(!RichText.hasLayout("Просто предложение, без списков."))
+        #expect(RichText.html("a < b & c").contains("a &lt; b &amp; c"))
+        #expect(TextFlavor.wantsRichText(bundleID: "com.apple.Notes"))
+        #expect(!TextFlavor.wantsRichText(bundleID: "com.apple.Safari"))
+    }
+}

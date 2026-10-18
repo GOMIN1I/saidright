@@ -73,6 +73,12 @@ public enum ExplanationDepth: String, Codable, CaseIterable, Sendable { case bri
 /// Self-chosen, used only to pitch explanations; never assessed or scored.
 public enum LearnerLevel: String, Codable, CaseIterable, Sendable { case beginner, intermediate, advanced }
 
+/// Tip fixes for inserted text: a "Replace" button on the card, or applied automatically.
+public enum CorrectionApply: String, Codable, CaseIterable, Sendable {
+    case button
+    case automatic
+}
+
 public struct LearningPresentation: Codable, Equatable, Sendable {
     public var presentation: HintPresentation = .card
     public var linger: HintLinger = .short
@@ -80,6 +86,8 @@ public struct LearningPresentation: Codable, Equatable, Sendable {
     public var level: LearnerLevel = .intermediate
     /// Also show "possibly misheard" and style suggestions in the capsule (otherwise app only).
     public var showUncertainInCapsule = false
+    /// What happens with the fixes a tip suggests for text already inserted.
+    public var applyCorrections: CorrectionApply = .button
 
     public init() {}
 }
@@ -164,6 +172,9 @@ public struct AppSettings: Codable, Equatable, Sendable {
     public var onboardingStep = 0
     /// Restore the previous clipboard contents after inserting.
     public var restoreClipboard = true
+    /// Insert the transcript as soon as it is recognised and replace it with the edited text
+    /// when the editor answers (only if nothing was typed or clicked in between).
+    public var instantInsert = false
     public var playSounds = false
     /// Accept saidright:// automation links (Shortcuts, scripts). Off by default: any app can open a link.
     public var allowAutomationLinks = false

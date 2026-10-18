@@ -203,6 +203,9 @@ struct TextSettings: View {
         }
         LocalTextModelsGroup()
         SettingsGroup(title: tr("text.provider"), footer: tr("text.costFooter")) {
+            SettingRow(title: tr("text.instant"), detail: tr("text.instantDetail")) {
+                Toggle(tr("text.instant"), isOn: $model.settings.instantInsert).labelsHidden().toggleStyle(.switch)
+            }
             SettingRow(title: tr("text.service")) {
                 Picker(tr("text.service"), selection: $model.settings.provider.kind) {
                     Text(tr("text.groq")).tag(ProviderKind.groq)
@@ -315,6 +318,11 @@ struct LearningSettings: View {
                 SettingRow(title: tr("learn.uncertain"), detail: tr("learn.uncertainDetail")) {
                     Toggle(tr("learn.uncertain"), isOn: $model.settings.learningUI.showUncertainInCapsule).labelsHidden().toggleStyle(.switch)
                 }
+            }
+            SettingRow(title: tr("learn.applyCorrections"), detail: tr("learn.applyCorrectionsDetail")) {
+                Picker(tr("learn.applyCorrections"), selection: $model.settings.learningUI.applyCorrections) {
+                    ForEach(CorrectionApply.allCases, id: \.self) { Text(tr("correction.\($0.rawValue)")).tag($0) }
+                }.labelsHidden().fixedSize()
             }
             HStack {
                 Spacer()

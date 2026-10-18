@@ -20,7 +20,8 @@ Most people learning a language never get feedback on what they actually say. Sa
 - **Only what matters.** One useful correction at a time, labelled as grammar, word choice, punctuation or style. Correct sentences get nothing — no praise, no noise.
 - **Honest about the microphone.** If the problem might be the recognizer mishearing you, the tip says so and it never counts as your mistake.
 - **Turn tips into skills.** *Practise later* saves a correction as a card for spaced review; your recurring topics show what to work on next.
-- **Never in the way.** Tips never touch your text and never take keyboard focus. Keep typing; ⌃⌥L brings the last tip back.
+- **Fix it in one click.** **Replace** on the card puts the corrected version into the text you just inserted — or let Saidright apply clear fixes automatically. Only the wrong words change; uncertain and style tips never do.
+- **Never in the way.** Tips never take keyboard focus and never change text you have kept typing after. ⌃⌥L brings the last tip back.
 
 Tips use a text model you choose: free and fully local through [Ollama](https://ollama.com), or your own cloud key. Tips work in any language your model knows; English and Russian are the most thoroughly tested so far.
 
@@ -28,11 +29,11 @@ Tips use a text model you choose: free and fully local through [Ollama](https://
 
 - **Works everywhere.** Tap right ⌘ (or ⌃⌥Space), speak, tap again — the text appears where your cursor is. Ordinary shortcuts such as ⌘C never start a recording; Esc cancels.
 - **Truly multilingual.** Around 100 languages, and you can switch between them mid-dictation. Foreign terms keep their own spelling — say, an English “pull request” inside a Russian sentence. Nothing is translated behind your back.
-- **Fast and private.** Whisper large-v3-turbo or NVIDIA Parakeet run locally through MLX — about half a second per phrase, and audio never leaves your Mac. No account, no telemetry.
-- **Smart formatting.** Dictate a few tasks and get a checklist; list things and get bullets; describe steps and get a numbered list. Ask for a table — “I need a table with three columns: ChatGPT, Claude and Gemini” — and get a real Markdown table. Ordinary sentences stay prose, and nothing you did not say is added.
-- **Designed to be yours.** Saidright's indigo windows (light by day, deep at night), Liquid Glass or Ink capsule, palettes, size and motion — all previewed live.
+- **Fast and private.** Whisper large-v3-turbo or NVIDIA Parakeet run locally through MLX — about half a second per phrase, and audio never leaves your Mac. Long dictations are recognised while you speak. No account, no telemetry.
+- **Instant insert.** Optionally the recognised text appears the moment you stop, and the edited version replaces it a moment later — only if you have not typed or clicked in between.
+- **Smart formatting.** Dictate a few tasks and get a checklist; list things and get bullets; describe steps and get a numbered list. Ask for a table — “I need a table with three columns: ChatGPT, Claude and Gemini” — and get a table. Notes, Pages, Word, Mail and TextEdit receive a real table and real lists; Notion, Obsidian and Bear get Markdown; messengers and AI chats get clean text (numbered lists, no checkbox brackets). Ordinary sentences stay prose, and nothing you did not say is added.
 - **Modes for every job.** Keep exactly what you said, tidy punctuation, fix grammar, or rewrite in a tone. Switch with ⌃⌥M.
-- **Made to be yours.** Liquid Glass or Ink capsule, palettes, size, motion, sounds, light and dark, your own shortcuts — and a settings window with search.
+- **Made to be yours.** Saidright's indigo windows (airy by day, deep night indigo after dark), Liquid Glass or Ink capsule, palettes, size, motion, sounds, light and dark, your own shortcuts — and a settings window with search.
 - **Honest delivery.** If focus moved while you were speaking, nothing is pasted into the wrong place; the text waits on the clipboard.
 
 <p align="center"><img src="docs/screenshots/readme-main.jpg" width="420" alt="Saidright main window"> <img src="docs/screenshots/readme-recognition.jpg" width="420" alt="Recognition settings"></p>
@@ -74,8 +75,9 @@ Everything is in **Settings** (⌘,), with search:
 - **Modes** — spoken languages, recognizer (*Automatic*, Whisper, Parakeet, Apple), how much the text is edited, learning tips, where the text goes.
 - **Shortcuts** — the dictation key or combination, toggle or hold-to-talk, mode switching.
 - **Recognition** — install or remove recognizers, personal vocabulary for Whisper.
-- **Text & AI** — editing and tips through Groq (recommended default: `openai/gpt-oss-120b`, fastest in our tests, free key), OpenAI, a local Ollama model or any OpenAI-compatible service; *Local only*.
-- **Learning, Appearance, Privacy & Data, Advanced** — tip presentation, capsule look, history retention and export, automation links, diagnostics.
+- **Text & AI** — instant insert; editing and tips through Groq (recommended default: `openai/gpt-oss-120b`, fastest in our tests, free key), OpenAI, a local Ollama model or any OpenAI-compatible service; *Local only*.
+- **Learning** — how tips appear and whether their fixes go in by a button or automatically.
+- **Appearance, Privacy & Data, Advanced** — tip presentation, capsule look, history retention and export, automation links, diagnostics.
 
 Data lives in `~/Library/Application Support/Saidright` (settings, modes, history, downloaded models). Keys are in the Keychain.
 

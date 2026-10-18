@@ -18,6 +18,15 @@ public enum TextFlavor: String, Sendable {
     ]
     static let markdownPrefixes = ["com.jetbrains."]
 
+    /// Apps that paste formatted text: layout is also put on the clipboard as HTML (RichText),
+    /// so a table arrives as a real table. Browsers are left out (AI chat boxes want text).
+    static let richTextApps: Set<String> = [
+        "com.apple.Notes", "com.apple.iWork.Pages", "com.apple.iWork.Keynote", "com.apple.TextEdit", "com.apple.mail",
+        "com.microsoft.Word", "com.microsoft.Outlook", "com.microsoft.onenote.mac", "com.microsoft.Powerpoint",
+    ]
+
+    public static func wantsRichText(bundleID: String?) -> Bool { bundleID.map(richTextApps.contains) ?? false }
+
     /// The flavor for a destination app; unknown apps get plain text. No destination (copied,
     /// kept in Saidright) keeps Markdown.
     public static func forApp(bundleID: String?) -> TextFlavor {

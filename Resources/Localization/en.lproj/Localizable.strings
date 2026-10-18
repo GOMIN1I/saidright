@@ -448,6 +448,9 @@
 "text.costFooter" = "Editing and language help send the transcript text (never audio) to the chosen service. Cloud services may charge per request.";
 "text.service" = "Service";
 "text.compatible" = "Compatible server";
+"text.instant" = "Insert instantly";
+"text.instantDetail" = "The recognised text appears right away and is replaced by the edited version a moment later — only if you have not typed or clicked in between.";
+"notice.instantKept" = "The field changed before the edit was ready, so the unedited text stayed. The edited version is in the result.";
 "text.groq" = "Groq (recommended)";
 "text.groqModelDetail" = "Recommended: openai/gpt-oss-120b — fast and faithful. “List models” shows what your key can use.";
 "text.groqKey" = "Free key";
@@ -580,6 +583,13 @@
 "capsule.save" = "Practise later";
 "capsule.saved" = "Saved";
 "capsule.gotIt" = "Got it";
+"capsule.replace" = "Replace";
+"capsule.replaceHelp" = "Replace the inserted text with the corrected version";
+"notice.correctionCopied" = "The text in the field changed, so it was not replaced. The corrected version is on the clipboard.";
+"learn.applyCorrections" = "Fixes from tips";
+"learn.applyCorrectionsDetail" = "With a button on the card, or applied to the inserted text automatically (only if you have not typed or clicked since).";
+"correction.button" = "Button on the card";
+"correction.automatic" = "Automatically";
 "capsule.keepMine" = "Mine was right";
 "capsule.misheard" = "I said it right";
 "capsule.misheardNote" = "This may be the recognizer mishearing you, not your mistake. It is not counted in your topics.";

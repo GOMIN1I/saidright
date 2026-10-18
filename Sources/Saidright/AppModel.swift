@@ -122,6 +122,7 @@ struct Notice: Equatable, Identifiable {
         capsule.onSaveItem = { [weak self] record, item in self?.saveForReview(item, record: record) }
         capsule.onVerdict = { [weak self] record, item, verdict in self?.setVerdict(verdict, for: item, record: record) }
         capsule.onOpenApp = { _ in WindowRouter.show("main") }
+        capsule.onApplyCorrection = { [weak self] record in self?.applyCorrection(record, strict: false) }
         applyAppearance()
         DistributedNotificationCenter.default().addObserver(forName: Notification.Name("AppleInterfaceThemeChangedNotification"), object: nil, queue: .main) { [weak self] _ in
             Task { @MainActor [weak self] in try? await Task.sleep(for: .milliseconds(100)); self?.applyAppearance() }
@@ -384,11 +385,21 @@ struct Notice: Equatable, Identifiable {
 
         // 2. Optional editing. With cleanup off, no provider is contacted.
         var edit = EditResult(output: raw, edited: nil, issues: [], failure: nil)
+        // Instant insert: the transcript goes in right away and the edit replaces it later.
+        var firstOutcome: DeliveryOutcome?
+        var firstInserted: Date?
         if mode.cleanup.usesEditor {
             advance(id, .editing)
             // Lists are written as Markdown only for apps that show it (TextFlavor).
             let flavor = mode.output == .insert && snapshot.trigger == .hotkey ? TextFlavor.forApp(bundleID: snapshot.destination?.bundleID) : .markdown
-            edit = await TextPipeline.edit(raw: raw, mode: mode, flavor: flavor, provider: { try self.makeProvider() })
+            if settings.instantInsert, mode.output == .insert, snapshot.trigger == .hotkey, snapshot.destination != nil {
+                let editing = Task { await TextPipeline.edit(raw: raw, mode: mode, flavor: flavor, provider: { try self.makeProvider() }) }
+                firstOutcome = await delivery.deliver(raw, to: snapshot.destination, restoreClipboard: settings.restoreClipboard)
+                firstInserted = Date()
+                edit = await editing.value
+            } else {
+                edit = await TextPipeline.edit(raw: raw, mode: mode, flavor: flavor, provider: { try self.makeProvider() })
+            }
             guard machine.isCurrent(id), !Task.isCancelled else { return }
         }
         timing.editingEnded = Date()
@@ -398,8 +409,19 @@ struct Notice: Equatable, Identifiable {
         let outcome: DeliveryOutcome
         switch mode.output {
         case .insert:
-            if snapshot.trigger == .hotkey, snapshot.destination != nil {
-                outcome = await delivery.deliver(edit.output, to: snapshot.destination, restoreClipboard: settings.restoreClipboard)
+            // Formatted-text apps also get HTML: a real table and real lists (RichText).
+            let html = TextFlavor.wantsRichText(bundleID: snapshot.destination?.bundleID) && RichText.hasLayout(edit.output) ? RichText.html(edit.output) : nil
+            if let first = firstOutcome, let destination = snapshot.destination {
+                if !first.isInsertion {
+                    delivery.copy(edit.output)
+                } else if edit.output != raw, !(await delivery.replaceDelivered(raw, with: edit.output, html: html, destination: destination, restoreClipboard: settings.restoreClipboard)) {
+                    // Something changed in the field: the transcript stays, the edit is in the result.
+                    notice = Notice(text: tr("notice.instantKept"), action: .none)
+                    edit.output = raw
+                }
+                outcome = first
+            } else if snapshot.trigger == .hotkey, snapshot.destination != nil {
+                outcome = await delivery.deliver(edit.output, html: html, to: snapshot.destination, restoreClipboard: settings.restoreClipboard)
             } else {
                 delivery.copy(edit.output)
                 outcome = .copied(reason: snapshot.trigger == .hotkey ? .noDestination : .startedInApp)
@@ -421,7 +443,7 @@ struct Notice: Equatable, Identifiable {
         result = SessionResult(recordID: id, modeName: mode.name, raw: raw, edited: edit.edited, output: edit.output, outcome: outcome, editFailure: edit.failure, editIssues: edit.issues, destination: snapshot.destination ?? offerDestination, languages: transcript.languages, timing: timing, feedback: nil, feedbackState: .none, learningLevel: mode.learning, learningLanguage: mode.learningLanguage, audioFile: keepAudio ? fileName : nil)
         if let failure = edit.failure { reportEditFailure(failure) }
         saveRecord(id: id, mode: mode, raw: raw, edit: edit, languages: transcript.languages, audioFile: keepAudio ? fileName : nil, delivery: outcome.code)
-        Log.info("session done audio=\(String(format: "%.1f", recording.duration))s asr=\(String(format: "%.2f", timing.recognition ?? 0))s ready=\(String(format: "%.2f", timing.speechToText ?? 0))s delivered=\(String(format: "%.2f", timing.speechToDelivery ?? 0))s ahead=\(String(format: "%.1f", aheadSeconds))s cold=\(transcript.cold) outcome=\(outcome.code)")
+        Log.info("session done audio=\(String(format: "%.1f", recording.duration))s asr=\(String(format: "%.2f", timing.recognition ?? 0))s ready=\(String(format: "%.2f", timing.speechToText ?? 0))s delivered=\(String(format: "%.2f", timing.speechToDelivery ?? 0))s ahead=\(String(format: "%.1f", aheadSeconds))s\(firstInserted.map { String(format: " first=%.2fs", $0.timeIntervalSince(timing.recordingEnded ?? $0)) } ?? "") cold=\(transcript.cold) outcome=\(outcome.code)")
 
         // 4. Optional learning feedback. The text is already delivered; the hint, if any,
         //    arrives in the capsule later and never needs the main window.
@@ -735,7 +757,10 @@ struct Notice: Equatable, Identifiable {
                 self.result?.feedback = feedback
                 self.result?.feedbackState = .ready
                 self.storeFeedback(feedback, for: recordID)
-                if automatic { self.offerHint(feedback, recordID: recordID, level: modeLevel) }
+                if automatic {
+                    self.prepareCorrection(feedback, recordID: recordID)
+                    self.offerHint(feedback, recordID: recordID, level: modeLevel)
+                }
             } catch {
                 guard let self, self.result?.recordID == recordID else { return }
                 self.result?.feedbackState = .failed(Self.message(for: error))
@@ -749,9 +774,42 @@ struct Notice: Equatable, Identifiable {
         let ui = settings.learningUI
         let items = CapsuleHints.select(feedback, level: level, includeUncertain: ui.showUncertainInCapsule)
         guard !items.isEmpty else { return }
-        lastHint = CapsuleHint(recordID: recordID, items: items)
+        let fixable = pendingCorrection?.recordID == recordID && ui.applyCorrections == .button
+        lastHint = CapsuleHint(recordID: recordID, items: items, fixable: fixable)
         guard ui.presentation != .window, !isBusy else { return }
-        capsule.offerHint(CapsuleHint(recordID: recordID, items: items), asMarker: ui.presentation == .indicator)
+        capsule.offerHint(CapsuleHint(recordID: recordID, items: items, fixable: fixable), asMarker: ui.presentation == .indicator)
+    }
+
+    /// Fixes a tip suggests for text that was just inserted: (record, inserted text, fixed text).
+    private var pendingCorrection: (recordID: UUID, old: String, new: String)?
+
+    /// Prepares the tip's fixes for the inserted text and, when the person chose so, applies them
+    /// right away (only if nothing was typed or clicked since the insertion).
+    private func prepareCorrection(_ feedback: Feedback, recordID: UUID) {
+        pendingCorrection = nil
+        guard let r = result, r.recordID == recordID, r.outcome?.isInsertion == true, r.destination != nil,
+              let fixed = FeedbackValidator.corrected(r.output, by: feedback) else { return }
+        pendingCorrection = (recordID, r.output, fixed)
+        if settings.learningUI.applyCorrections == .automatic { applyCorrection(recordID, strict: true) }
+    }
+
+    /// Replaces the inserted text with the fixed one in the field it went to. From the card's
+    /// button a failure copies the fixed text instead, so the person can paste it.
+    func applyCorrection(_ recordID: UUID, strict: Bool) {
+        guard let pending = pendingCorrection, pending.recordID == recordID, let destination = result?.destination else { return }
+        pendingCorrection = nil
+        Task { [weak self] in
+            guard let self else { return }
+            let html = TextFlavor.wantsRichText(bundleID: destination.bundleID) && RichText.hasLayout(pending.new) ? RichText.html(pending.new) : nil
+            let done = await self.delivery.replaceDelivered(pending.old, with: pending.new, html: html, destination: destination, restoreClipboard: self.settings.restoreClipboard, strict: strict)
+            self.capsule.markCorrectionHandled(recordID)
+            if done {
+                if self.result?.recordID == recordID { self.result?.output = pending.new }
+            } else if !strict {
+                self.delivery.copy(pending.new)
+                self.notice = Notice(text: tr("notice.correctionCopied"), action: .none)
+            }
+        }
     }
 
     /// The tips of the most recent dictation that had any, for the reopen shortcut.
