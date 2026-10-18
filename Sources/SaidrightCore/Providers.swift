@@ -113,6 +113,18 @@ public struct TextProvider: Sendable {
         return list.compactMap { $0["id"] as? String }.sorted()
     }
 
+    /// Opens the connection to the provider ahead of the request (DNS, TCP and TLS take about
+    /// 0.15–0.2 s when the last request was a while ago). A HEAD without credentials: nothing is
+    /// billed or sent. The shared session keeps the connection for the real request.
+    public static func warmUp(_ settings: ProviderSettings, session: URLSession = .shared) async {
+        guard !settings.isOnDevice, !(settings.localOnly && !settings.isOnDevice) else { return }
+        let base = settings.kind == .openAI ? "https://api.openai.com/v1/" : settings.compatibleBaseURL.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard let url = URL(string: base), url.scheme == "https" else { return }
+        var request = URLRequest(url: url, timeoutInterval: 5)
+        request.httpMethod = "HEAD"
+        _ = try? await session.data(for: request)
+    }
+
     func run(system: String, user: String, schema: (String, [String: Any])?, maxOutputTokens: Int) async throws -> String {
         let model = settings.model.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !model.isEmpty, !model.contains(where: \.isWhitespace) else { throw ProviderError.invalidConfiguration("model") }
@@ -135,10 +147,12 @@ public struct TextProvider: Sendable {
             var b: [String: Any] = [
                 "model": model,
                 "messages": [["role": "system", "content": system], ["role": "user", "content": user]],
-                "max_tokens": maxOutputTokens,
+                // Thinking models spend part of the budget before answering; without the
+                // no-thinking switch the answer would otherwise be cut off (truncated).
+                "max_tokens": settings.compatibleNoReasoning ? maxOutputTokens : maxOutputTokens + 4000,
                 "temperature": 0.2,
             ]
-            if settings.compatibleNoReasoning { b["reasoning_effort"] = "none" }
+            if settings.compatibleNoReasoning { b["reasoning_effort"] = Self.lowestReasoningEffort(model) }
             if let (name, schema) = schema {
                 b["response_format"] = ["type": "json_schema", "json_schema": ["name": name, "strict": true, "schema": schema]]
             }
@@ -185,6 +199,11 @@ public struct TextProvider: Sendable {
             default: throw ProviderError.network(error.code.rawValue.description)
             }
         }
+    }
+
+    /// gpt-oss models (e.g. on Groq) reject "none"; "low" is their shortest setting.
+    static func lowestReasoningEffort(_ model: String) -> String {
+        model.lowercased().contains("gpt-oss") ? "low" : "none"
     }
 
     static func supportsNoReasoning(_ model: String) -> Bool {

@@ -27,6 +27,7 @@ DYNAMIC = {
     'verdict': ['keepOriginal', 'recognitionError', 'understood'],
     'grade': ['again', 'hard', 'good', 'easy'],
     'coverage': ['tested', 'modelSupported', 'experimental', 'unsupported'],
+    'tint': ['saidright', 'neutral'],
     'settings': ['general', 'modes', 'shortcuts', 'recognition', 'text', 'learning', 'appearance', 'privacy', 'advanced'],
     'theme': ['system', 'light', 'dark'],
     'style': ['glass', 'ink'],

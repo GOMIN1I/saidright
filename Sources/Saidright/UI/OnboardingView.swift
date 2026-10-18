@@ -7,7 +7,13 @@ import SwiftUI
 struct OnboardingView: View {
     @Environment(AppModel.self) private var model
     @Environment(\.dismissWindow) private var dismissWindow
+    @Environment(\.openWindow) private var openWindow
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.brandTint) private var brand
     @State private var step = 0
+    /// Direction of the last step change, for the slide.
+    @State private var forward = true
+    @State private var appeared = false
     @State private var spoken: [String] = AppModel.defaultSpokenLanguages()
     @State private var learning = false
     @State private var learningLanguage = "en"
@@ -17,12 +23,24 @@ struct OnboardingView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                ProgressDots(count: steps, current: step)
-                Spacer()
-                Button(tr("onb.skip")) { finish() }.buttonStyle(.plain).font(DS.Font.caption).foregroundStyle(DS.Palette.secondaryText)
+            ZStack(alignment: .top) {
+                if step == 0 {
+                    OnboardingHero()
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .transition(.opacity)
+                }
+                HStack {
+                    ProgressDots(count: steps, current: step, onDark: step == 0 && brand)
+                    Spacer()
+                    Button(tr("onb.skip")) { finish() }.buttonStyle(.plain).font(DS.Font.caption)
+                        .foregroundStyle(step == 0 && brand ? AnyShapeStyle(.white.opacity(0.75)) : AnyShapeStyle(DS.Palette.secondaryText))
+                }
+                // Clear of the window buttons, which sit over the hero.
+                .padding(.horizontal, DS.Space.xl).padding(.top, DS.Space.l + 22)
             }
-            .padding(.horizontal, DS.Space.xl).padding(.top, DS.Space.l)
+            .frame(height: step == 0 ? 200 : nil, alignment: .top)
+            // The header runs up under the hidden title bar; the rest keeps the window's size.
+            .ignoresSafeArea(edges: .top)
             ScrollView {
                 Group {
                     switch step {
@@ -35,6 +53,8 @@ struct OnboardingView: View {
                     default: modesStep
                     }
                 }
+                .id(step)
+                .transition(stepTransition)
                 .padding(DS.Space.xl)
                 .frame(maxWidth: .infinity, alignment: .topLeading)
             }
@@ -45,14 +65,18 @@ struct OnboardingView: View {
                 Spacer()
                 if step == 2 && !learning { Button(tr("onb.learn.skip")) { next() }.buttonStyle(PillButtonStyle()) }
                 Button(step == steps - 1 ? tr("onb.finish") : tr("onb.next")) { next() }
-                    .buttonStyle(PillButtonStyle(prominent: true))
+                    .buttonStyle(PillButtonStyle(prominent: true, warm: step == steps - 1))
                     .keyboardShortcut(.defaultAction)
                     .disabled(step == 1 && spoken.isEmpty)
             }
             .padding(DS.Space.l)
         }
-        .frame(width: 580, height: 560)
+        .frame(width: 580, height: 600)
+        // Entrance: the card settles in while the window fades up (Reduce Motion: fade only).
+        .scaleEffect(appeared || reduceMotion ? 1 : 0.965)
+        .opacity(appeared ? 1 : 0)
         .onAppear {
+            WindowRouter.openWindow = openWindow
             // macOS may restore this window at launch; only keep it when it was asked for.
             if model.settings.onboardingCompleted, !WindowRouter.onboardingRequested {
                 DispatchQueue.main.async {
@@ -60,6 +84,8 @@ struct OnboardingView: View {
                 }
                 return
             }
+            WindowFX.present("onboarding")
+            withAnimation(reduceMotion ? .easeOut(duration: 0.25) : .spring(response: 0.6, dampingFraction: 0.86).delay(0.08)) { appeared = true }
             // Resume where the person left off; a replay starts from the beginning.
             if !model.settings.onboardingCompleted { step = min(model.settings.onboardingStep, steps - 1) }
             if let qa = WindowRouter.qaOnboardingStep { step = qa }
@@ -72,8 +98,17 @@ struct OnboardingView: View {
         }
     }
 
+    private var stepTransition: AnyTransition {
+        if reduceMotion { return .opacity }
+        return .asymmetric(
+            insertion: .offset(x: forward ? 36 : -36).combined(with: .opacity),
+            removal: .offset(x: forward ? -24 : 24).combined(with: .opacity)
+        )
+    }
+
     private func go(_ target: Int) {
-        step = target
+        forward = target > step
+        withAnimation(reduceMotion ? .easeOut(duration: 0.2) : .spring(response: 0.45, dampingFraction: 0.9)) { step = target }
         if !model.settings.onboardingCompleted, WindowRouter.qaOnboardingStep == nil { model.settings.onboardingStep = target }
     }
 
@@ -82,11 +117,15 @@ struct OnboardingView: View {
         if step < steps - 1 { go(step + 1) } else { finish() }
     }
 
+    /// The introduction dissolves and the main window fades in where the person can start.
     private func finish() {
         model.settings.onboardingCompleted = true
         model.settings.onboardingStep = 0
-        dismissWindow(id: "onboarding")
-        WindowRouter.show("main")
+        withAnimation(.easeIn(duration: 0.25)) { appeared = false }
+        WindowFX.dismiss("onboarding") {
+            dismissWindow(id: "onboarding")
+            WindowFX.reveal("main")
+        }
     }
 
     private func applyLanguages() {
@@ -107,8 +146,7 @@ struct OnboardingView: View {
 
     private var welcome: some View {
         VStack(alignment: .leading, spacing: DS.Space.l) {
-            AppMark().frame(width: 72, height: 72)
-            Text(tr("onb.welcome.title")).font(.system(size: 24, weight: .semibold))
+            Text(tr("onb.welcome.title")).font(.system(size: 26, weight: .bold)).fixedSize(horizontal: false, vertical: true)
             Text(tr("onb.welcome.body")).font(DS.Font.reading).fixedSize(horizontal: false, vertical: true)
             VStack(alignment: .leading, spacing: DS.Space.s) {
                 Text(tr("settings.interfaceLanguage")).font(DS.Font.body.weight(.semibold))
@@ -267,12 +305,17 @@ struct OnboardingView: View {
 struct ProgressDots: View {
     var count: Int
     var current: Int
+    var onDark = false
+    @Environment(\.brandTint) private var brand
     var body: some View {
         HStack(spacing: 5) {
             ForEach(0..<count, id: \.self) { i in
-                Capsule().fill(i == current ? DS.Palette.signal : DS.Palette.quietFill).frame(width: i == current ? 16 : 6, height: 6)
+                Capsule()
+                    .fill(i == current ? (onDark ? AnyShapeStyle(Color.white) : brand ? AnyShapeStyle(DS.Brand.warm) : AnyShapeStyle(Surface.accent(brand))) : AnyShapeStyle(onDark ? Color.white.opacity(0.28) : Color.primary.opacity(0.16)))
+                    .frame(width: i == current ? 18 : 6, height: 6)
             }
         }
+        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: current)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(tr("onb.stepOf", current + 1, count))
     }
@@ -330,6 +373,81 @@ struct WrapLayout: Layout {
             s.place(at: CGPoint(x: x, y: y), proposal: ProposedViewSize(width: size.width, height: size.height))
             x += size.width + spacing
             row = max(row, size.height)
+        }
+    }
+}
+
+/// The first thing a new person sees: the icon's indigo, the mark floating in it, and two soft
+/// lights (voice blue and the cursor's coral) drifting slowly behind it. Still with Reduce Motion.
+struct OnboardingHero: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.brandTint) private var brand
+
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1 / 30, paused: reduceMotion)) { context in
+            let t = reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate
+            ZStack {
+                if brand { DS.Brand.tile } else { LinearGradient(colors: [Color(white: 0.24), Color(white: 0.1)], startPoint: .top, endPoint: .bottom) }
+                RadialGradient(colors: [DS.Brand.voice.opacity(0.55), .clear], center: UnitPoint(x: 0.3 + 0.12 * sin(t * 0.35), y: 0.65 + 0.1 * cos(t * 0.27)), startRadius: 0, endRadius: 260)
+                    .blendMode(.screen)
+                RadialGradient(colors: [DS.Brand.rose.opacity(0.34), .clear], center: UnitPoint(x: 0.78 + 0.08 * cos(t * 0.31), y: 0.3 + 0.1 * sin(t * 0.23)), startRadius: 0, endRadius: 200)
+                    .blendMode(.screen)
+                AppIconArt.Glyph(variant: .standard, size: 150)
+                    .shadow(color: .black.opacity(0.35), radius: 18, y: 10)
+                    .scaleEffect(1 + 0.012 * sin(t * 1.1))
+                    .offset(y: 14 + 3 * sin(t * 0.8))
+            }
+        }
+        .clipped()
+        .accessibilityHidden(true)
+    }
+}
+
+/// Window entrances and exits that SwiftUI scenes do not animate on their own.
+@MainActor enum WindowFX {
+    static func window(_ id: String) -> NSWindow? {
+        NSApp.windows.first { $0.identifier?.rawValue.hasPrefix(id) == true }
+    }
+
+    /// Centres the window and fades it up.
+    static func present(_ id: String) {
+        DispatchQueue.main.async {
+            guard let window = window(id) else { return }
+            window.center()
+            window.alphaValue = 0
+            NSApp.activate()
+            window.makeKeyAndOrderFront(nil)
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.45
+                context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+                window.animator().alphaValue = 1
+            }
+        }
+    }
+
+    /// Fades the window out, then runs `completion`.
+    static func dismiss(_ id: String, completion: @escaping @MainActor () -> Void) {
+        guard let window = window(id) else { completion(); return }
+        NSAnimationContext.runAnimationGroup { context in
+            context.duration = 0.3
+            context.timingFunction = CAMediaTimingFunction(name: .easeIn)
+            window.animator().alphaValue = 0
+        } completionHandler: {
+            MainActor.assumeIsolated { completion() }
+        }
+    }
+
+    /// Opens (or brings forward) a window and fades it in.
+    static func reveal(_ id: String) {
+        WindowRouter.show(id)
+        DispatchQueue.main.async {
+            guard let window = window(id) else { return }
+            window.alphaValue = 0
+            NSAnimationContext.runAnimationGroup { context in
+                context.duration = 0.4
+                context.timingFunction = CAMediaTimingFunction(name: .easeOut)
+                window.animator().alphaValue = 1
+            }
         }
     }
 }

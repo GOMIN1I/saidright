@@ -148,7 +148,7 @@
 "tone.formal" = "Förmlich";
 "tone.concise" = "Knapp";
 "modes.smartStructure" = "Intelligente Formatierung";
-"modes.smartStructureDetail" = "Aufgaben, Aufzählungen und Schritte werden zu Checklisten und Listen. Normale Sätze bleiben, wie sie sind.";
+"modes.smartStructureDetail" = "Aufgaben, Aufzählungen und Schritte werden zu Checklisten und Listen. Sag „eine Tabelle mit den Spalten …“ und du bekommst eine echte Tabelle. Normale Sätze bleiben, wie sie sind.";
 "syn.structure" = "liste checkliste aufzählung markdown überschrift tabelle struktur";
 "rules.fillers" = "Leere Füllwörter entfernen (ähm, äh, um)";
 "rules.repetitions" = "Versehentliche Wiederholungen entfernen";
@@ -560,6 +560,7 @@
 "search.prompt" = "Einstellungen durchsuchen";
 "search.noResults" = "Keine passenden Einstellungen";
 "search.noResultsDetail" = "Nichts passt zu „%@“. Versuch ein kürzeres Wort wie „Taste“, „Kapsel“ oder „Sprache“.";
+"search.clear" = "Suche leeren";
 "capsule.stateHint" = "Hinweis";
 "capsule.hintTitle" = "Sprachtipp";
 "capsule.hintMarker" = "Tipp · %d";
@@ -613,6 +614,10 @@
 "look.windows" = "Fenster";
 "look.theme" = "Erscheinungsbild";
 "look.themeDetail" = "Wie macOS oder immer hell bzw. dunkel.";
+"look.tint" = "Fensterfarbe";
+"look.tintDetail" = "Das Indigo von Saidright folgt dem Erscheinungsbild: hell und luftig am Tag, tief in der Nacht.";
+"tint.saidright" = "Saidright";
+"tint.neutral" = "System";
 "theme.system" = "System";
 "theme.light" = "Hell";
 "theme.dark" = "Dunkel";

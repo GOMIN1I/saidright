@@ -148,7 +148,7 @@
 "tone.formal" = "正式";
 "tone.concise" = "简洁";
 "modes.smartStructure" = "智能排版";
-"modes.smartStructureDetail" = "任务、条目和步骤会变成清单和列表。普通句子保持原样。";
+"modes.smartStructureDetail" = "任务、条目和步骤会变成清单和列表。说“做一个表格，列是……”就会得到真正的表格。普通句子保持原样。";
 "syn.structure" = "列表 清单 要点 markdown 标题 表格 结构 排版";
 "rules.fillers" = "去掉空洞的语气词（嗯、呃、um）";
 "rules.repetitions" = "去掉无意的重复";
@@ -560,6 +560,7 @@
 "search.prompt" = "搜索设置";
 "search.noResults" = "没有匹配的设置";
 "search.noResultsDetail" = "没有与“%@”匹配的内容。试试更短的词，例如“按键”“胶囊”或“语言”。";
+"search.clear" = "清除搜索";
 "capsule.stateHint" = "提示";
 "capsule.hintTitle" = "语言提示";
 "capsule.hintMarker" = "提示 · %d";
@@ -613,6 +614,10 @@
 "look.windows" = "窗口";
 "look.theme" = "主题";
 "look.themeDetail" = "跟随 macOS，或始终浅色 / 深色。";
+"look.tint" = "窗口颜色";
+"look.tintDetail" = "Saidright 的靛蓝色跟随外观：浅色模式清爽明亮，深色模式深沉。";
+"tint.saidright" = "Saidright";
+"tint.neutral" = "系统";
 "theme.system" = "系统";
 "theme.light" = "浅色";
 "theme.dark" = "深色";

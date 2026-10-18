@@ -148,7 +148,7 @@
 "tone.formal" = "Официальный";
 "tone.concise" = "Кратко";
 "modes.smartStructure" = "Умное оформление";
-"modes.smartStructureDetail" = "Задачи, перечисления и шаги становятся чек-листами и списками. Обычные фразы остаются как есть.";
+"modes.smartStructureDetail" = "Задачи, перечисления и шаги становятся чек-листами и списками. Скажи «нужна таблица со столбцами …» — получишь настоящую таблицу. Обычные фразы остаются как есть.";
 "syn.structure" = "список чек-лист пункты markdown заголовки таблица структура оформление";
 "rules.fillers" = "Убирать пустые слова-паразиты (э-э, ну вот, um)";
 "rules.repetitions" = "Убирать случайные повторы";
@@ -560,6 +560,7 @@
 "search.prompt" = "Поиск настроек";
 "search.noResults" = "Ничего не найдено";
 "search.noResultsDetail" = "По запросу «%@» ничего нет. Попробуй слово короче: «клавиша», «капсула», «язык».";
+"search.clear" = "Очистить поиск";
 "capsule.stateHint" = "Подсказка";
 "capsule.hintTitle" = "Языковая подсказка";
 "capsule.hintMarker" = "Подсказка · %d";
@@ -613,6 +614,10 @@
 "look.windows" = "Окна";
 "look.theme" = "Тема";
 "look.themeDetail" = "Как в macOS, или всегда светлая/тёмная.";
+"look.tint" = "Цвет окон";
+"look.tintDetail" = "Фирменный индиго Saidright следует теме: светлый и воздушный днём, глубокий ночью.";
+"tint.saidright" = "Saidright";
+"tint.neutral" = "Системный";
 "theme.system" = "Система";
 "theme.light" = "Светлая";
 "theme.dark" = "Тёмная";

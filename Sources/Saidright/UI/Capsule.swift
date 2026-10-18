@@ -492,11 +492,39 @@ struct CapsuleSurface<S: InsettableShape>: View {
                 // Internal light: confined to the body, no external halo.
                 shape.fill(RadialGradient(colors: [tint.opacity((card ? 0.08 : 0.22) * glow), .clear], center: card ? .top : .center, startRadius: 2, endRadius: card ? 220 : 46))
                     .blendMode(.screen)
+                if !card { LivingLight(shape: shape, tint: tint, glow: glow) }
                 shape.fill(LinearGradient(colors: [.white.opacity(0.07), .clear], startPoint: .top, endPoint: .center)).padding(1)
                 shape.strokeBorder(LinearGradient(colors: [.white.opacity(highContrast ? 0.6 : 0.22), .white.opacity(highContrast ? 0.35 : 0.04)], startPoint: .top, endPoint: .bottom), lineWidth: highContrast ? 1 : 0.75)
             }
             .compositingGroup()
         }
+    }
+}
+
+/// The capsule breathes: a second light in the state colour drifts slowly inside the body and
+/// a faint sheen passes over it, so the capsule never looks frozen. Confined to the shape;
+/// still with Reduce Motion.
+struct LivingLight<S: InsettableShape>: View {
+    var shape: S
+    var tint: Color
+    var glow: Double
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var start = Date.now
+
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
+            let t = context.date.timeIntervalSince(start)
+            GeometryReader { geo in
+                let w = geo.size.width, h = geo.size.height
+                ZStack {
+                    shape.fill(RadialGradient(colors: [tint.opacity(0.46 * glow * (0.7 + 0.3 * sin(t * 1.3))), .clear],
+                                              center: UnitPoint(x: 0.5 + 0.32 * sin(t * 0.7), y: 0.65 + 0.15 * cos(t * 0.9)), startRadius: 1, endRadius: max(w, h) * 0.55))
+                    shape.fill(LinearGradient(colors: [.clear, .white.opacity(0.09), .clear], startPoint: UnitPoint(x: -0.6 + (t * 0.18).truncatingRemainder(dividingBy: 2.2), y: 0), endPoint: UnitPoint(x: -0.2 + (t * 0.18).truncatingRemainder(dividingBy: 2.2), y: 1)))
+                }
+                .blendMode(.screen)
+            }
+        }
+        .allowsHitTesting(false)
     }
 }
 

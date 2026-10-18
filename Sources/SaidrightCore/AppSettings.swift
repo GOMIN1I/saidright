@@ -5,6 +5,10 @@ public enum CapsulePlacement: String, Codable, CaseIterable, Sendable { case bot
 /// Window appearance. The capsule has its own style, coordinated with this.
 public enum ThemePreference: String, Codable, CaseIterable, Sendable { case system, light, dark }
 
+/// Window colours: Saidright's own indigo (light and dark shades that follow the theme) or
+/// plain macOS greys.
+public enum WindowTint: String, Codable, CaseIterable, Sendable { case saidright, neutral }
+
 /// Capsule material: native Liquid Glass (macOS 26+) or a restrained solid ink body.
 public enum CapsuleStyle: String, Codable, CaseIterable, Sendable { case glass, ink }
 
@@ -142,6 +146,7 @@ public struct AppSettings: Codable, Equatable, Sendable {
     public var hotkeys = HotkeySettings()
     public var capsule = CapsuleSettings()
     public var theme: ThemePreference = .system
+    public var windowTint: WindowTint = .saidright
     public var appIcon: AppIconVariant = .standard
     public var learningUI = LearningPresentation()
     /// Which Whisper model the local recognizer loads (ModelCatalog id).

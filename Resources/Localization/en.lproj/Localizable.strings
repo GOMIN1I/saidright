@@ -148,7 +148,7 @@
 "tone.formal" = "Formal";
 "tone.concise" = "Concise";
 "modes.smartStructure" = "Smart formatting";
-"modes.smartStructureDetail" = "Tasks, items and steps become checklists and lists. Ordinary sentences stay as they are.";
+"modes.smartStructureDetail" = "Tasks, items and steps become checklists and lists. Say “make a table with columns …” and get a real table. Ordinary sentences stay as they are.";
 "syn.structure" = "list checklist bullets markdown headings table structure format";
 "rules.fillers" = "Remove empty fillers (um, uh, э-э)";
 "rules.repetitions" = "Remove accidental repetitions";
@@ -560,6 +560,7 @@
 "search.prompt" = "Search settings";
 "search.noResults" = "No matching settings";
 "search.noResultsDetail" = "Nothing matches “%@”. Try a shorter word, such as “key”, “capsule” or “language”.";
+"search.clear" = "Clear search";
 "capsule.stateHint" = "Hint";
 "capsule.hintTitle" = "Language tip";
 "capsule.hintMarker" = "Tip · %d";
@@ -613,6 +614,10 @@
 "look.windows" = "Windows";
 "look.theme" = "Theme";
 "look.themeDetail" = "Follow macOS, or keep Saidright light or dark.";
+"look.tint" = "Window colour";
+"look.tintDetail" = "Saidright’s indigo follows the theme: airy in light mode, deep at night.";
+"tint.saidright" = "Saidright";
+"tint.neutral" = "System";
 "theme.system" = "System";
 "theme.light" = "Light";
 "theme.dark" = "Dark";

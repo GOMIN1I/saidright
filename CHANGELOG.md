@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.0.0 — 2026-10-18
+
+- **Main window without an empty band.** The mode switcher and settings button share the title bar's row with the close, minimise and zoom buttons, which are visible again in every window.
+
+- **Tables by voice.** Say “I need a table with three columns: ChatGPT, Claude and Gemini” and dictate the values: smart formatting returns a Markdown table. The words of the request are left out, a greeting before it is kept, and every cell must come from what you said (RU/EN/DE/ZH requests).
+- **A living app.** Saidright windows sit on a slowly drifting aurora — voice blue, violet and rose (#FF5257) over deep indigo at night, over airy mist by day — the product page's look. A ring of the same lights turns around the record button and brightens while you speak; the capsule breathes with a soft moving light. Prominent buttons use the blue-violet gradient; Finish uses blue → rose. All motion runs in Core Animation (no extra CPU measured) and stops with Reduce Motion.
+- **Saidright colours.** Windows take on the icon's indigo by default — airy in light mode, deep at night — with a voice-blue accent. Settings → Appearance → Window colour switches back to plain macOS greys.
+- **Introduction first.** On first launch only the introduction opens, centred, with an indigo hero, a fade-in and sliding steps; finishing it dissolves into the main window.
+- **Faster long dictations.** Whisper recognises finished phrases while you are still speaking, so after the stop only the last part is left (16 real recordings: 3.1 s → 0.7 s on average). The connection to a cloud text service is opened while you speak (≈0.15 s).
+- **Instant short phrases in light modes.** A short phrase that recognition already punctuated, with no fillers or repetitions, no longer waits for the cloud editor (it would return it unchanged): ≈1–2 s sooner and no request is sent.
+- gpt-oss models on OpenAI-compatible servers (e.g. Groq) work with “Answer without thinking” (they get the lowest effort they accept). Measured: Groq `openai/gpt-oss-120b` edits ≈2.3× faster than gpt-6-luna and passed every faithfulness check.
+- Tables dictated row by row (“в первой строке цена …”) are no longer rejected; tables with named fields (“имя и возраст”) get no empty first column. Thinking models on compatible servers get extra room so their answers are not cut off.
+- **Faster tables and lists.** Smart formatting is requested together with the edit instead of after it, and used when it fits the edited text (Groq gpt-oss-120b, table requests: median 1.37 s → 0.92 s).
+- Settings search: the search field no longer disappears when nothing matches (the window could get stuck); “Clear search” button and Esc.
+- Long app names no longer stretch the main window's buttons.
+- Product page redesigned: live capsule demo, interactive capsule playground, modes, voice tables, language practice, consistent dark screenshots in English and Russian.
+
 ## 0.6.0 — 2026-10-17
 
 - **New name: Saidright** (previously Saywell, a name another dictation app already uses). The data folder moves to `~/Library/Application Support/Saidright` on first launch, saved keys are carried over from the Keychain, exported mode files from Saywell still import. macOS asks for Microphone, Input Monitoring and Accessibility once more because the app identity changed.

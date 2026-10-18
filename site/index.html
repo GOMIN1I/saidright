@@ -3,313 +3,570 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Saidright — dictation that teaches you the language</title>
-<meta name="description" content="Free, open-source dictation for Mac that helps you learn the language you speak: talk in any app, and a friendly tip shows the one mistake worth fixing. Runs locally.">
-<meta property="og:title" content="Saidright — dictation that teaches you the language">
-<meta property="og:description" content="Speak in any Mac app, get your text at the cursor and a friendly correction of the one mistake worth fixing. Free, open source, local.">
+<title>Saidright — speak freely on your Mac</title>
+<meta name="description" content="Free, open-source dictation for Mac. Speak in any app: your words appear at the cursor, shaped as a message, a prompt, a checklist or a table — and a friendly tip helps you grow in the language you're learning. Runs on your Mac.">
+<meta property="og:title" content="Saidright — speak freely on your Mac">
+<meta property="og:description" content="Stop fearing imperfect words. Set your speech free. Dictation for Mac with smart formatting, voice tables and language tips. Free, open source, on-device.">
 <meta property="og:image" content="https://gomin1i.github.io/saidright/assets/social.png">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#0E1430">
 <link rel="icon" href="assets/favicon.png">
 <link rel="canonical" href="https://gomin1i.github.io/saidright/">
 <meta property="og:url" content="https://gomin1i.github.io/saidright/">
+<link rel="preload" href="assets/fonts/onest-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  /* Onest (SIL Open Font Licence) is served from this site: no request to a font service. */
+  @font-face { font-family: "Onest"; font-style: normal; font-weight: 400 800; font-display: swap; src: url(assets/fonts/onest-cyrillic.woff2) format("woff2"); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+  @font-face { font-family: "Onest"; font-style: normal; font-weight: 400 800; font-display: swap; src: url(assets/fonts/onest-latin-ext.woff2) format("woff2"); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+  @font-face { font-family: "Onest"; font-style: normal; font-weight: 400 800; font-display: swap; src: url(assets/fonts/onest-latin.woff2) format("woff2"); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+
+  /* Colours come from the app icon: the indigo tile (light at the top, deep at the bottom),
+     the warm capsule, the voice-blue bars and the coral cursor. */
   :root {
-    --bg: #0c1124; --bg2: #121a38; --panel: #161f42; --line: rgba(255,255,255,.09);
-    --text: #eef0f7; --muted: #a8afc6; --faint: #7a829c;
-    --pill: #f6f3ec; --voice: #4d78ff; --accent: #ff5a4e; --ok: #3fd08a;
-    --card: #15171c; --cardText: #f2f2f4; --cardMuted: rgba(255,255,255,.62);
-    --radius: 18px; --max: 1120px;
+    --night: #0E1430; --night2: #141B3D; --indigo: #2A3A78; --indigo-deep: #111833;
+    --voice: #3D6BFF; --voice-soft: #8FB0FF; --coral: #FF5A4E; --paper: #F6F3EC;
+    --mist: #F2F4FB; --mist2: #E8ECF8; --ink: #111833; --ink-muted: #4A5378; --ink-faint: #6B7395;
+    --on-dark: #EEF1FA; --on-dark-muted: #A9B1CF; --on-dark-faint: #7F88AC;
+    --line-dark: rgba(255,255,255,.10); --line-light: rgba(17,24,51,.10);
+    --ok: #3FD08A;
+    --max: 1160px; --r-lg: 28px; --r-md: 18px; --r-sm: 12px;
+    --ease-spring: cubic-bezier(.3, 1.25, .4, 1);
     color-scheme: dark;
   }
-  @media (prefers-color-scheme: light) {
-    :root:not([data-theme="dark"]) {
-      --bg: #f6f4ef; --bg2: #ece8df; --panel: #ffffff; --line: rgba(17,24,51,.10);
-      --text: #111833; --muted: #4a5272; --faint: #6c7390;
-      color-scheme: light;
-    }
-  }
   * { box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.55 -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; -webkit-font-smoothing: antialiased; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--night); color: var(--on-dark); font: 17px/1.55 "Onest", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; -webkit-font-smoothing: antialiased; font-feature-settings: "ss01"; overflow-x: hidden; }
   a { color: inherit; }
-  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 24px; }
-  @media (max-width: 600px) { .wrap { padding: 0 16px; } }
+  img { max-width: 100%; }
+  .wrap { max-width: var(--max); margin: 0 auto; padding: 0 28px; }
+  @media (max-width: 640px) { .wrap { padding: 0 16px; } body { font-size: 16px; } }
+  :focus-visible { outline: 2px solid var(--voice-soft); outline-offset: 3px; border-radius: 8px; }
+  .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
-  /* Nav */
-  nav { position: sticky; top: 0; z-index: 10; backdrop-filter: saturate(160%) blur(14px); -webkit-backdrop-filter: saturate(160%) blur(14px); background: color-mix(in srgb, var(--bg) 78%, transparent); border-bottom: 1px solid var(--line); }
-  nav .wrap { display: flex; align-items: center; gap: 20px; height: 60px; }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 650; letter-spacing: -.01em; text-decoration: none; }
+  /* ---------- Nav ---------- */
+  nav { position: fixed; inset: 0 0 auto; z-index: 50; transition: background .3s ease, border-color .3s ease; border-bottom: 1px solid transparent; }
+  nav.solid { background: rgba(14,20,48,.72); backdrop-filter: saturate(170%) blur(18px); -webkit-backdrop-filter: saturate(170%) blur(18px); border-color: var(--line-dark); }
+  nav .wrap { display: flex; align-items: center; gap: 22px; height: 64px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 650; font-size: 18px; letter-spacing: -.02em; text-decoration: none; }
   .brand img { width: 30px; height: 30px; }
-  .links { display: flex; gap: 22px; margin-left: auto; font-size: 14px; color: var(--muted); }
-  .links a { text-decoration: none; }
-  .links a:hover { color: var(--text); }
-  .lang { display: flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; font-size: 12px; }
-  .lang button { background: none; border: 0; color: var(--muted); padding: 5px 10px; cursor: pointer; font: inherit; }
-  .lang button[aria-pressed="true"] { background: var(--text); color: var(--bg); }
-  @media (max-width: 720px) { .links { display: none; } .lang { margin-left: auto; } }
+  .links { display: flex; gap: 24px; margin-left: auto; font-size: 15px; color: var(--on-dark-muted); }
+  .links a { text-decoration: none; transition: color .15s; }
+  .links a:hover { color: #fff; }
+  .lang { display: flex; padding: 3px; border-radius: 999px; background: rgba(255,255,255,.07); font-size: 13px; }
+  .lang button { background: none; border: 0; color: var(--on-dark-muted); padding: 5px 11px; border-radius: 999px; cursor: pointer; font: inherit; font-weight: 600; }
+  .lang button[aria-pressed="true"] { background: #fff; color: var(--night); }
+  .navcta { text-decoration: none; font-size: 14px; font-weight: 650; padding: 8px 16px; border-radius: 999px; background: var(--voice); color: #fff; }
+  @media (max-width: 860px) { .links { display: none; } .lang { margin-left: auto; } }
+  @media (max-width: 480px) { .navcta { display: none; } }
 
-  /* Hero */
-  .hero { position: relative; overflow: hidden; padding: 72px 0 64px; background: radial-gradient(1200px 520px at 70% -10%, rgba(77,120,255,.22), transparent 60%), radial-gradient(800px 400px at 0% 10%, rgba(255,90,78,.10), transparent 60%); }
-  .hero .wrap { display: grid; grid-template-columns: 1.05fr 1fr; gap: 48px; align-items: center; }
-  @media (max-width: 900px) { .hero .wrap { grid-template-columns: 1fr; } .hero { padding-top: 44px; } }
-  .eyebrow { display: inline-flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px; }
-  .eyebrow b { color: var(--ok); font-weight: 600; }
-  h1 { font-size: clamp(38px, 6vw, 64px); line-height: 1.04; letter-spacing: -.035em; margin: 18px 0 16px; font-weight: 720; }
-  h1 em { font-style: normal; background: linear-gradient(90deg, var(--voice), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-  .lead { font-size: 19px; color: var(--muted); max-width: 34em; margin: 0 0 28px; }
-  .cta { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; }
-  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 13px 22px; border-radius: 999px; font-weight: 600; text-decoration: none; border: 1px solid var(--line); transition: transform .15s ease, background .15s ease; }
-  .btn:hover { transform: translateY(-1px); }
-  .btn.primary { background: var(--text); color: var(--bg); border-color: transparent; }
-  .btn svg { width: 18px; height: 18px; }
-  .fine { font-size: 13px; color: var(--faint); margin-top: 14px; }
+  /* ---------- Buttons ---------- */
+  .btn { display: inline-flex; align-items: center; gap: 10px; padding: 15px 26px; border-radius: 999px; font-weight: 650; font-size: 16px; text-decoration: none; transition: transform .2s var(--ease-spring), box-shadow .2s ease, background .2s ease; border: 0; cursor: pointer; font-family: inherit; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn:active { transform: translateY(0) scale(.98); }
+  .btn svg { width: 18px; height: 18px; flex: none; }
+  .btn.primary { background: #fff; color: var(--night); box-shadow: 0 10px 40px rgba(61,107,255,.35); }
+  .btn.ghost { background: rgba(255,255,255,.08); color: #fff; box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); }
+  .btn.voice { background: var(--voice); color: #fff; box-shadow: 0 10px 30px rgba(61,107,255,.35); }
 
-  /* Hero stage: a text field, the capsule, the learning card */
-  .stage { position: relative; height: 420px; border-radius: 22px; border: 1px solid var(--line); background: radial-gradient(500px 300px at 85% 110%, rgba(255,90,78,.28), transparent 70%), radial-gradient(520px 320px at 10% 100%, rgba(77,120,255,.32), transparent 70%), linear-gradient(160deg, #26336d, #141b3f 60%, #221a3a); box-shadow: 0 30px 80px rgba(0,0,0,.35); overflow: hidden; }
-  .doc { position: absolute; inset: 22px 22px auto 22px; background: #fbfaf7; color: #1c2033; border-radius: 12px; padding: 16px 18px 18px; min-height: 132px; box-shadow: 0 8px 30px rgba(0,0,0,.25); font-size: 15px; }
-  .doc .bar { display: flex; gap: 6px; margin-bottom: 12px; }
-  .doc .bar i { width: 10px; height: 10px; border-radius: 50%; background: #e1ded6; display: block; }
-  .doc .typed { white-space: pre-wrap; }
-  .doc .caret { display: inline-block; width: 2px; height: 1.1em; background: #3d6bff; vertical-align: -2px; margin-left: 1px; animation: blink 1s steps(1) infinite; }
-  @keyframes blink { 50% { opacity: 0; } }
-  .dock { position: absolute; left: 0; right: 0; bottom: 26px; display: flex; justify-content: center; }
-  .surface { position: relative; background: var(--card); color: var(--cardText); border-radius: 17px; height: 34px; width: 86px; box-shadow: 0 10px 30px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08); border: .5px solid rgba(255,255,255,.14); overflow: hidden;
-    transition: width .42s cubic-bezier(.3,1.25,.4,1), height .42s cubic-bezier(.3,1.25,.4,1), border-radius .42s ease, opacity .25s ease, transform .35s cubic-bezier(.3,1.3,.4,1); }
-  .surface.hidden { opacity: 0; transform: scale(.6) translateY(10px); }
-  .surface.card { width: min(372px, calc(100vw - 64px)); height: 214px; border-radius: 20px; }
-  .bars { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 3.5px; transition: opacity .15s ease; }
-  .bars i { width: 3px; height: 4px; border-radius: 2px; background: var(--voice); box-shadow: 0 0 6px rgba(77,120,255,.6); transition: height .09s ease-out, background .3s ease; }
-  .surface.processing .bars i { background: #ff5fa8; box-shadow: 0 0 6px rgba(255,95,168,.6); }
-  .surface.done .bars i { background: var(--ok); box-shadow: none; }
-  .surface.done .bars { opacity: 0; }
-  .surface.card .bars { opacity: 0; }
-  /* Done: the bars fade out and one check mark sits in the middle of the capsule. */
-  .tick { position: absolute; left: 50%; top: 50%; width: 18px; height: 18px; margin: -9px 0 0 -9px; color: var(--ok); opacity: 0; transform: scale(.6); transition: opacity .2s ease, transform .25s cubic-bezier(.3,1.4,.5,1); }
-  .surface.done .tick { opacity: 1; transform: scale(1); }
-  .surface.card .tick { opacity: 0; }
-  .cardbody { position: absolute; inset: 0; padding: 14px 16px; opacity: 0; transition: opacity .22s ease .16s; font-size: 13px; line-height: 1.45; }
-  .surface.card .cardbody { opacity: 1; }
-  .badge { display: inline-flex; gap: 6px; align-items: center; font-size: 11px; font-weight: 600; color: #ff8a65; background: rgba(255,138,101,.16); padding: 3px 8px; border-radius: 999px; }
-  .corr { font-size: 16px; margin: 10px 0 8px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
-  .corr s { color: rgba(255,255,255,.55); }
-  .corr b { font-weight: 650; }
-  .why { color: var(--cardText); }
+  /* ---------- Hero ---------- */
+  .hero { position: relative; padding: 132px 0 96px; overflow: hidden; isolation: isolate; }
+  .hero::before { content: ""; position: absolute; inset: -20% -10% 0; z-index: -1;
+    background:
+      radial-gradient(40% 50% at var(--gx, 72%) var(--gy, 38%), rgba(61,107,255,.42), transparent 70%),
+      radial-gradient(28% 36% at 90% 82%, rgba(255,90,78,.20), transparent 70%),
+      radial-gradient(50% 60% at 8% 10%, rgba(42,58,120,.9), transparent 70%),
+      linear-gradient(180deg, #19245A 0%, var(--night) 70%);
+    transition: background-position 1s ease; }
+  .hero .wrap { display: grid; grid-template-columns: 1fr 1.08fr; gap: 56px; align-items: center; }
+  @media (max-width: 980px) { .hero .wrap { grid-template-columns: 1fr; gap: 44px; } .hero { padding-top: 108px; } }
+  .kicker { display: inline-flex; align-items: center; gap: 10px; font-size: 14px; color: var(--on-dark-muted); }
+  .kicker img { width: 22px; height: 22px; }
+  h1 { font-size: clamp(52px, 8.2vw, 104px); line-height: .96; letter-spacing: -.05em; font-weight: 750; margin: 20px 0 22px; }
+  h1 .cursor { display: inline-block; width: .075em; height: .82em; margin-left: .06em; vertical-align: -.04em; background: var(--coral); border-radius: .02em; position: relative; animation: blink 1.1s steps(1) infinite; }
+  h1 .cursor::before, h1 .cursor::after { content: ""; position: absolute; left: -.07em; width: .215em; height: .07em; background: inherit; border-radius: .04em; }
+  h1 .cursor::before { top: 0; } h1 .cursor::after { bottom: 0; }
+  @keyframes blink { 55% { opacity: 0; } }
+  .lead { font-size: clamp(18px, 1.6vw, 21px); line-height: 1.5; color: var(--on-dark-muted); max-width: 31em; margin: 0 0 32px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .fine { font-size: 14px; color: var(--on-dark-faint); margin-top: 18px; }
+
+  /* Stage: a document window above the Dock area where the real capsule lives. */
+  .stage { position: relative; aspect-ratio: 1.12; max-height: 560px; border-radius: var(--r-lg); overflow: hidden;
+    background: radial-gradient(60% 50% at 20% 100%, rgba(61,107,255,.38), transparent 70%), radial-gradient(50% 45% at 92% 92%, rgba(255,90,78,.30), transparent 70%), linear-gradient(165deg, #2B3B7E, #162050 55%, #1F1A44);
+    box-shadow: 0 40px 120px rgba(0,0,0,.45), inset 0 0 0 1px rgba(255,255,255,.10); }
+  .win { position: absolute; inset: 24px 24px auto; background: #FBFAF7; color: #1A1F36; border-radius: 14px; box-shadow: 0 16px 50px rgba(0,0,0,.35); overflow: hidden; }
+  .win .top { display: flex; align-items: center; gap: 7px; padding: 12px 14px; border-bottom: 1px solid #EEEBE4; font-size: 13px; color: #8A8778; }
+  .win .top i { width: 11px; height: 11px; border-radius: 50%; display: block; background: #E4E0D7; }
+  .win .top span { margin-left: 8px; font-weight: 600; color: #5F5C52; }
+  .field { padding: 16px 18px 20px; min-height: 196px; font-size: 15.5px; line-height: 1.5; }
+  .field p { margin: 0 0 8px; }
+  .field ul { list-style: none; padding: 0; margin: 0 0 8px; }
+  .field li { display: flex; gap: 9px; align-items: center; margin: 3px 0; }
+  .field li::before { content: ""; width: 15px; height: 15px; border-radius: 4px; border: 1.6px solid #B7B3A8; flex: none; }
+  .field table { border-collapse: collapse; font-size: 14px; margin: 2px 0 8px; width: 100%; }
+  .field th, .field td { border: 1px solid #E6E2D9; padding: 5px 9px; text-align: left; }
+  .field th { background: #F1EEE7; font-weight: 650; }
+  .field .appear { animation: rise .35s var(--ease-spring) both; }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } }
+  .caret { display: inline-block; width: 2px; height: 1.15em; background: var(--voice); vertical-align: -3px; animation: blink 1s steps(1) infinite; }
+  .said { position: absolute; left: 50%; bottom: 84px; transform: translateX(-50%); width: min(88%, 470px); text-align: center; font-size: 14.5px; line-height: 1.45; color: rgba(255,255,255,.88); padding: 10px 16px; border-radius: 16px; background: rgba(10,14,34,.42); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.10); opacity: 0; transition: opacity .3s ease; }
+  .said.on { opacity: 1; }
+  .said b { font-weight: 500; color: var(--on-dark-faint); font-size: 12px; display: block; margin-bottom: 2px; }
+  .said .w { opacity: .25; transition: opacity .18s ease; }
+  .said .w.on { opacity: 1; }
+  .dockline { position: absolute; left: 0; right: 0; bottom: 26px; display: flex; justify-content: center; }
+  .modechip { position: absolute; left: 22px; bottom: 26px; z-index: 2; display: inline-flex; gap: 8px; align-items: center; font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; color: #fff; background: rgba(10,14,34,.5); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); box-shadow: inset 0 0 0 1px rgba(255,255,255,.14); transition: transform .3s var(--ease-spring); }
+  @media (max-width: 640px) {
+    .stage { aspect-ratio: auto; height: 520px; }
+    .win { inset: 62px 14px auto; }
+    .field { min-height: 170px; font-size: 14.5px; }
+    .modechip { left: auto; right: 14px; top: 14px; bottom: auto; }
+    .said { bottom: 78px; }
+  }
+  .modechip kbd { font: 600 11px/1 "Onest", sans-serif; padding: 3px 6px; border-radius: 6px; background: rgba(255,255,255,.14); color: var(--on-dark-muted); }
+  .modechip.flip { transform: scale(1.08); }
+
+  /* ---------- The capsule (matches the app's Ink and Glass materials) ---------- */
+  .capsule { --rec: #4F9DFF; --proc: #FF5FA8; --done: #3FD08A; --err: #FF6B5E; --tint: var(--rec); --s: 1;
+    position: relative; height: calc(34px * var(--s)); min-width: calc(78px * var(--s)); padding: 0 calc(18px * var(--s)); border-radius: 999px;
+    display: inline-flex; align-items: center; justify-content: center; gap: calc(6px * var(--s));
+    background: radial-gradient(70% 120% at 50% 120%, color-mix(in srgb, var(--tint) 32%, transparent), transparent 70%), linear-gradient(180deg, #24262C, #0D0E11 55%);
+    box-shadow: 0 12px 30px rgba(0,0,0,.5), 0 2px 6px rgba(0,0,0,.35), inset 0 0 0 .75px rgba(255,255,255,.16), inset 0 1px 0 rgba(255,255,255,.10);
+    transition: opacity .3s ease, transform .4s var(--ease-spring), min-width .4s var(--ease-spring), background .3s ease; }
+  .capsule.glass { background: radial-gradient(80% 120% at 50% 120%, color-mix(in srgb, var(--tint) 30%, transparent), transparent 75%), rgba(255,255,255,.14); backdrop-filter: blur(14px) saturate(180%); -webkit-backdrop-filter: blur(14px) saturate(180%); box-shadow: 0 12px 30px rgba(0,0,0,.35), inset 0 0 0 .75px rgba(255,255,255,.35), inset 0 1px 0 rgba(255,255,255,.4); }
+  .capsule.hidden { opacity: 0; transform: scale(.62); }
+  .capsule .bars { display: flex; align-items: center; gap: calc(3.5px * var(--s)); height: 100%; }
+  .capsule .bars i { display: block; width: calc(3px * var(--s)); height: calc(4px * var(--s)); border-radius: 2px; background: var(--tint); box-shadow: 0 0 6px color-mix(in srgb, var(--tint) 60%, transparent); }
+  .capsule .glyph { display: none; width: calc(11px * var(--s)); height: calc(11px * var(--s)); color: var(--tint); animation: pop .3s var(--ease-spring); }
+  .capsule.done .glyph.check, .capsule.error .glyph.bang { display: block; }
+  @keyframes pop { from { transform: scale(.3); opacity: 0; } }
+  .capsule.recording { --tint: var(--rec); }
+  .capsule.processing { --tint: var(--proc); }
+  .capsule.done { --tint: var(--done); }
+  .capsule.error { --tint: var(--err); }
+  .capsule.shake { animation: shake .35s ease; }
+  @keyframes shake { 25% { translate: -4px; } 75% { translate: 4px; } }
+
+  /* Learning card that grows out of the capsule. */
+  .card { position: absolute; left: 50%; bottom: 26px; width: min(372px, calc(100% - 40px)); transform: translateX(-50%) scale(.3); transform-origin: 50% 100%; opacity: 0; pointer-events: none; border-radius: 20px; padding: 16px 18px 58px; background: linear-gradient(180deg, #232429, #17181C); color: #F2F2F4; font-size: 14px; line-height: 1.45; box-shadow: 0 24px 60px rgba(0,0,0,.5), inset 0 0 0 .75px rgba(255,255,255,.14); transition: transform .46s var(--ease-spring), opacity .25s ease; }
+  .card.on { transform: translateX(-50%) scale(1); opacity: 1; }
+  .badge { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; font-weight: 650; color: #FF8A65; background: rgba(255,138,101,.16); padding: 4px 10px; border-radius: 999px; }
+  .corr { font-size: 18px; margin: 10px 0 8px; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+  .corr s { color: rgba(255,255,255,.5); }
+  .corr b { font-weight: 700; }
   .acts { position: absolute; left: 16px; right: 16px; bottom: 14px; display: flex; gap: 6px; }
-  .acts span { font-size: 12px; font-weight: 500; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,.1); }
-  .acts .go { margin-left: auto; background: var(--accent); color: #fff; }
+  .acts span { font-size: 13px; font-weight: 600; padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.1); }
+  .acts .go { margin-left: auto; background: var(--coral); color: #fff; }
 
-  /* Sections */
-  section { padding: 84px 0; }
-  section + section { border-top: 1px solid var(--line); }
-  h2 { font-size: clamp(28px, 4vw, 40px); letter-spacing: -.025em; line-height: 1.1; margin: 0 0 14px; }
-  .sub { color: var(--muted); font-size: 18px; max-width: 40em; margin: 0 0 40px; }
-  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  @media (max-width: 900px) { .grid3 { grid-template-columns: 1fr; } }
-  .feat { background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; }
-  .feat h3 { margin: 12px 0 6px; font-size: 17px; letter-spacing: -.01em; }
-  .feat p { margin: 0; color: var(--muted); font-size: 15px; }
-  .ico { width: 36px; height: 36px; border-radius: 10px; display: grid; place-items: center; background: color-mix(in srgb, var(--voice) 18%, transparent); color: var(--voice); }
-  .ico.c { background: color-mix(in srgb, var(--accent) 16%, transparent); color: var(--accent); }
-  .ico.g { background: color-mix(in srgb, var(--ok) 16%, transparent); color: var(--ok); }
-  .ico svg { width: 20px; height: 20px; }
+  /* ---------- Thesis ---------- */
+  .thesis { padding: 140px 0 150px; background: linear-gradient(180deg, var(--night), #0A0F26); text-align: left; }
+  .thesis h2 { font-size: clamp(40px, 6.6vw, 92px); line-height: 1.0; letter-spacing: -.045em; font-weight: 750; margin: 0; max-width: 12.5em; }
+  .thesis h2 .soft { color: var(--on-dark-faint); transition: color 1.2s ease; }
+  .thesis.lit h2 .soft { color: var(--on-dark); }
+  .thesis p { font-size: clamp(18px, 1.7vw, 22px); color: var(--on-dark-muted); max-width: 34em; margin: 34px 0 0; }
 
-  .shots { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; align-items: start; }
-  @media (max-width: 900px) { .shots { grid-template-columns: 1fr; } }
-  .shot { margin: 0; border-radius: 14px; overflow: hidden; border: 1px solid var(--line); box-shadow: 0 20px 50px rgba(0,0,0,.25); background: var(--panel); }
+  /* ---------- Light sections ---------- */
+  .light { background: var(--mist); color: var(--ink); color-scheme: light; }
+  .light .muted { color: var(--ink-muted); }
+  section { padding: 120px 0; position: relative; }
+  @media (max-width: 640px) { section { padding: 84px 0; } .thesis { padding: 96px 0; } }
+  h2 { font-size: clamp(34px, 4.6vw, 60px); line-height: 1.02; letter-spacing: -.04em; font-weight: 750; margin: 0 0 18px; max-width: 16em; }
+  .intro { font-size: clamp(18px, 1.5vw, 20px); max-width: 36em; margin: 0 0 56px; color: var(--on-dark-muted); }
+  .light .intro { color: var(--ink-muted); }
+
+  /* Design playground */
+  .play { display: grid; grid-template-columns: 1.25fr 1fr; gap: 28px; align-items: stretch; }
+  @media (max-width: 980px) { .play { grid-template-columns: 1fr; } }
+  .desk { position: relative; min-height: 420px; border-radius: var(--r-lg); overflow: hidden; display: grid; place-items: end center; padding-bottom: 46px;
+    background: radial-gradient(50% 60% at 30% 30%, #4A63C9, transparent 70%), radial-gradient(45% 55% at 85% 75%, #E0705F, transparent 70%), linear-gradient(140deg, #2A3A78, #19224F); transition: background .6s ease; }
+  .desk[data-wall="dusk"] { background: radial-gradient(50% 60% at 25% 30%, #C77DFF, transparent 70%), radial-gradient(45% 55% at 85% 75%, #FF9F68, transparent 70%), linear-gradient(140deg, #4B2C70, #1C1638); }
+  .desk[data-wall="paper"] { background: radial-gradient(50% 60% at 25% 30%, #FFFFFF, transparent 70%), radial-gradient(45% 55% at 80% 80%, #C9D6FF, transparent 70%), linear-gradient(140deg, #ECEFF8, #D5DCF0); }
+  .desk .capsule { --s: 1.6; }
+  .desk .wallpick { position: absolute; top: 18px; left: 18px; display: flex; gap: 8px; }
+  .wallpick button { width: 26px; height: 26px; border-radius: 50%; border: 2px solid rgba(255,255,255,.7); cursor: pointer; padding: 0; }
+  .wallpick button[aria-pressed="true"] { outline: 2px solid #fff; outline-offset: 2px; }
+  .controls { background: #fff; border-radius: var(--r-lg); padding: 26px; box-shadow: 0 1px 0 var(--line-light), 0 24px 60px rgba(17,24,51,.08); display: grid; gap: 22px; align-content: start; }
+  .ctl h3 { font-size: 15px; font-weight: 650; margin: 0 0 10px; color: var(--ink); }
+  .seg { display: flex; flex-wrap: wrap; gap: 4px; padding: 4px; border-radius: 14px; background: var(--mist2); }
+  .seg button { flex: 1 1 auto; border: 0; background: none; padding: 9px 12px; border-radius: 10px; font: 600 14px "Onest", sans-serif; color: var(--ink-muted); cursor: pointer; transition: background .2s, color .2s, box-shadow .2s; }
+  .seg button[aria-pressed="true"] { background: #fff; color: var(--ink); box-shadow: 0 1px 3px rgba(17,24,51,.15); }
+  .swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+  .swatch { display: flex; gap: 3px; align-items: center; padding: 8px 12px; border-radius: 999px; border: 0; background: #12141A; cursor: pointer; box-shadow: 0 0 0 2px transparent; transition: box-shadow .2s, transform .2s var(--ease-spring); }
+  .swatch:hover { transform: translateY(-1px); }
+  .swatch i { width: 12px; height: 12px; border-radius: 50%; display: block; }
+  .swatch[aria-pressed="true"] { box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--voice); }
+  .swatch span { color: #fff; font: 600 13px "Onest", sans-serif; margin-left: 6px; }
+  .shotband { margin-top: 28px; display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
+  @media (max-width: 980px) { .shotband { grid-template-columns: 1fr; } }
+  .shot { margin: 0; border-radius: 16px; overflow: hidden; background: var(--night); box-shadow: 0 30px 80px rgba(14,20,48,.28), 0 0 0 1px rgba(17,24,51,.08); }
   .shot img { display: block; width: 100%; height: auto; }
-  .shot figcaption { font-size: 13px; color: var(--faint); padding: 10px 14px; }
-  .stack { display: grid; gap: 18px; }
-  /* Stretches to the height of the cards beside it, so no empty band appears under it. */
-  .tipshot { margin: 0; align-self: stretch; display: flex; flex-direction: column; align-items: center; justify-content: center; background: radial-gradient(420px 260px at 50% 60%, rgba(255,90,78,.20), transparent 70%), var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; }
-  .tipshot img { width: min(100%, 410px); height: auto; filter: drop-shadow(0 18px 40px rgba(0,0,0,.35)); }
-  .tipshot figcaption { font-size: 13px; color: var(--faint); margin-top: 10px; text-align: center; }
-  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-  @media (max-width: 600px) { .grid2 { grid-template-columns: 1fr; } }
+  .caption { font-size: 15px; color: var(--ink-muted); margin: 0; }
+  .caption b { color: var(--ink); font-weight: 650; display: block; font-size: 22px; letter-spacing: -.02em; margin-bottom: 8px; }
+  .tints { display: flex; gap: 14px; margin-top: 18px; }
+  .tints figure { margin: 0; text-align: center; font-size: 13px; color: var(--ink-muted); }
+  .tints .sw { width: 92px; height: 58px; border-radius: 12px; display: grid; grid-template-columns: 1fr 1fr; overflow: hidden; box-shadow: 0 0 0 1px var(--line-light); margin-bottom: 6px; }
 
-  table { width: 100%; border-collapse: collapse; font-size: 15px; }
-  th, td { text-align: left; padding: 12px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  th { color: var(--faint); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
-  td b { font-weight: 650; }
-  .tablewrap { overflow-x: auto; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 6px 12px; }
-  .note { font-size: 13px; color: var(--faint); margin-top: 12px; }
+  /* Modes */
+  .modes { background: radial-gradient(60% 50% at 90% 0%, rgba(61,107,255,.30), transparent 70%), linear-gradient(180deg, #121A44, var(--night)); }
+  .tabs { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 26px; align-items: center; }
+  .tabs button { display: inline-flex; gap: 8px; align-items: center; border: 0; cursor: pointer; padding: 11px 18px; border-radius: 999px; background: rgba(255,255,255,.07); color: var(--on-dark-muted); font: 650 15px "Onest", sans-serif; box-shadow: inset 0 0 0 1px rgba(255,255,255,.08); transition: background .2s, color .2s; }
+  .tabs button svg { width: 16px; height: 16px; }
+  .tabs button[aria-selected="true"] { background: #fff; color: var(--night); }
+  .tabs .hint { margin-left: auto; font-size: 14px; color: var(--on-dark-faint); }
+  .tabs kbd, .k { font: 650 13px "Onest", sans-serif; padding: 3px 8px; border-radius: 7px; background: rgba(255,255,255,.12); color: #fff; }
+  .modepanel { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+  @media (max-width: 860px) { .modepanel { grid-template-columns: 1fr; } .tabs .hint { margin-left: 0; width: 100%; } }
+  .pane { border-radius: var(--r-md); padding: 26px; min-height: 230px; }
+  .pane.say { background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1px var(--line-dark); }
+  .pane.get { background: var(--paper); color: #1A1F36; box-shadow: 0 30px 70px rgba(0,0,0,.35); }
+  .pane h3 { font-size: 14px; font-weight: 600; margin: 0 0 14px; color: var(--on-dark-faint); }
+  .pane.get h3 { color: #8A8778; }
+  .pane .quote { font-size: 20px; line-height: 1.5; color: var(--on-dark-muted); }
+  .pane .quote em { font-style: normal; color: var(--on-dark-faint); }
+  .pane.get .out { font-size: 18px; line-height: 1.55; }
+  .pane.get .out p { margin: 0 0 10px; }
+  .pane.get .out ol, .pane.get .out ul { margin: 0 0 10px; padding-left: 22px; }
+  .modedesc { margin: 22px 0 0; color: var(--on-dark-muted); max-width: 46em; }
+  .own { margin-top: 40px; display: grid; grid-template-columns: 1fr 1.1fr; gap: 32px; align-items: center; }
+  @media (max-width: 860px) { .own { grid-template-columns: 1fr; } }
+  .own h3 { font-size: 26px; letter-spacing: -.02em; margin: 0 0 10px; }
+  .own p { color: var(--on-dark-muted); margin: 0; }
+  .own .shot { box-shadow: 0 30px 80px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.08); }
 
-  .steps { counter-reset: s; display: grid; gap: 14px; max-width: 760px; }
-  .step { display: grid; grid-template-columns: 40px 1fr; gap: 14px; align-items: start; background: var(--panel); border: 1px solid var(--line); border-radius: var(--radius); padding: 18px; }
-  .step::before { counter-increment: s; content: counter(s); width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; font-weight: 700; background: var(--text); color: var(--bg); }
-  .step h3 { margin: 4px 0 4px; font-size: 16px; }
-  .step p { margin: 0; color: var(--muted); font-size: 15px; }
-  code { font: 13px ui-monospace, SFMono-Regular, Menlo, monospace; background: color-mix(in srgb, var(--text) 9%, transparent); padding: 2px 6px; border-radius: 6px; }
+  /* Structure: checklists and tables */
+  .examples { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  @media (max-width: 980px) { .examples { grid-template-columns: 1fr; } }
+  .ex { background: #fff; border-radius: var(--r-lg); padding: 24px; box-shadow: 0 1px 0 var(--line-light), 0 24px 60px rgba(17,24,51,.08); display: flex; flex-direction: column; gap: 16px; }
+  .ex .who { font-size: 14px; font-weight: 650; color: var(--voice); }
+  .ex .spoken { font-size: 15px; color: var(--ink-muted); line-height: 1.5; padding: 12px 14px; border-radius: 14px; background: var(--mist); position: relative; }
+  .ex .spoken::before { content: ""; position: absolute; left: 14px; top: -6px; width: 12px; height: 12px; background: var(--mist); transform: rotate(45deg); }
+  .ex .result { font-size: 15.5px; color: var(--ink); line-height: 1.5; }
+  .ex .result p { margin: 0 0 8px; }
+  .ex .result ul { list-style: none; padding: 0; margin: 0; }
+  .ex .result li { display: flex; gap: 10px; align-items: center; margin: 6px 0; opacity: 0; transform: translateX(-6px); transition: opacity .35s ease, transform .4s var(--ease-spring); }
+  .ex .result li::before { content: ""; width: 16px; height: 16px; border-radius: 5px; border: 1.6px solid #B8BED6; flex: none; transition: background .2s, border-color .2s; }
+  .ex .result li.ticked::before { background: var(--voice) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8.5l2.6 2.6L12 5.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center/14px no-repeat; border-color: var(--voice); }
+  .ex .result li.ticked { color: var(--ink-faint); text-decoration: line-through; text-decoration-color: #B8BED6; }
+  .ex .result table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  .ex .result th, .ex .result td { padding: 7px 8px; border-bottom: 1px solid var(--line-light); text-align: left; opacity: 0; transition: opacity .35s ease; }
+  .ex .result th { font-weight: 650; color: var(--ink-muted); font-size: 13px; }
+  .shown .result li { opacity: 1; transform: none; }
+  .shown .result th, .shown .result td { opacity: 1; }
+  .aiband { margin-top: 28px; border-radius: var(--r-lg); padding: 34px; display: grid; grid-template-columns: 1.5fr 1fr; gap: 32px; align-items: center; background: linear-gradient(120deg, #1B2556, #2A3A78); color: var(--on-dark); }
+  @media (max-width: 760px) { .aiband { grid-template-columns: 1fr; } }
+  .aiband h3 { font-size: 26px; letter-spacing: -.02em; margin: 0 0 8px; }
+  .aiband p { margin: 0; color: var(--on-dark-muted); }
+  .aiband .logos { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+  @media (max-width: 760px) { .aiband .logos { justify-content: flex-start; } }
+  .aiband .logos span { padding: 8px 14px; border-radius: 999px; background: rgba(255,255,255,.09); font-weight: 650; font-size: 14px; }
 
-  details { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; padding: 14px 18px; max-width: 820px; }
-  details + details { margin-top: 10px; }
-  summary { cursor: pointer; font-weight: 600; }
-  details p { color: var(--muted); margin: 10px 0 0; }
+  /* Languages */
+  .langs { background: radial-gradient(45% 50% at 10% 20%, rgba(255,90,78,.22), transparent 70%), radial-gradient(50% 50% at 95% 90%, rgba(61,107,255,.25), transparent 70%), #0B1029; }
+  .grow { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: center; }
+  @media (max-width: 980px) { .grow { grid-template-columns: 1fr; } }
+  .tipimg { margin: 0; display: grid; place-items: center; }
+  .tipimg img { width: min(100%, 440px); height: auto; filter: drop-shadow(0 40px 80px rgba(0,0,0,.55)); }
+  .points { display: grid; gap: 22px; margin: 0; padding: 0; list-style: none; }
+  .points li { display: grid; grid-template-columns: 40px 1fr; gap: 14px; }
+  .points .dot { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: rgba(255,255,255,.07); box-shadow: inset 0 0 0 1px var(--line-dark); }
+  .points .dot svg { width: 20px; height: 20px; color: var(--coral); }
+  .points h3 { font-size: 18px; margin: 2px 0 4px; letter-spacing: -.01em; }
+  .points p { margin: 0; color: var(--on-dark-muted); font-size: 16px; }
+  .langcloud { margin-top: 64px; display: flex; flex-wrap: wrap; gap: 8px; }
+  .langcloud span { padding: 7px 14px; border-radius: 999px; background: rgba(255,255,255,.06); color: var(--on-dark-muted); font-size: 14px; box-shadow: inset 0 0 0 1px var(--line-dark); }
+  .langcloud span.hot { background: rgba(255,90,78,.16); color: #FFB3AC; box-shadow: none; }
 
-  footer { padding: 48px 0 64px; color: var(--faint); font-size: 13px; border-top: 1px solid var(--line); }
-  footer .wrap { display: grid; gap: 10px; }
-  .credits { max-width: 860px; }
+  /* Engines, privacy, openness */
+  .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
+  @media (max-width: 980px) { .grid3 { grid-template-columns: 1fr; } }
+  .tile { background: #fff; border-radius: var(--r-lg); padding: 26px; box-shadow: 0 1px 0 var(--line-light), 0 20px 50px rgba(17,24,51,.07); }
+  .tile h3 { margin: 0 0 8px; font-size: 20px; letter-spacing: -.02em; }
+  .tile p { margin: 0; color: var(--ink-muted); font-size: 16px; }
+  .tile .big { font-size: 44px; font-weight: 750; letter-spacing: -.04em; color: var(--indigo); margin-bottom: 4px; }
+  .engines { margin-top: 22px; background: #fff; border-radius: var(--r-lg); padding: 10px 26px; box-shadow: 0 1px 0 var(--line-light), 0 20px 50px rgba(17,24,51,.07); overflow-x: auto; }
+  .engines table { width: 100%; border-collapse: collapse; font-size: 16px; min-width: 640px; }
+  .engines th, .engines td { text-align: left; padding: 16px 10px; border-bottom: 1px solid var(--line-light); }
+  .engines tr:last-child td { border-bottom: 0; }
+  .engines th { font-size: 13px; color: var(--ink-faint); font-weight: 600; }
+  .engines td b { font-weight: 650; }
+  .note { font-size: 14px; color: var(--ink-faint); margin: 16px 0 0; max-width: 60em; }
+  .trust { background: linear-gradient(180deg, var(--mist), #E3E8F6); }
+  .trust .tile svg { width: 26px; height: 26px; color: var(--voice); margin-bottom: 14px; }
+
+  /* Install */
+  .install { background: var(--night); }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; counter-reset: s; list-style: none; padding: 0; margin: 0; }
+  @media (max-width: 980px) { .steps { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 560px) { .steps { grid-template-columns: 1fr; } }
+  .steps li { border-radius: var(--r-md); padding: 22px; background: rgba(255,255,255,.05); box-shadow: inset 0 0 0 1px var(--line-dark); }
+  .steps li::before { counter-increment: s; content: counter(s); display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; background: var(--voice); color: #fff; font-weight: 750; margin-bottom: 14px; }
+  .steps h3 { margin: 0 0 6px; font-size: 18px; }
+  .steps p { margin: 0; color: var(--on-dark-muted); font-size: 15px; }
+  .install .final { margin-top: 48px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+  .install .final p { color: var(--on-dark-faint); font-size: 14px; margin: 0; flex-basis: 100%; }
+  code { font: 14px ui-monospace, SFMono-Regular, Menlo, monospace; background: rgba(255,255,255,.1); padding: 2px 7px; border-radius: 6px; }
+
+  .faq { background: var(--night); padding-top: 40px; }
+  details { border-bottom: 1px solid var(--line-dark); padding: 20px 0; max-width: 860px; }
+  summary { cursor: pointer; font-weight: 650; font-size: 19px; list-style: none; display: flex; justify-content: space-between; gap: 20px; }
+  summary::-webkit-details-marker { display: none; }
+  summary::after { content: "+"; color: var(--on-dark-faint); font-weight: 400; font-size: 24px; line-height: 1; transition: transform .25s var(--ease-spring); }
+  details[open] summary::after { transform: rotate(45deg); }
+  details p { color: var(--on-dark-muted); margin: 12px 0 0; max-width: 46em; }
+
+  footer { padding: 56px 0 72px; color: var(--on-dark-faint); font-size: 14px; border-top: 1px solid var(--line-dark); background: var(--night); }
+  footer .wrap { display: grid; gap: 12px; }
+  footer .credits { max-width: 900px; }
 
   @media (prefers-reduced-motion: reduce) {
-    *, *::before, *::after { transition: none !important; animation: none !important; }
+    *, *::before, *::after { transition-duration: .01ms !important; animation: none !important; }
+    html { scroll-behavior: auto; }
   }
-  :focus-visible { outline: 2px solid var(--voice); outline-offset: 3px; border-radius: 6px; }
 </style>
 </head>
 <body>
-<nav>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <!-- The capsule's "done" glyph: the bold check mark the app draws (SF Symbols "checkmark", bold). -->
+  <symbol id="check" viewBox="0 0 16 16"><path d="M2.6 8.6 6.2 12.1 13.4 3.9" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="bang" viewBox="0 0 16 16"><path d="M8 2.6v7" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/><circle cx="8" cy="13.2" r="1.5" fill="currentColor"/></symbol>
+</svg>
+
+<nav id="nav">
   <div class="wrap">
     <a class="brand" href="#top"><img src="assets/icon-512.png" alt="">Saidright</a>
     <div class="links">
-      <a href="#learn" data-i18n="nav.learn">Learning</a>
-      <a href="#features" data-i18n="nav.features">Features</a>
-      <a href="#privacy" data-i18n="nav.privacy">Privacy</a>
-      <a href="#install" data-i18n="nav.install">Install</a>
-      <a class="gh" href="#" data-repo-link>GitHub</a>
+      <a href="#design" data-i18n="nav.design">Design</a>
+      <a href="#modes" data-i18n="nav.modes">Modes</a>
+      <a href="#structure" data-i18n="nav.structure">Tables</a>
+      <a href="#languages" data-i18n="nav.languages">Languages</a>
+      <a href="#trust" data-i18n="nav.trust">Privacy</a>
+      <a href="#" data-repo-link>GitHub</a>
     </div>
     <div class="lang" role="group" aria-label="Language">
       <button type="button" data-lang="en" aria-pressed="true">EN</button>
       <button type="button" data-lang="ru" aria-pressed="false">RU</button>
     </div>
+    <a class="navcta" href="#install" data-i18n="nav.get">Download</a>
   </div>
 </nav>
 
 <header class="hero" id="top">
   <div class="wrap">
     <div>
-      <span class="eyebrow"><b>●</b> <span data-i18n="hero.eyebrow">Free and open source · dictation + language coach for Mac</span></span>
-      <h1 data-i18n-html="hero.title">Speak naturally.<br><em>Get better every time.</em></h1>
-      <p class="lead" data-i18n="hero.lead">Press one key in any app and talk — your words appear at the cursor. Speaking a language you're learning? Right after, Saidright shows the one mistake worth fixing, explained like a friend would. Every email and message becomes practice.</p>
+      <span class="kicker"><img src="assets/icon-512.png" alt=""><span data-i18n="hero.kicker">Saidright for Mac · free and open source</span></span>
+      <h1><span data-i18n="hero.title">Speak freely.</span><span class="cursor" aria-hidden="true"></span></h1>
+      <p class="lead" data-i18n="hero.lead">Say it the way it comes. Your words land where you type — shaped as a message, a prompt for AI, a checklist or a table. Learning a language? A gentle tip shows the one thing worth fixing.</p>
       <div class="cta">
         <a class="btn primary" href="#install" data-download>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg>
           <span data-i18n="hero.download">Download for Mac</span>
         </a>
-        <a class="btn" href="#install" data-i18n="hero.how">How to install</a>
+        <a class="btn ghost" href="#design" data-i18n="hero.tour">See it in action</a>
       </div>
-      <p class="fine" data-i18n="hero.fine">Apple silicon · macOS 14 or later · developer preview, not notarized by Apple</p>
+      <p class="fine" data-i18n="hero.fine">Apple silicon, macOS 14 or later. No account, no subscription.</p>
     </div>
 
-    <div class="stage" aria-hidden="true">
-      <div class="doc">
-        <div class="bar"><i></i><i></i><i></i></div>
-        <span class="typed" id="typed"></span><span class="caret"></span>
+    <div class="stage" id="stage" aria-label="Animated demo: speaking, the capsule, and the text that appears" role="img">
+      <div class="modechip" id="modechip"><span id="modename">Message</span><kbd>⌃⌥M</kbd></div>
+      <div class="win">
+        <div class="top"><i></i><i></i><i></i><span id="appname">Messages</span></div>
+        <div class="field" id="field"><span class="caret"></span></div>
       </div>
-      <div class="dock">
-        <div class="surface hidden" id="surface">
-          <div class="bars" id="bars"></div>
-          <svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l4 4 10-10"/></svg>
-          <div class="cardbody">
-            <span class="badge" data-i18n="card.kind">Aa  Grammar</span>
-            <div class="corr"><s>I am agree</s><span>→</span><b>I agree</b></div>
-            <div class="why" data-i18n="card.why">Just say “I agree”. Agree is already the verb, so it doesn't need “am” in front of it.</div>
-            <div class="acts"><span data-i18n="card.more">Why?</span><span data-i18n="card.save">Practise later</span><span class="go" data-i18n="card.ok">Got it</span></div>
-          </div>
-        </div>
+      <div class="said" id="said"><b data-i18n="hero.youSay">You say</b><span id="saidtext"></span></div>
+      <div class="dockline"><div class="capsule hidden" id="heroCapsule"></div></div>
+      <div class="card" id="card">
+        <span class="badge" data-i18n="card.kind">Aa  Grammar</span>
+        <div class="corr"><s>I am agree</s><span>→</span><b>I agree</b></div>
+        <div data-i18n="card.why">Just say “I agree”. Agree is already the verb, so it doesn't need “am”.</div>
+        <div class="acts"><span data-i18n="card.more">Why?</span><span data-i18n="card.save">Practise later</span><span class="go" data-i18n="card.ok">Got it</span></div>
       </div>
     </div>
   </div>
 </header>
 
 <main>
-<section id="learn">
+<section class="thesis" id="thesis">
   <div class="wrap">
-    <h2 data-i18n="l.title">Practise a language every time you speak</h2>
-    <p class="sub" data-i18n="l.sub">Most learners never get feedback on what they actually say. Saidright gives it inside the work you're already doing — no lessons to schedule, no app to switch to.</p>
-    <div class="shots" style="margin-bottom:18px">
-      <figure class="tipshot"><img src="assets/tip.png" alt="A Saidright tip card: “I am agree” becomes “I agree”, with a short explanation, a fuller reason and an example" loading="lazy"><figcaption data-i18n="l.capTip">A real tip from the app: the fix, a short reason, and more when you ask.</figcaption></figure>
-      <div class="grid2">
-        <div class="feat"><h3 data-i18n="l1.t">Your sentence, corrected</h3><p data-i18n="l1.p">Your text goes in exactly as you said it. Then a small card grows out of the capsule with the one correction worth knowing.</p></div>
-        <div class="feat"><h3 data-i18n="l2.t">Explained like a friend</h3><p data-i18n="l2.p">One short reason in your own language, pitched to your level. Tap “Why?” for the rule and an example.</p></div>
-        <div class="feat"><h3 data-i18n="l3.t">Only what matters</h3><p data-i18n="l3.p">Grammar, word choice, punctuation and style are labelled differently. Correct sentences get nothing — no praise, no noise.</p></div>
-        <div class="feat"><h3 data-i18n="l4.t">Honest about the mic</h3><p data-i18n="l4.p">If the recognizer may have misheard you, the tip says so — and it never counts as your mistake.</p></div>
-        <div class="feat"><h3 data-i18n="l5.t">From tips to skills</h3><p data-i18n="l5.p">“Practise later” turns a correction into a spaced-review card. Your recurring topics show what to work on next.</p></div>
-        <div class="feat"><h3 data-i18n="l6.t">Never in your way</h3><p data-i18n="l6.p">Tips never touch your text or steal keyboard focus. Keep typing; ⌃⌥L brings the last tip back.</p></div>
+    <h2 data-i18n-html="thesis.title"><span class="soft">Stop fearing imperfect words.</span> Set your speech free.</h2>
+    <p data-i18n="thesis.body">Most of us type slower than we think and speak more freely than we write. Saidright lets you talk the way you talk — with pauses, mixed languages and the odd mistake — and gives back clean text. Every sentence makes you a little better at saying what you mean, to people and to AI.</p>
+  </div>
+</section>
+
+<section class="light" id="design">
+  <div class="wrap">
+    <h2 data-i18n="d.title">The most refined dictation on the Mac.</h2>
+    <p class="intro" data-i18n="d.intro">A small capsule that lives above your Dock. It breathes with your voice, shimmers while it thinks, and settles with a quiet check. Make it yours — try it right here.</p>
+    <div class="play">
+      <div class="desk" id="desk" data-wall="indigo">
+        <div class="wallpick" role="group" aria-label="Wallpaper">
+          <button type="button" data-wall="indigo" aria-pressed="true" style="background:linear-gradient(140deg,#4A63C9,#E0705F)" aria-label="Indigo"></button>
+          <button type="button" data-wall="dusk" aria-pressed="false" style="background:linear-gradient(140deg,#C77DFF,#FF9F68)" aria-label="Dusk"></button>
+          <button type="button" data-wall="paper" aria-pressed="false" style="background:linear-gradient(140deg,#fff,#C9D6FF)" aria-label="Paper"></button>
+        </div>
+        <div class="capsule recording" id="playCapsule"></div>
+      </div>
+      <div class="controls">
+        <div class="ctl">
+          <h3 data-i18n="d.state">State</h3>
+          <div class="seg" id="stateSeg">
+            <button type="button" data-state="recording" aria-pressed="true" data-i18n="st.recording">Recording</button>
+            <button type="button" data-state="processing" aria-pressed="false" data-i18n="st.processing">Processing</button>
+            <button type="button" data-state="done" aria-pressed="false" data-i18n="st.done">Done</button>
+            <button type="button" data-state="error" aria-pressed="false" data-i18n="st.error">Error</button>
+          </div>
+        </div>
+        <div class="ctl">
+          <h3 data-i18n="d.colours">Colours</h3>
+          <div class="swatches" id="palettes"></div>
+        </div>
+        <div class="ctl">
+          <h3 data-i18n="d.material">Material</h3>
+          <div class="seg" id="materialSeg">
+            <button type="button" data-material="ink" aria-pressed="true">Ink</button>
+            <button type="button" data-material="glass" aria-pressed="false">Liquid Glass</button>
+          </div>
+        </div>
+        <div class="ctl">
+          <h3 data-i18n="d.size">Size</h3>
+          <div class="seg" id="sizeSeg">
+            <button type="button" data-size="1.35" aria-pressed="false" data-i18n="sz.compact">Compact</button>
+            <button type="button" data-size="1.6" aria-pressed="true" data-i18n="sz.regular">Regular</button>
+            <button type="button" data-size="1.9" aria-pressed="false" data-i18n="sz.large">Large</button>
+          </div>
+        </div>
       </div>
     </div>
-    <div class="shots">
-      <figure class="shot"><img src="assets/learning.jpg" alt="Saidright learning settings: how tips appear, how long they stay, explanation length and level" loading="lazy"><figcaption data-i18n="l.cap1">Choose how tips appear, how long they stay, and how much they explain.</figcaption></figure>
-      <div class="stack">
-        <figure class="shot"><img src="assets/main-dark.jpg" alt="Saidright main window in dark mode, ready to dictate" loading="lazy"><figcaption data-i18n="l.cap2">The compact main window shows the active mode and what will happen.</figcaption></figure>
-        <p class="note" data-i18n-html="l.note">Tips use a text model you choose: free and fully local through <a href="https://ollama.com">Ollama</a>, or your own cloud key. Tips work in any language your model knows; English and Russian are the most thoroughly tested so far.</p>
+    <div class="shotband">
+      <figure class="shot"><img data-shot="appearance" src="assets/shots/en/appearance.jpg" alt="Appearance settings in Saidright: a live capsule preview, theme, window colour, material and palettes" loading="lazy" width="1720" height="1280"></figure>
+      <div>
+        <p class="caption"><b data-i18n="d.capT">Every detail, previewed live</b><span data-i18n="d.cap">Material, palette, size, position, motion and sounds — each change shows in the preview before you dictate. Windows take on Saidright's indigo: airy in light mode, deep at night.</span></p>
+        <div class="tints" aria-hidden="true">
+          <figure><div class="sw"><span style="background:#F2F4FB"></span><span style="background:#0E1430"></span></div><span data-i18n="d.tint1">Saidright</span></figure>
+          <figure><div class="sw"><span style="background:#EDEDED"></span><span style="background:#292929"></span></div><span data-i18n="d.tint2">System</span></figure>
+        </div>
       </div>
     </div>
   </div>
 </section>
 
-<section id="features">
+<section class="modes" id="modes">
   <div class="wrap">
-    <h2 data-i18n="f.title">And dictation you'll want to keep</h2>
-    <p class="sub" data-i18n="f.sub">A small capsule while you speak, text where your cursor was — fast, private and shaped to your taste.</p>
+    <h2 data-i18n="m.title">One key. A mode for every moment.</h2>
+    <p class="intro" data-i18n="m.intro">A mode decides how much your words may change and where they go. Use ours or make your own — and switch in a blink with ⌃⌥M, without leaving the app you're in.</p>
+    <div class="tabs" role="tablist" id="modeTabs"></div>
+    <div class="modepanel" id="modePanel" role="tabpanel">
+      <div class="pane say"><h3 data-i18n="m.say">You say</h3><div class="quote" id="modeSay"></div></div>
+      <div class="pane get"><h3 data-i18n="m.get">You get</h3><div class="out" id="modeGet"></div></div>
+    </div>
+    <p class="modedesc" id="modeDesc"></p>
+    <div class="own">
+      <div>
+        <h3 data-i18n="m.ownT">Your rules, your modes</h3>
+        <p data-i18n="m.ownP">Name a mode, pick its icon, its languages, its recognizer, how far the text may change and whether you get language help. Add your own instructions — “always formal”, “keep my slang”, “write for a developer”. Export a mode and share it with your team.</p>
+      </div>
+      <figure class="shot"><img data-shot="modes" src="assets/shots/en/modes.jpg" alt="Modes settings: Message, Prompt, Original and Practice, each with its languages, editing level and output" loading="lazy" width="1720" height="1280"></figure>
+    </div>
+  </div>
+</section>
+
+<section class="light" id="structure">
+  <div class="wrap">
+    <h2 data-i18n="s.title">Say a list. Get a checklist. Say a table. Get a table.</h2>
+    <p class="intro" data-i18n="s.intro">Saidright hears structure in what you say — tasks, items, steps, comparisons — and lays it out. Ordinary sentences stay sentences. Nothing is added, nothing is lost: every word comes from you.</p>
+    <div class="examples" id="examples"></div>
+    <div class="aiband">
+      <div>
+        <h3 data-i18n="s.aiT">Talk to AI the way you think</h3>
+        <p data-i18n="s.aiP">The Prompt mode turns a rambling thought into a clear request — goals, steps and constraints laid out. Models answer better when you give them more, and speaking is the fastest way to give more.</p>
+      </div>
+      <div class="logos"><span>ChatGPT</span><span>Claude</span><span>Gemini</span><span>Cursor</span><span>Ollama</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="langs" id="languages">
+  <div class="wrap">
+    <div class="grow">
+      <div>
+        <h2 data-i18n="l.title">Grow every time you speak.</h2>
+        <p class="intro" data-i18n="l.intro">Writing to a colleague in English? Your message goes out as you said it — and right after, a small card grows out of the capsule with the one correction worth knowing. No lessons to schedule. Your everyday work becomes practice.</p>
+        <ul class="points">
+          <li><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12h10M10 6l6 6-6 6"/></svg></span><div><h3 data-i18n="l1.t">One tip, explained like a friend</h3><p data-i18n="l1.p">A short reason in your own language, pitched to your level. Ask “Why?” for the rule and an example.</p></div></li>
+          <li><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/></svg></span><div><h3 data-i18n="l2.t">From tips to skills</h3><p data-i18n="l2.p">“Practise later” turns a correction into a spaced-review card. Recurring topics show what to work on next.</p></div></li>
+          <li><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/></svg></span><div><h3 data-i18n="l3.t">Mix languages mid-sentence</h3><p data-i18n="l3.p">Switch between your languages in one breath. Terms keep their spelling, and nothing is translated behind your back.</p></div></li>
+          <li><span class="dot"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v4M12 17v4M5 12H3M21 12h-2M7 7 5.5 5.5M18.5 18.5 17 17M7 17l-1.5 1.5M18.5 5.5 17 7"/></svg></span><div><h3 data-i18n="l4.t">Honest, never noisy</h3><p data-i18n="l4.p">Correct sentences get nothing. If the recognizer may have misheard you, the tip says so and never counts it as your mistake.</p></div></li>
+        </ul>
+      </div>
+      <figure class="tipimg"><img data-shot="tip" src="assets/shots/en/tip.png" alt="A Saidright tip card: “I am agree” becomes “I agree”, with a short reason, a longer explanation and an example" loading="lazy" ></figure>
+    </div>
+    <div class="langcloud" aria-label="Some of the supported languages">
+      <span class="hot">English</span><span class="hot">Русский</span><span class="hot">Deutsch</span><span class="hot">中文</span><span>Español</span><span>Français</span><span>Italiano</span><span>Português</span><span>Polski</span><span>Українська</span><span>Türkçe</span><span>日本語</span><span>한국어</span><span>Nederlands</span><span>Svenska</span><span>العربية</span><span>हिन्दी</span><span data-i18n="l.more">and about 90 more</span>
+    </div>
+  </div>
+</section>
+
+<section class="light" id="engines">
+  <div class="wrap">
+    <h2 data-i18n="e.title">Pick the recognizer that fits you.</h2>
+    <p class="intro" data-i18n="e.intro">Everything below runs on your Mac. Install any of them from inside the app — sizes, memory and languages are shown before anything is downloaded. On long dictations Saidright recognizes finished phrases while you are still speaking.</p>
     <div class="grid3">
-      <div class="feat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="8" width="18" height="8" rx="4"/><path d="M9 11v2M12 10v4M15 9v6"/></svg></div>
-        <h3 data-i18n="f1.t">Works in every app</h3><p data-i18n="f1.p">Tap right ⌘, speak, tap again. Mail, Slack, your editor, a browser — the text goes into the field you were typing in, and Saidright tells you if it couldn't.</p></div>
-      <div class="feat"><div class="ico g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></div>
-        <h3 data-i18n="f2.t">Private by design</h3><p data-i18n="f2.p">Speech is recognised on your Mac with Whisper or NVIDIA Parakeet. Audio never leaves it. Text editing and tips are optional and can run locally too.</p></div>
-      <div class="feat"><div class="ico c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M13 3 4 14h7l-1 7 9-11h-7z"/></svg></div>
-        <h3 data-i18n="f3.t">Fast</h3><p data-i18n="f3.p">Text usually appears about half a second after you stop speaking. Parakeet decodes a phrase in roughly 0.1 s on Apple silicon.</p></div>
-      <div class="feat"><div class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 5h16M4 12h10M4 19h7"/></svg></div>
-        <h3 data-i18n="f4.t">Smart formatting</h3><p data-i18n="f4.p">Dictate a few tasks and get a checklist, list things and get bullets, describe steps and get numbered steps. Ordinary sentences stay prose. Modes decide how much is edited; switch with ⌃⌥M.</p></div>
-      <div class="feat"><div class="ico g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></div>
-        <h3 data-i18n="f5.t">Truly multilingual</h3><p data-i18n="f5.p">Around 100 languages, and you can switch between them mid-sentence. Foreign terms keep their own spelling, and nothing is translated behind your back.</p></div>
-      <div class="feat"><div class="ico c"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div>
-        <h3 data-i18n="f6.t">Made to be yours</h3><p data-i18n="f6.p">Liquid Glass or quiet Ink capsule, palettes, size, motion, sounds, light and dark, your own shortcuts. Interface in English, Russian, German and Chinese.</p></div>
+      <div class="tile"><div class="big">≈0.5 s</div><p data-i18n="e.t1">from the end of a phrase to text with Whisper on an M-series Mac</p></div>
+      <div class="tile"><div class="big">≈0.1 s</div><p data-i18n="e.t2">with NVIDIA Parakeet for one-language modes</p></div>
+      <div class="tile"><div class="big" data-i18n="e.t3b">Up to 4×</div><p data-i18n="e.t3">shorter wait after long dictations, thanks to recognition while you speak</p></div>
     </div>
-    <figure class="shot" style="margin-top:24px"><img src="assets/appearance.jpg" alt="Appearance settings with capsule preview, theme, material and colours" loading="lazy"><figcaption data-i18n="l.cap3">Capsule material, colours, size and motion, with a live preview.</figcaption></figure>
-  </div>
-</section>
-
-<section id="models">
-  <div class="wrap">
-    <h2 data-i18n="m.title">Pick the recogniser that fits</h2>
-    <p class="sub" data-i18n="m.sub">Everything below runs on your Mac. “Automatic” uses Parakeet for one-language modes and Whisper for mixed speech.</p>
-    <div class="tablewrap">
+    <div class="engines">
       <table>
-        <thead><tr><th data-i18n="m.h1">Model</th><th data-i18n="m.h2">Per phrase</th><th data-i18n="m.h3">Word errors RU / EN / DE</th><th data-i18n="m.h4">Best for</th></tr></thead>
+        <thead><tr><th data-i18n="e.h1">Recognizer</th><th data-i18n="e.h2">Per phrase</th><th data-i18n="e.h3">Word errors RU / EN / DE</th><th data-i18n="e.h4">Best for</th></tr></thead>
         <tbody>
-          <tr><td><b>Whisper large-v3-turbo</b></td><td>≈0.5 s</td><td>4.1 % / 3.6 % / 4.4 %</td><td data-i18n="m.r1">Mixed languages, Chinese, personal vocabulary</td></tr>
-          <tr><td><b>NVIDIA Parakeet TDT 0.6B v3</b></td><td>≈0.1 s</td><td>6.1 % / 4.3 % / 5.6 %</td><td data-i18n="m.r2">Speed, one language per recording (25 European languages)</td></tr>
-          <tr><td><b>Apple on-device</b></td><td data-i18n="m.fast">fast</td><td>—</td><td data-i18n="m.r3">No download; one language per mode (macOS 26+)</td></tr>
+          <tr><td><b>Whisper large-v3-turbo</b></td><td>≈0.5 s</td><td>4.1 % / 3.6 % / 4.4 %</td><td data-i18n="e.r1">Mixed languages, Chinese, your own vocabulary</td></tr>
+          <tr><td><b>NVIDIA Parakeet TDT 0.6B v3</b></td><td>≈0.1 s</td><td>6.1 % / 4.3 % / 5.6 %</td><td data-i18n="e.r2">Speed, one language per recording (25 European languages)</td></tr>
+          <tr><td><b>Apple on-device</b></td><td data-i18n="e.fast">fast</td><td>—</td><td data-i18n="e.r3">No download; one language per mode (macOS 26+)</td></tr>
         </tbody>
       </table>
     </div>
-    <p class="note" data-i18n="m.note">Measured on 100 real-speech clips from the FLEURS dataset plus synthetic and mixed-language clips on an M4 Pro. Your voice and microphone will differ. Models are downloaded inside the app when you choose them (0.5–2.5 GB).</p>
-    <figure class="shot" style="margin-top:24px"><img src="assets/models.jpg" alt="Recognition settings listing Whisper, Parakeet and Apple models with sizes and memory" loading="lazy"><figcaption data-i18n="m.cap">Sizes, memory, speed and language coverage are shown before anything is downloaded.</figcaption></figure>
+    <p class="note" data-i18n="e.note">Measured on 100 real-speech clips from the FLEURS dataset plus synthetic and mixed-language clips on an M4 Pro. Your voice and microphone will differ. Text editing, formatting and tips add the time of the text model you choose.</p>
   </div>
 </section>
 
-<section id="privacy">
+<section class="light trust" id="trust">
   <div class="wrap">
-    <h2 data-i18n="p.title">Your voice stays on your Mac</h2>
+    <h2 data-i18n="t.title">Your voice never leaves your Mac.</h2>
+    <p class="intro" data-i18n="t.intro">Private by design, open by choice. You can read every line of code that touches your words.</p>
     <div class="grid3">
-      <div class="feat"><h3 data-i18n="p1.t">Local recognition</h3><p data-i18n="p1.p">Audio is processed on the Mac and deleted after recognition unless you choose to keep it.</p></div>
-      <div class="feat"><h3 data-i18n="p2.t">Optional text help</h3><p data-i18n="p2.p">Editing and tips use a model you pick: free and local through Ollama, or a cloud key of your own. “Local only” blocks every cloud request.</p></div>
-      <div class="feat"><h3 data-i18n="p3.t">No account, no tracking</h3><p data-i18n="p3.p">No sign-up, no analytics, no telemetry. Keys are kept in the macOS Keychain. The source code is open.</p></div>
+      <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><h3 data-i18n="t1.t">On-device recognition</h3><p data-i18n="t1.p">Audio is recognized on your Mac and deleted afterwards unless you choose to keep it.</p></div>
+      <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg><h3 data-i18n="t2.t">Text help on your terms</h3><p data-i18n="t2.p">Editing and tips use a model you pick: fully local through Ollama, a fast free cloud tier such as Groq, or your own key. “Local only” blocks every cloud request.</p></div>
+      <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18 3 12l6-6M15 6l6 6-6 6"/></svg><h3 data-i18n="t3.t">Open source, no tracking</h3><p data-i18n="t3.p">Apache 2.0. No account, no analytics, no telemetry. Keys stay in the macOS Keychain; every release lists its checksum.</p></div>
     </div>
   </div>
 </section>
 
-<section id="install">
+<section class="install" id="install">
   <div class="wrap">
-    <h2 data-i18n="i.title">Install in a minute</h2>
-    <p class="sub" data-i18n="i.sub">Saidright is free and not notarized by Apple (that costs a yearly fee), so macOS asks you once to confirm that you trust it.</p>
-    <div class="steps">
-      <div class="step"><div><h3 data-i18n="i1.t">Download and open the DMG</h3><p data-i18n-html="i1.p">Get <a href="#" data-download>Saidright.dmg</a> and drag Saidright into Applications.</p></div></div>
-      <div class="step"><div><h3 data-i18n="i2.t">Open it once</h3><p data-i18n="i2.p">Double-click Saidright. macOS says it can't verify the developer — click Done (not Move to Trash).</p></div></div>
-      <div class="step"><div><h3 data-i18n="i3.t">Allow it in System Settings</h3><p data-i18n="i3.p">System Settings → Privacy & Security → scroll down → “Saidright was blocked…” → Open Anyway, then confirm. You only do this once per version.</p></div></div>
-      <div class="step"><div><h3 data-i18n="i4.t">Follow the short introduction</h3><p data-i18n="i4.p">Pick your languages, download a recogniser inside the app, and allow Microphone, Input Monitoring and Accessibility. Then tap right ⌘ anywhere and speak.</p></div></div>
+    <h2 data-i18n="i.title">Ready in a minute.</h2>
+    <p class="intro" data-i18n="i.intro">Saidright is free and not notarized by Apple (that needs a yearly fee), so macOS asks you once to confirm that you trust it.</p>
+    <ol class="steps">
+      <li><h3 data-i18n="i1.t">Download</h3><p data-i18n-html="i1.p">Open <a href="#" data-download>Saidright.dmg</a> and drag Saidright into Applications.</p></li>
+      <li><h3 data-i18n="i2.t">Open it once</h3><p data-i18n="i2.p">macOS says it can't verify the developer. Click Done, not Move to Trash.</p></li>
+      <li><h3 data-i18n="i3.t">Allow it</h3><p data-i18n="i3.p">System Settings → Privacy & Security → Open Anyway. Once per version.</p></li>
+      <li><h3 data-i18n="i4.t">Follow the introduction</h3><p data-i18n="i4.p">Choose your languages and allow the microphone. Then tap right ⌘ anywhere and speak.</p></li>
+    </ol>
+    <div class="final">
+      <a class="btn voice" href="#" data-download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0-5-5m5 5 5-5M4 21h16"/></svg><span data-i18n="hero.download">Download for Mac</span></a>
+      <a class="btn ghost" href="#" data-repo-link data-i18n="i.source">View the source</a>
+      <p data-i18n-html="i.note">Prefer to build it yourself? <code>swift test && scripts/build-app.sh</code></p>
     </div>
-    <p class="note" data-i18n-html="i.note">Want to check the file? Each release lists its SHA-256 checksum. Prefer to build it yourself? <a href="#" data-repo-link>The source is on GitHub</a> — <code>swift test && scripts/build-app.sh</code>.</p>
   </div>
 </section>
 
-<section id="faq">
+<section class="faq" id="faq">
   <div class="wrap">
     <h2 data-i18n="q.title">Questions</h2>
-    <details><summary data-i18n="q1.q">Is it really free?</summary><p data-i18n="q1.a">Yes. Saidright is open source under the Apache 2.0 licence. Local recognition and local tips cost nothing. Only an optional cloud text service you connect yourself bills you directly.</p></details>
-    <details><summary data-i18n="q2.q">Does it need the internet?</summary><p data-i18n="q2.a">Only to download a recogniser once. After that, dictation works offline.</p></details>
-    <details><summary data-i18n="q3.q">Which Macs are supported?</summary><p data-i18n="q3.a">Macs with Apple silicon (M1 or later) on macOS 14 or later. It is tested most on the newest macOS. Intel Macs are not supported.</p></details>
-    <details><summary data-i18n="q4.q">Why does macOS warn me?</summary><p data-i18n="q4.a">Apple's notarization requires a paid developer membership. This free preview is signed but not notarized, so macOS asks you to confirm it once in Privacy & Security.</p></details>
-    <details><summary data-i18n="q5.q">Does it judge my accent or score me?</summary><p data-i18n="q5.a">No. A transcript can't support that. Tips only cover clear grammar and word-choice mistakes, and a possible mishearing is labelled as such and never counted against you.</p></details>
+    <details><summary data-i18n="q1.q">Is it really free?</summary><p data-i18n="q1.a">Yes. Saidright is open source under the Apache 2.0 licence. Local recognition and local tips cost nothing. Only a cloud text service you connect yourself bills you directly.</p></details>
+    <details><summary data-i18n="q2.q">Does it need the internet?</summary><p data-i18n="q2.a">Only to download a recognizer once. After that, dictation works offline.</p></details>
+    <details><summary data-i18n="q3.q">How do I make a table by voice?</summary><p data-i18n="q3.a">Just ask for it: “I need a table with three columns: ChatGPT, Claude and Gemini”, then say the values row by row. With smart formatting on and a text model connected, it arrives as a Markdown table, ready for notes, documents and AI chats.</p></details>
+    <details><summary data-i18n="q4.q">Which Macs are supported?</summary><p data-i18n="q4.a">Macs with Apple silicon (M1 or later) on macOS 14 or later. Intel Macs are not supported.</p></details>
+    <details><summary data-i18n="q5.q">Why does macOS warn me?</summary><p data-i18n="q5.a">Apple's notarization requires a paid developer membership. This free version is signed but not notarized, so macOS asks you once to confirm it in Privacy & Security.</p></details>
+    <details><summary data-i18n="q6.q">Does it score my accent?</summary><p data-i18n="q6.a">No. Tips only cover clear grammar and word-choice mistakes. A possible mishearing is labelled as such and never counted against you.</p></details>
   </div>
 </section>
 </main>
@@ -317,136 +574,324 @@
 <footer>
   <div class="wrap">
     <div>Saidright · <span data-i18n="ft.licence">Open source, Apache 2.0</span> · <a href="#" data-repo-link>GitHub</a></div>
-    <div class="credits" data-i18n="ft.credits">Speech models: OpenAI Whisper (MIT) and NVIDIA Parakeet TDT 0.6B v3 (CC BY 4.0, © NVIDIA), downloaded on request and not part of the app. Built with MLX by Apple. Accuracy measured with Google FLEURS (CC BY 4.0). Saidright is not affiliated with Apple, OpenAI, NVIDIA or Google.</div>
+    <div class="credits" data-i18n="ft.credits">Speech models: OpenAI Whisper (MIT) and NVIDIA Parakeet TDT 0.6B v3 (CC BY 4.0, © NVIDIA), downloaded on request and not part of the app. Built with MLX by Apple. Accuracy measured with Google FLEURS (CC BY 4.0). Typeface: Onest (SIL Open Font Licence). Saidright is not affiliated with Apple, OpenAI, NVIDIA, Google or Anthropic; product names are trademarks of their owners.</div>
   </div>
 </footer>
 
 <script>
-  // Set once the GitHub repository exists, e.g. "yourname/saidright".
   const REPO = "GOMIN1I/saidright";
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  // ---------------- Russian strings ----------------
   const ru = {
-    "nav.features": "Возможности", "nav.learn": "Обучение", "nav.privacy": "Приватность", "nav.install": "Установка",
-    "hero.eyebrow": "Бесплатно и с открытым кодом · диктовка + языковой тренер для Mac",
-    "hero.title": "Говори как есть.<br><em>Становись лучше с каждой фразой.</em>",
-    "hero.lead": "Нажми одну клавишу в любом приложении и говори — слова появятся у курсора. Говоришь на языке, который учишь? Сразу после Saidright покажет ту самую ошибку, которую стоит исправить, и объяснит её по-дружески. Каждое письмо и сообщение становится практикой.",
-    "hero.download": "Скачать для Mac", "hero.how": "Как установить",
-    "hero.fine": "Apple silicon · macOS 14 и новее · предварительная версия, не заверена Apple",
-    "card.kind": "Aa  Грамматика", "card.why": "Говорят просто «I agree». Agree — это уже глагол, поэтому am перед ним не нужен.", "card.more": "Почему?", "card.save": "В тренировку", "card.ok": "Понятно",
-    "f.title": "И диктовка, с которой не захочется расставаться", "f.sub": "Маленькая капсула, пока говоришь, текст там, где был курсор, — быстро, приватно и так, как нравится тебе.",
-    "f1.t": "Работает в любом приложении", "f1.p": "Нажми правый ⌘, скажи, нажми ещё раз. Почта, Slack, редактор, браузер — текст попадёт в поле, где ты печатал, а если не получится, Saidright честно скажет.",
-    "f2.t": "Приватно по устройству", "f2.p": "Речь распознаётся на твоём Mac моделями Whisper или NVIDIA Parakeet. Звук никуда не уходит. Правка текста и подсказки — по желанию и тоже могут работать локально.",
-    "f3.t": "Быстро", "f3.p": "Текст обычно появляется примерно через полсекунды после конца фразы. Parakeet распознаёт фразу примерно за 0,1 с на Apple silicon.",
-    "f4.t": "Умное оформление", "f4.p": "Надиктуй несколько задач — получишь чек-лист, перечисли вещи — список, опиши шаги — нумерованные шаги. Обычные фразы остаются текстом. Режимы решают, насколько править текст; переключение — ⌃⌥M.",
-    "f5.t": "По-настоящему многоязычно", "f5.p": "Около 100 языков, и переключаться между ними можно прямо посреди фразы. Иностранные термины сохраняют своё написание, и ничего не переводится за твоей спиной.",
-    "f6.t": "Настраивается под тебя", "f6.p": "Капсула Liquid Glass или спокойная Ink, палитры, размер, движение, звуки, светлая и тёмная тема, свои сочетания клавиш. Интерфейс на русском, английском, немецком и китайском.",
-    "l.title": "Практикуй язык каждый раз, когда говоришь", "l.sub": "Большинство изучающих язык никогда не получают обратной связи на то, что реально говорят. Saidright даёт её прямо в работе, которую ты и так делаешь, — без расписания уроков и без переключения приложений.",
-    "l.capTip": "Настоящая подсказка из приложения: исправление, короткая причина и подробности по запросу.",
-    "l1.t": "Твоя фраза — исправленная", "l1.p": "Текст вставляется ровно так, как ты сказал. Потом из капсулы вырастает маленькая карточка с одним исправлением, которое стоит знать.",
-    "l2.t": "Объяснение как от друга", "l2.p": "Одна короткая причина на твоём языке, под твой уровень. Нажми «Почему?» — будет правило и пример.",
-    "l3.t": "Только важное", "l3.p": "Грамматика, выбор слова, пунктуация и стиль помечаются по-разному. Правильные фразы ничего не получают — ни похвалы, ни шума.",
-    "l4.t": "Честно про микрофон", "l4.p": "Если распознаватель мог тебя не расслышать, подсказка так и скажет — и это не засчитается как твоя ошибка.",
-    "l5.t": "Из подсказок — в навык", "l5.p": "«В тренировку» превращает исправление в карточку с интервальным повторением. Частые темы показывают, над чем поработать.",
-    "l6.t": "Никогда не мешает", "l6.p": "Подсказки не трогают твой текст и не забирают фокус клавиатуры. Продолжай печатать; ⌃⌥L вернёт последнюю подсказку.",
-    "l.note": "Подсказки работают через выбранную тобой текстовую модель: бесплатно и полностью локально через <a href=\"https://ollama.com\">Ollama</a> или по своему облачному ключу. Подсказки работают на любом языке, который знает модель; лучше всего пока проверены английский и русский.",
-    "l.cap1": "Выбери, как появляются подсказки, сколько держатся и насколько подробно объясняют.", "l.cap2": "Компактное главное окно показывает режим и что произойдёт.", "l.cap3": "Материал, цвета, размер и движение капсулы — с живым предпросмотром.",
-    "m.title": "Выбери подходящий распознаватель", "m.sub": "Всё ниже работает на твоём Mac. «Автоматически» берёт Parakeet для одноязычных режимов и Whisper для смешанной речи.",
-    "m.h1": "Модель", "m.h2": "На фразу", "m.h3": "Ошибки в словах RU / EN / DE", "m.h4": "Лучше всего для",
-    "m.r1": "Смешанных языков, китайского, личного словаря", "m.r2": "Скорости, одного языка в записи (25 европейских языков)", "m.r3": "Без загрузки; один язык на режим (macOS 26+)", "m.fast": "быстро",
-    "m.note": "Измерено на 100 записях живой речи из набора FLEURS, а также на синтетических и смешанных клипах, на M4 Pro. С твоим голосом и микрофоном цифры будут другими. Модели скачиваются внутри приложения, когда ты их выбираешь (0,5–2,5 ГБ).",
-    "m.cap": "Размер, память, скорость и языки видны до того, как что-либо скачается.",
-    "p.title": "Твой голос остаётся на Mac",
-    "p1.t": "Локальное распознавание", "p1.p": "Звук обрабатывается на Mac и удаляется после распознавания, если ты не решишь его сохранить.",
-    "p2.t": "Помощь с текстом — по желанию", "p2.p": "Правка и подсказки используют выбранную тобой модель: бесплатную локальную через Ollama или свой облачный ключ. «Только на Mac» блокирует любые облачные запросы.",
-    "p3.t": "Без аккаунта и слежки", "p3.p": "Без регистрации, аналитики и телеметрии. Ключи хранятся в Связке ключей macOS. Исходный код открыт.",
-    "i.title": "Установка за минуту", "i.sub": "Saidright бесплатный и не заверен Apple (это стоит денег каждый год), поэтому macOS один раз попросит подтвердить, что ты ему доверяешь.",
-    "i1.t": "Скачай и открой DMG", "i1.p": "Скачай <a href=\"#\" data-download>Saidright.dmg</a> и перетащи Saidright в «Программы».",
-    "i2.t": "Открой один раз", "i2.p": "Дважды щёлкни Saidright. macOS скажет, что не может проверить разработчика, — нажми «Готово» (не «В Корзину»).",
-    "i3.t": "Разреши в Системных настройках", "i3.p": "Системные настройки → Конфиденциальность и безопасность → прокрути вниз → «Saidright заблокировано…» → «Всё равно открыть» и подтверди. Это нужно один раз на версию.",
-    "i4.t": "Пройди короткое знакомство", "i4.p": "Выбери языки, скачай распознаватель прямо в приложении и разреши Микрофон, Мониторинг ввода и Универсальный доступ. Потом нажимай правый ⌘ где угодно и говори.",
-    "i.note": "Хочешь проверить файл? У каждого релиза указана контрольная сумма SHA-256. Хочешь собрать сам? <a href=\"#\" data-repo-link>Исходники на GitHub</a> — <code>swift test && scripts/build-app.sh</code>.",
+    "nav.design": "Дизайн", "nav.modes": "Режимы", "nav.structure": "Таблицы", "nav.languages": "Языки", "nav.trust": "Приватность", "nav.get": "Скачать",
+    "hero.kicker": "Saidright для Mac · бесплатно и с открытым кодом",
+    "hero.title": "Говори свободно.",
+    "hero.lead": "Говори так, как получается. Слова появятся там, где ты печатаешь, — сообщением, промптом для ИИ, чек-листом или таблицей. Учишь язык? Короткая подсказка покажет одну ошибку, которую стоит исправить.",
+    "hero.download": "Скачать для Mac", "hero.tour": "Посмотреть в деле", "hero.fine": "Apple silicon, macOS 14 и новее. Без аккаунта и подписки.", "hero.youSay": "Ты говоришь",
+    "card.kind": "Aa  Грамматика", "card.why": "Говорят просто «I agree». Agree — уже глагол, am перед ним не нужен.", "card.more": "Почему?", "card.save": "В тренировку", "card.ok": "Понятно",
+    "thesis.title": "<span class=\"soft\">Перестань бояться несовершенства.</span> Дай речи свободу.",
+    "thesis.body": "Мы печатаем медленнее, чем думаем, и говорим свободнее, чем пишем. Saidright позволяет говорить как есть — с паузами, смесью языков и случайными ошибками — и возвращает чистый текст. С каждой фразой ты чуть лучше говоришь то, что имеешь в виду: людям и ИИ.",
+    "d.title": "Самая утончённая диктовка на Mac.", "d.intro": "Маленькая капсула над Dock. Она дышит в такт голосу, переливается, пока думает, и спокойно отмечает готовность галочкой. Настрой её под себя — попробуй прямо здесь.",
+    "d.state": "Состояние", "d.colours": "Цвета", "d.material": "Материал", "d.size": "Размер",
+    "st.recording": "Запись", "st.processing": "Обработка", "st.done": "Готово", "st.error": "Ошибка",
+    "sz.compact": "Компактная", "sz.regular": "Обычная", "sz.large": "Крупная",
+    "d.capT": "Каждая деталь — в живом предпросмотре", "d.cap": "Материал, палитра, размер, положение, движение и звуки — каждое изменение видно в предпросмотре до диктовки. Окна окрашены в фирменный индиго Saidright: воздушный днём и глубокий ночью.",
+    "d.tint1": "Saidright", "d.tint2": "Системный",
+    "m.title": "Одна клавиша. Режим на каждый случай.", "m.intro": "Режим решает, насколько можно менять твои слова и куда они попадут. Пользуйся нашими или создай свои — и переключайся мгновенно сочетанием ⌃⌥M, не покидая приложения.",
+    "m.say": "Ты говоришь", "m.get": "Ты получаешь",
+    "m.ownT": "Твои правила, твои режимы", "m.ownP": "Дай режиму имя, иконку, языки, распознаватель, степень правки и языковую помощь. Добавь свои инструкции — «всегда официально», «сохраняй мой сленг», «пиши для разработчика». Экспортируй режим и поделись с командой.",
+    "s.title": "Скажи список — получи чек-лист. Скажи таблицу — получи таблицу.", "s.intro": "Saidright слышит структуру в речи — задачи, перечисления, шаги, сравнения — и раскладывает её. Обычные фразы остаются фразами. Ничего не добавляется и не теряется: каждое слово — твоё.",
+    "s.aiT": "Говори с ИИ так, как думаешь", "s.aiP": "Режим «Промпт» превращает поток мыслей в ясный запрос: цель, шаги и ограничения по порядку. Модели отвечают лучше, когда им дают больше, а голосом дать больше быстрее всего.",
+    "l.title": "Расти с каждой фразой.", "l.intro": "Пишешь коллеге по-английски? Сообщение уйдёт так, как ты сказал, а сразу после из капсулы вырастет маленькая карточка с одной поправкой, которую стоит знать. Без расписания уроков: твоя обычная работа становится практикой.",
+    "l1.t": "Одна подсказка — как от друга", "l1.p": "Короткое объяснение на твоём языке и под твой уровень. Нажми «Почему?» — будут правило и пример.",
+    "l2.t": "Из подсказок — в навыки", "l2.p": "«В тренировку» превращает поправку в карточку с интервальным повторением. Частые темы показывают, над чем поработать.",
+    "l3.t": "Смешивай языки посреди фразы", "l3.p": "Переключайся между языками на одном дыхании. Термины сохраняют написание, и ничего не переводится за твоей спиной.",
+    "l4.t": "Честно и без шума", "l4.p": "Правильные фразы ничего не получают. Если распознаватель мог тебя не расслышать, подсказка так и скажет — и это не засчитается как твоя ошибка.",
+    "l.more": "и ещё около 90",
+    "e.title": "Выбери распознаватель под себя.", "e.intro": "Всё ниже работает на твоём Mac. Любой ставится прямо из приложения — размер, память и языки видны до загрузки. На длинных диктовках Saidright распознаёт законченные фразы, пока ты ещё говоришь.",
+    "e.t1": "от конца фразы до текста с Whisper на Mac с чипом M", "e.t2": "с NVIDIA Parakeet для одноязычных режимов", "e.t3b": "До 4×", "e.t3": "короче ожидание после длинной диктовки — благодаря распознаванию на ходу",
+    "e.h1": "Распознаватель", "e.h2": "На фразу", "e.h3": "Ошибки в словах RU / EN / DE", "e.h4": "Лучше всего для",
+    "e.r1": "Смешанных языков, китайского, твоего словаря", "e.r2": "Скорости, одного языка в записи (25 европейских языков)", "e.r3": "Без загрузки; один язык на режим (macOS 26+)", "e.fast": "быстро",
+    "e.note": "Измерено на 100 записях живой речи из FLEURS, а также на синтетических и смешанных клипах, на M4 Pro. С твоим голосом и микрофоном цифры будут другими. Правка, оформление и подсказки добавляют время выбранной текстовой модели.",
+    "t.title": "Твой голос не покидает Mac.", "t.intro": "Приватно по устройству, открыто по выбору. Можно прочитать каждую строку кода, которая касается твоих слов.",
+    "t1.t": "Распознавание на устройстве", "t1.p": "Звук распознаётся на Mac и удаляется после этого, если ты не решишь его сохранить.",
+    "t2.t": "Помощь с текстом — на твоих условиях", "t2.p": "Правка и подсказки используют выбранную тобой модель: полностью локально через Ollama, быстрый бесплатный облачный тариф вроде Groq или твой ключ. «Только на Mac» блокирует любые облачные запросы.",
+    "t3.t": "Открытый код, без слежки", "t3.p": "Apache 2.0. Без аккаунта, аналитики и телеметрии. Ключи — в Связке ключей macOS; у каждого релиза есть контрольная сумма.",
+    "i.title": "Готово за минуту.", "i.intro": "Saidright бесплатный и не заверен Apple (это стоит денег каждый год), поэтому macOS один раз попросит подтвердить, что ты ему доверяешь.",
+    "i1.t": "Скачай", "i1.p": "Открой <a href=\"#\" data-download>Saidright.dmg</a> и перетащи Saidright в «Программы».",
+    "i2.t": "Открой один раз", "i2.p": "macOS скажет, что не может проверить разработчика. Нажми «Готово», не «В Корзину».",
+    "i3.t": "Разреши", "i3.p": "Системные настройки → Конфиденциальность и безопасность → «Всё равно открыть». Один раз на версию.",
+    "i4.t": "Пройди знакомство", "i4.p": "Выбери языки и разреши микрофон. Потом нажимай правый ⌘ где угодно и говори.",
+    "i.source": "Исходный код", "i.note": "Хочешь собрать сам? <code>swift test && scripts/build-app.sh</code>",
     "q.title": "Вопросы",
     "q1.q": "Это правда бесплатно?", "q1.a": "Да. Saidright — открытый проект под лицензией Apache 2.0. Локальное распознавание и локальные подсказки ничего не стоят. Платить придётся только облачному сервису, если ты сам его подключишь.",
     "q2.q": "Нужен ли интернет?", "q2.a": "Только чтобы один раз скачать распознаватель. Дальше диктовка работает без сети.",
-    "q3.q": "Какие Mac поддерживаются?", "q3.a": "Mac на Apple silicon (M1 и новее) с macOS 14 и новее. Больше всего проверено на самой новой macOS. Mac на Intel не поддерживаются.",
-    "q4.q": "Почему macOS предупреждает?", "q4.a": "Заверение (notarization) у Apple требует платного аккаунта разработчика. Эта бесплатная версия подписана, но не заверена, поэтому macOS один раз просит подтвердить её в «Конфиденциальность и безопасность».",
-    "q5.q": "Оценивает ли он мой акцент?", "q5.a": "Нет. По расшифровке этого не понять. Подсказки касаются только явных ошибок грамматики и выбора слов, а возможная ошибка распознавания помечается отдельно и никогда не считается твоей.",
+    "q3.q": "Как сделать таблицу голосом?", "q3.a": "Просто попроси: «Нужна таблица с тремя столбцами: ChatGPT, Claude и Gemini», а потом продиктуй значения по строкам. С включённым умным оформлением и подключённой текстовой моделью получится таблица Markdown — для заметок, документов и чатов с ИИ.",
+    "q4.q": "Какие Mac поддерживаются?", "q4.a": "Mac на Apple silicon (M1 и новее) с macOS 14 и новее. Mac на Intel не поддерживаются.",
+    "q5.q": "Почему macOS предупреждает?", "q5.a": "Заверение у Apple требует платного аккаунта разработчика. Эта бесплатная версия подписана, но не заверена, поэтому macOS один раз просит подтвердить её в «Конфиденциальность и безопасность».",
+    "q6.q": "Оценивает ли он мой акцент?", "q6.a": "Нет. Подсказки касаются только явных ошибок грамматики и выбора слов. Возможная ошибка распознавания помечается отдельно и не считается твоей.",
     "ft.licence": "Открытый код, Apache 2.0",
-    "ft.credits": "Модели речи: OpenAI Whisper (MIT) и NVIDIA Parakeet TDT 0.6B v3 (CC BY 4.0, © NVIDIA), скачиваются по запросу и не входят в приложение. Построено на MLX от Apple. Точность измерена на Google FLEURS (CC BY 4.0). Saidright не связан с Apple, OpenAI, NVIDIA или Google."
+    "ft.credits": "Модели речи: OpenAI Whisper (MIT) и NVIDIA Parakeet TDT 0.6B v3 (CC BY 4.0, © NVIDIA), скачиваются по запросу и не входят в приложение. Построено на MLX от Apple. Точность измерена на Google FLEURS (CC BY 4.0). Шрифт: Onest (SIL Open Font Licence). Saidright не связан с Apple, OpenAI, NVIDIA, Google или Anthropic; названия продуктов — товарные знаки их владельцев."
   };
 
-  // ---- Language ----
+  // ---------------- Demo content per language ----------------
+  const content = {
+    en: {
+      hero: [
+        { mode: "Message", app: "Messages", said: "uh hi Anna so the report will be ready by six tonight I'll send it right after", html: "<p>Hi Anna, the report will be ready by 6 tonight. I'll send it right after.</p>" },
+        { mode: "Message", app: "Slack", said: "tomorrow please call the client update the price list and send the invoice", html: "<p>Tomorrow, please:</p><ul><li>Call the client</li><li>Update the price list</li><li>Send the invoice</li></ul>" },
+        { mode: "Message", app: "Notes", said: "I need a table with three columns ChatGPT Claude and Gemini speed fast medium fast price twenty dollars each", html: "<table><tr><th></th><th>ChatGPT</th><th>Claude</th><th>Gemini</th></tr><tr><td>Speed</td><td>Fast</td><td>Medium</td><td>Fast</td></tr><tr><td>Price</td><td>$20</td><td>$20</td><td>$20</td></tr></table>" },
+        { mode: "Practice", app: "Mail", said: "I am agree with the plan let's start on Monday", html: "<p>I am agree with the plan, let's start on Monday.</p>", tip: true }
+      ],
+      modes: [
+        { id: "message", name: "Message", icon: "bubble", say: "so <em>um</em> the meeting moved to wednesday <em>no wait</em> thursday at three can you bring the slides", get: "<p>The meeting moved to Thursday at 3. Can you bring the slides?</p>", desc: "For chats and email: punctuation, capitals and filler words cleaned up. Your words and your tone stay yours." },
+        { id: "prompt", name: "Prompt", icon: "cursor", say: "write me a landing page for a coffee shop <em>like</em> warm colours mobile first and <em>uh</em> keep it under one page and add a menu section", get: "<p>Create a landing page for a coffee shop.</p><ul><li>Warm colours</li><li>Mobile first</li><li>Fits on one page</li><li>Includes a menu section</li></ul>", desc: "For ChatGPT, Claude, Gemini or Cursor: a rambling thought becomes a clear request with the requirements laid out." },
+        { id: "original", name: "Original", icon: "wave", say: "I think we should ship it on Friday", get: "<p>I think we should ship it on Friday.</p>", desc: "Exactly what you said, recognized on your Mac. No text model involved — the fastest and most private mode." },
+        { id: "practice", name: "Practice", icon: "cap", say: "yesterday I go to the shop and buy a new microphone", get: "<p>Yesterday I go to the shop and buy a new microphone.</p><p style=\"color:#8A8778;font-size:15px\">Tip: <s>go … buy</s> → <b style=\"color:#1A1F36\">went … bought</b> — the past needs the past tense.</p>", desc: "Speak a language you're learning and keep your text as it was — with a tip on the one thing worth fixing." }
+      ],
+      examples: [
+        { who: "To a colleague", said: "Hey, before Friday please finish the slides, check the numbers with finance and book the room.", html: "<p>Hey, before Friday please:</p><ul><li>Finish the slides</li><li>Check the numbers with finance</li><li>Book the room</li></ul>" },
+        { who: "To your kid", said: "On the way home buy milk, bread, two apples and something for breakfast.", html: "<p>On the way home buy:</p><ul><li>Milk</li><li>Bread</li><li>Two apples</li><li>Something for breakfast</li></ul>", tick: true },
+        { who: "To your team", said: "I need a table with three columns: ChatGPT, Claude and Gemini. Speed: fast, medium, fast. Context: 400K, 1M, 2M.", html: "<table><tr><th></th><th>ChatGPT</th><th>Claude</th><th>Gemini</th></tr><tr><td>Speed</td><td>Fast</td><td>Medium</td><td>Fast</td></tr><tr><td>Context</td><td>400K</td><td>1M</td><td>2M</td></tr></table>" }
+      ]
+    },
+    ru: {
+      hero: [
+        { mode: "Сообщение", app: "Telegram", said: "э привет Аня короче отчёт будет готов к шести вечера сразу пришлю", html: "<p>Привет, Аня! Отчёт будет готов к 6 вечера, сразу пришлю.</p>" },
+        { mode: "Сообщение", app: "Slack", said: "завтра пожалуйста позвони клиенту обнови прайс и отправь счёт", html: "<p>Завтра, пожалуйста:</p><ul><li>Позвони клиенту</li><li>Обнови прайс</li><li>Отправь счёт</li></ul>" },
+        { mode: "Сообщение", app: "Заметки", said: "нужна таблица с тремя столбцами ChatGPT Claude и Gemini скорость высокая средняя высокая цена у всех двадцать долларов", html: "<table><tr><th></th><th>ChatGPT</th><th>Claude</th><th>Gemini</th></tr><tr><td>Скорость</td><td>Высокая</td><td>Средняя</td><td>Высокая</td></tr><tr><td>Цена</td><td>$20</td><td>$20</td><td>$20</td></tr></table>" },
+        { mode: "Практика", app: "Почта", said: "I am agree with the plan let's start on Monday", html: "<p>I am agree with the plan, let's start on Monday.</p>", tip: true }
+      ],
+      modes: [
+        { id: "message", name: "Сообщение", icon: "bubble", say: "короче <em>э-э</em> созвон переносится на среду <em>а нет</em> на четверг в три захвати пожалуйста презентацию", get: "<p>Созвон переносится на четверг в 15:00. Захвати, пожалуйста, презентацию.</p>", desc: "Для чатов и почты: пунктуация, заглавные буквы и слова-паразиты. Твои слова и твой тон остаются твоими." },
+        { id: "prompt", name: "Промпт", icon: "cursor", say: "сделай лендинг для кофейни <em>ну</em> тёплые цвета сначала под телефон <em>э</em> чтобы влезал в один экран и добавь раздел с меню", get: "<p>Создай лендинг для кофейни.</p><ul><li>Тёплые цвета</li><li>Сначала мобильная версия</li><li>Помещается на один экран</li><li>Есть раздел с меню</li></ul>", desc: "Для ChatGPT, Claude, Gemini или Cursor: поток мыслей становится ясным запросом, требования — по пунктам." },
+        { id: "original", name: "Как сказано", icon: "wave", say: "думаю выпускаем в пятницу", get: "<p>Думаю, выпускаем в пятницу.</p>", desc: "Ровно то, что ты сказал, распознанное на Mac. Без текстовой модели — самый быстрый и самый приватный режим." },
+        { id: "practice", name: "Практика", icon: "cap", say: "yesterday I go to the shop and buy a new microphone", get: "<p>Yesterday I go to the shop and buy a new microphone.</p><p style=\"color:#8A8778;font-size:15px\">Подсказка: <s>go … buy</s> → <b style=\"color:#1A1F36\">went … bought</b> — о прошлом говорят в прошедшем времени.</p>", desc: "Говори на языке, который учишь: текст остаётся как был, а подсказка покажет одну вещь, которую стоит исправить." }
+      ],
+      examples: [
+        { who: "Коллеге", said: "Привет, до пятницы, пожалуйста, доделай слайды, сверь цифры с финансами и забронируй переговорку.", html: "<p>Привет! До пятницы, пожалуйста:</p><ul><li>Доделай слайды</li><li>Сверь цифры с финансами</li><li>Забронируй переговорку</li></ul>" },
+        { who: "Ребёнку", said: "По дороге домой купи молоко, хлеб, два яблока и что-нибудь к завтраку.", html: "<p>По дороге домой купи:</p><ul><li>Молоко</li><li>Хлеб</li><li>Два яблока</li><li>Что-нибудь к завтраку</li></ul>", tick: true },
+        { who: "Команде", said: "Нужна таблица с тремя столбцами: ChatGPT, Claude и Gemini. Скорость: высокая, средняя, высокая. Контекст: 400 тысяч, 1 миллион, 2 миллиона.", html: "<table><tr><th></th><th>ChatGPT</th><th>Claude</th><th>Gemini</th></tr><tr><td>Скорость</td><td>Высокая</td><td>Средняя</td><td>Высокая</td></tr><tr><td>Контекст</td><td>400 тыс.</td><td>1 млн</td><td>2 млн</td></tr></table>" }
+      ]
+    }
+  };
+
+  const icons = {
+    bubble: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>',
+    cursor: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M9 4h6M9 20h6M12 4v16M4 15l3-9 3 9M5 12h4"/></svg>',
+    wave: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 10v4M8 7v10M12 4v16M16 7v10M20 10v4"/></svg>',
+    cap: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/></svg>'
+  };
+
+  // ---------------- Capsule: the app's bar maths ----------------
+  // Seven bars, 4–18 pt. Recording: input level, newest in the middle. Processing: a pulse
+  // travelling left to right. Done: low bars plus the check mark.
+  const palettes = [
+    { id: "signal", name: "Signal", c: ["#4F9DFF", "#FF5FA8", "#3FD08A"] },
+    { id: "ember", name: "Ember", c: ["#FF7A45", "#FFC247", "#5FD39A"] },
+    { id: "aurora", name: "Aurora", c: ["#2FD3C1", "#A58BFF", "#7FE07A"] },
+    { id: "graphite", name: "Graphite", c: ["#E9EEF7", "#9AA6B8", "#E9EEF7"] }
+  ];
+  const capsules = [];
+  function makeCapsule(el) {
+    el.innerHTML = '<div class="bars">' + "<i></i>".repeat(7) + '</div><svg class="glyph check"><use href="#check"/></svg><svg class="glyph bang"><use href="#bang"/></svg>';
+    const cap = { el, bars: [...el.querySelectorAll(".bars i")], state: el.classList.contains("recording") ? "recording" : "hidden", t: 0, levels: Array(7).fill(0.2) };
+    capsules.push(cap);
+    return cap;
+  }
+  function setState(cap, s) {
+    cap.state = s;
+    const keep = [...cap.el.classList].filter(c => ["glass"].includes(c));
+    cap.el.className = ["capsule", s, ...keep].join(" ");
+  }
+  let lastFrame = 0;
+  function frame(now) {
+    const dt = Math.min(0.05, (now - lastFrame) / 1000 || 0); lastFrame = now;
+    for (const cap of capsules) {
+      cap.t += dt;
+      const s = parseFloat(getComputedStyle(cap.el).getPropertyValue("--s")) || 1;
+      const minH = 4, maxH = 18;
+      cap.bars.forEach((b, i) => {
+        let h = minH;
+        if (cap.state === "recording") {
+          const age = Math.abs(i - 3);
+          const voice = 0.45 + 0.55 * Math.abs(Math.sin(cap.t * 3.1 + Math.sin(cap.t * 1.7) * 2)) * (0.6 + 0.4 * Math.sin(cap.t * 0.9 + 1));
+          cap.levels[i] += ((voice * (1 - age * 0.14)) - cap.levels[i]) * (0.25 + 0.05 * age);
+          h = minH + (maxH - minH) * Math.min(1, cap.levels[i] * 1.1);
+        } else if (cap.state === "processing") {
+          const wave = (Math.sin(cap.t * 5.2 - i * 0.62) + 1) / 2;
+          h = minH + (maxH - minH) * 0.55 * wave * wave;
+        } else if (cap.state === "done") {
+          h = minH + 2;
+        }
+        b.style.height = (h * s) + "px";
+      });
+    }
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  function staticBars() { capsules.forEach(c => c.bars.forEach((b, i) => b.style.height = (c.state === "recording" ? [6, 10, 14, 18, 14, 10, 6][i] : 6) * (parseFloat(getComputedStyle(c.el).getPropertyValue("--s")) || 1) + "px")); }
+
+  // ---------------- Language ----------------
   const originals = new Map();
   document.querySelectorAll("[data-i18n],[data-i18n-html]").forEach(el => originals.set(el, el.innerHTML));
-  function setLang(lang) {
+  let lang = "en";
+  function setLang(next) {
+    lang = next;
     document.documentElement.lang = lang;
     document.querySelectorAll("[data-i18n],[data-i18n-html]").forEach(el => {
       const key = el.dataset.i18n || el.dataset.i18nHtml;
       el.innerHTML = lang === "ru" && ru[key] ? ru[key] : originals.get(el);
     });
     document.querySelectorAll(".lang button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.lang === lang)));
+    document.querySelectorAll("img[data-shot]").forEach(img => {
+      const ext = img.dataset.shot === "tip" ? "png" : "jpg";
+      img.src = `assets/shots/${lang}/${img.dataset.shot}.${ext}`;
+    });
     try { localStorage.setItem("saidright-lang", lang); } catch (e) {}
-    wireLinks();
-    startTyping(true);
+    wireLinks(); buildModes(); buildExamples(); runHero();
   }
   document.querySelectorAll(".lang button").forEach(b => b.addEventListener("click", () => setLang(b.dataset.lang)));
 
-  // ---- Links ----
   function wireLinks() {
-    const ready = !REPO.startsWith("OWNER/");
-    document.querySelectorAll("[data-download]").forEach(a => {
-      a.href = ready ? `https://github.com/${REPO}/releases/latest/download/Saidright.dmg` : "#install";
-    });
-    document.querySelectorAll("[data-repo-link]").forEach(a => {
-      a.href = ready ? `https://github.com/${REPO}` : "#install";
-    });
+    document.querySelectorAll("[data-download]").forEach(a => a.href = `https://github.com/${REPO}/releases/latest/download/Saidright.dmg`);
+    document.querySelectorAll("[data-repo-link]").forEach(a => a.href = `https://github.com/${REPO}`);
   }
 
-  // ---- Hero animation: speak → text → tip ----
-  const surface = document.getElementById("surface");
-  const barsEl = document.getElementById("bars");
-  const typed = document.getElementById("typed");
-  for (let i = 0; i < 7; i++) barsEl.appendChild(document.createElement("i"));
-  const bars = [...barsEl.children];
-  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
-  const lines = { en: "I am agree with you about the plan.", ru: "I am agree with you about the plan." };
-  let timers = [], level = null;
+  // ---------------- Hero: speak → capsule → text (→ tip) ----------------
+  const hero = makeCapsule(document.getElementById("heroCapsule"));
+  const field = document.getElementById("field"), said = document.getElementById("said"), saidText = document.getElementById("saidtext");
+  const card = document.getElementById("card"), modename = document.getElementById("modename"), chip = document.getElementById("modechip"), appname = document.getElementById("appname");
+  let timers = [], scene = 0;
   const later = (ms, fn) => timers.push(setTimeout(fn, ms));
-  function setBars(mode) {
-    clearInterval(level);
-    if (mode === "rec") {
-      let t = 0;
-      level = setInterval(() => { t++; bars.forEach((b, i) => { const age = Math.abs(i - 3); const v = 0.35 + 0.5 * Math.abs(Math.sin(t / 2.1 + i * 0.7)) * (1 - age * 0.12); b.style.height = (4 + 14 * v) + "px"; }); }, 90);
-    } else if (mode === "proc") {
-      let t = 0;
-      level = setInterval(() => { t += 0.18; bars.forEach((b, i) => { const w = (Math.sin(t * 5.2 - i * 0.62) + 1) / 2; b.style.height = (4 + 14 * 0.55 * w * w) + "px"; }); }, 33);
-    } else bars.forEach(b => b.style.height = mode === "done" ? "6px" : "4px");
-  }
-  function state(s) { surface.className = "surface " + s; }
-  function startTyping(restart) {
-    timers.forEach(clearTimeout); timers = []; clearInterval(level);
-    typed.textContent = "";
-    if (reduce) { typed.textContent = lines.en; state("card"); return; }
-    state("hidden");
-    later(700, () => { state("recording"); setBars("rec"); });
-    later(3000, () => { state("processing"); setBars("proc"); });
-    later(3700, () => {
-      setBars("done"); state("done");
-      const text = lines[document.documentElement.lang] || lines.en; let i = 0;
-      const type = setInterval(() => { typed.textContent = text.slice(0, ++i); if (i >= text.length) clearInterval(type); }, 22);
-      timers.push(type);
+  function runHero() {
+    timers.forEach(clearTimeout); timers = [];
+    const scenes = content[lang].hero;
+    const sc = scenes[scene % scenes.length];
+    modename.textContent = sc.mode; appname.textContent = sc.app;
+    card.classList.remove("on");
+    if (reduce) { field.innerHTML = sc.html; setState(hero, "done"); staticBars(); return; }
+    field.innerHTML = '<span class="caret"></span>';
+    setState(hero, "hidden"); said.classList.remove("on");
+    chip.classList.add("flip"); later(300, () => chip.classList.remove("flip"));
+    const words = sc.said.split(" ");
+    saidText.innerHTML = words.map(w => `<span class="w">${w}</span>`).join(" ");
+    const spans = [...saidText.children];
+    const per = Math.min(260, 3200 / words.length);
+    later(500, () => { setState(hero, "recording"); said.classList.add("on"); });
+    spans.forEach((s, i) => later(700 + i * per, () => s.classList.add("on")));
+    const endSpeak = 900 + words.length * per;
+    later(endSpeak, () => setState(hero, "processing"));
+    later(endSpeak + 650, () => {
+      setState(hero, "done"); said.classList.remove("on");
+      field.innerHTML = sc.html; field.firstElementChild && [...field.children].forEach((c, i) => { c.classList.add("appear"); c.style.animationDelay = (i * 70) + "ms"; });
     });
-    later(4600, () => state("hidden"));
-    later(5600, () => { state("done"); setBars("done"); });
-    later(5900, () => state("card"));
-    later(10400, () => state("done"));
-    later(10800, () => state("hidden"));
-    later(11800, () => startTyping(true));
+    if (sc.tip) {
+      later(endSpeak + 1700, () => setState(hero, "hidden"));
+      later(endSpeak + 2300, () => card.classList.add("on"));
+      later(endSpeak + 7300, () => card.classList.remove("on"));
+      later(endSpeak + 8200, () => { scene++; runHero(); });
+    } else {
+      later(endSpeak + 1700, () => setState(hero, "hidden"));
+      later(endSpeak + 4300, () => { scene++; runHero(); });
+    }
   }
+  // The hero light follows the pointer a little.
+  const heroEl = document.querySelector(".hero");
+  if (!reduce) heroEl.addEventListener("pointermove", e => {
+    const r = heroEl.getBoundingClientRect();
+    heroEl.style.setProperty("--gx", (50 + (e.clientX - r.left) / r.width * 40) + "%");
+    heroEl.style.setProperty("--gy", (20 + (e.clientY - r.top) / r.height * 40) + "%");
+  });
+
+  // ---------------- Design playground ----------------
+  const play = makeCapsule(document.getElementById("playCapsule"));
+  const playEl = document.getElementById("playCapsule");
+  function pick(groupId, attr, fn) {
+    const group = document.getElementById(groupId);
+    group.addEventListener("click", e => {
+      const b = e.target.closest("button"); if (!b) return;
+      group.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+      fn(b.dataset[attr]);
+      if (reduce) staticBars();
+    });
+  }
+  pick("stateSeg", "state", s => { setState(play, s); if (s === "error") { playEl.classList.add("shake"); setTimeout(() => playEl.classList.remove("shake"), 400); } });
+  pick("materialSeg", "material", m => playEl.classList.toggle("glass", m === "glass"));
+  pick("sizeSeg", "size", s => playEl.style.setProperty("--s", s));
+  const sw = document.getElementById("palettes");
+  palettes.forEach((p, i) => {
+    const b = document.createElement("button");
+    b.type = "button"; b.className = "swatch"; b.setAttribute("aria-pressed", String(i === 0)); b.setAttribute("aria-label", p.name);
+    b.innerHTML = p.c.map(c => `<i style="background:${c}"></i>`).join("") + `<span>${p.name}</span>`;
+    b.addEventListener("click", () => {
+      sw.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+      [["--rec", 0], ["--proc", 1], ["--done", 2]].forEach(([v, k]) => playEl.style.setProperty(v, p.c[k]));
+    });
+    sw.appendChild(b);
+  });
+  const desk = document.getElementById("desk");
+  desk.querySelector(".wallpick").addEventListener("click", e => {
+    const b = e.target.closest("button"); if (!b) return;
+    desk.dataset.wall = b.dataset.wall;
+    desk.querySelectorAll(".wallpick button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+  });
+
+  // ---------------- Modes ----------------
+  let modeIndex = 0;
+  function buildModes() {
+    const tabs = document.getElementById("modeTabs");
+    const list = content[lang].modes;
+    tabs.innerHTML = list.map((m, i) => `<button type="button" role="tab" aria-selected="${i === modeIndex}" data-i="${i}">${icons[m.icon]}${m.name}</button>`).join("")
+      + `<span class="hint">${lang === "ru" ? "Следующий режим" : "Next mode"} <kbd>⌃⌥M</kbd></span>`;
+    showMode(modeIndex);
+  }
+  function showMode(i) {
+    const list = content[lang].modes; modeIndex = (i + list.length) % list.length;
+    const m = list[modeIndex];
+    document.querySelectorAll("#modeTabs button").forEach(b => b.setAttribute("aria-selected", String(+b.dataset.i === modeIndex)));
+    document.getElementById("modeSay").innerHTML = "“" + m.say + "”";
+    const get = document.getElementById("modeGet"); get.innerHTML = m.get;
+    if (!reduce) get.animate([{ opacity: 0, transform: "translateY(8px)" }, { opacity: 1, transform: "none" }], { duration: 380, easing: "cubic-bezier(.3,1.25,.4,1)" });
+    document.getElementById("modeDesc").textContent = m.desc;
+  }
+  document.getElementById("modeTabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) showMode(+b.dataset.i); });
+  // The real shortcut works here too.
+  addEventListener("keydown", e => { if (e.ctrlKey && e.altKey && e.code === "KeyM") { e.preventDefault(); showMode(modeIndex + 1); } });
+
+  // ---------------- Structure examples ----------------
+  function buildExamples() {
+    const host = document.getElementById("examples");
+    host.innerHTML = content[lang].examples.map(x => `<article class="ex${x.tick ? " tickable" : ""}"><div class="who">${x.who}</div><div class="spoken">“${x.said}”</div><div class="result">${x.html}</div></article>`).join("");
+    host.querySelectorAll(".ex").forEach(ex => {
+      ex.querySelectorAll("li").forEach((li, i) => li.style.transitionDelay = (i * 90) + "ms");
+      ex.querySelectorAll("th, td").forEach((c, i) => c.style.transitionDelay = (i * 35) + "ms");
+      if (ex.classList.contains("tickable")) ex.querySelectorAll("li").forEach(li => { li.style.cursor = "pointer"; li.addEventListener("click", () => li.classList.toggle("ticked")); });
+    });
+    observeExamples();
+  }
+
+  // ---------------- One reveal per element, when it scrolls into view ----------------
+  let io;
+  function observeExamples() {
+    if (reduce || !("IntersectionObserver" in window)) { document.querySelectorAll(".ex").forEach(e => e.classList.add("shown")); return; }
+    io && io.disconnect();
+    io = new IntersectionObserver(entries => entries.forEach(en => { if (en.isIntersecting) { en.target.classList.add("shown"); io.unobserve(en.target); } }), { threshold: .35 });
+    document.querySelectorAll(".ex").forEach(e => io.observe(e));
+  }
+  const thesis = document.getElementById("thesis");
+  if (reduce || !("IntersectionObserver" in window)) thesis.classList.add("lit");
+  else new IntersectionObserver((en, o) => en.forEach(x => { if (x.isIntersecting) { setTimeout(() => thesis.classList.add("lit"), 400); o.disconnect(); } }), { threshold: .6 }).observe(thesis);
+
+  // Nav turns solid after the hero.
+  const nav = document.getElementById("nav");
+  const onScroll = () => nav.classList.toggle("solid", scrollY > 40);
+  addEventListener("scroll", onScroll, { passive: true }); onScroll();
 
   let saved = null;
   try { saved = localStorage.getItem("saidright-lang"); } catch (e) {}
   setLang(saved || ((navigator.language || "en").toLowerCase().startsWith("ru") ? "ru" : "en"));
+  if (reduce) staticBars(); else requestAnimationFrame(frame);
 </script>
 </body>
 </html>

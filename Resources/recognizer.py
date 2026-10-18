@@ -18,6 +18,10 @@ PROTOCOL = sys.stdout
 REPO = 'mlx-community/whisper-large-v3-turbo'
 REVISION = 'a4aaeec0636e6fef84abdcbe3544cb2bf7e9f6fb'
 SAMPLE_RATE = 16000
+# Recognition ahead of the stop: cut at pauses of at least this many seconds, in chunks of at
+# least this length (measured on the owner's recordings, docs/RECOGNITION.md).
+AHEAD_PAUSE = 1.0
+AHEAD_MIN_CHUNK = 4.0
 
 # Phrases Whisper is known to produce on silence or noise. Only dropped when they are the
 # whole output of a segment with little voiced audio, never from real speech.
@@ -49,6 +53,8 @@ class Worker:
         self.cache_dir = cache_dir
         self.model = None
         self.np = None
+        # Recognition ahead of the stop: path -> {'cut': samples done, 'texts', 'used', 'floor'}.
+        self.ahead = {}
 
     # ---------------------------------------------------------------- model
     def model_present(self):
@@ -162,7 +168,7 @@ class Worker:
                 raise WorkerError('integrity', f'Checksum mismatch for {sibling.rfilename}')
 
     # ------------------------------------------------------------ segmenting
-    def speech_regions(self, audio):
+    def speech_regions(self, audio, floor_hint=None):
         """Energy VAD with an adaptive noise floor and hysteresis.
 
         Returns (start, end) sample ranges with padding, merged so that each region is long
@@ -179,6 +185,11 @@ class Worker:
         # digital silence and a very low hiss from counting; they are low enough for a quiet
         # microphone or a soft voice (speech around -60 dBFS was dropped before).
         floor = max(float(np.percentile(db, 15)), -90.0)
+        # The tail of a recording recognised ahead may be mostly speech: keep the quieter floor
+        # measured on the earlier part, so its thresholds match the whole recording's.
+        if floor_hint is not None:
+            floor = min(floor, floor_hint)
+        self.noise_floor = floor
         enter = max(floor + 10.0, -70.0)
         stay = max(floor + 6.0, -74.0)
         self.voice_threshold = enter
@@ -421,11 +432,23 @@ class Worker:
             return
         languages = [code for code in req.get('languages') or [] if code]
         prompt = req.get('prompt')
-        regions = self.speech_regions(audio)
-        if not regions:
-            emit(id=rid, type='transcript', text='', languages=[], seconds=round(time.monotonic() - started, 3), cold=cold, segments=0)
-            return
+        done = self.ahead.pop(req['path'], None)
+        self.ahead.clear()  # entries of abandoned sessions
+        texts, used, segments = [], [], 0
+        if done:
+            texts, used, segments = list(done['texts']), list(done['used']), done['segments']
+            audio = audio[done['cut']:]
+        tail_texts, tail_used, tail_segments = self.recognize(audio, languages, prompt, self.speech_regions(audio, done['floor'] if done else None))
+        texts += tail_texts
+        used += [code for code in tail_used if code not in used]
+        emit(id=rid, type='transcript', text=' '.join(texts).strip(), languages=used, seconds=round(time.monotonic() - started, 3), cold=cold, segments=segments + tail_segments)
 
+    def recognize(self, audio, languages, prompt, regions):
+        """Language plan over voiced regions, then one Whisper pass per same-language run.
+        Returns (texts, languages used, number of runs)."""
+        np = self.np
+        if not regions:
+            return [], [], 0
         if len(languages) == 1:
             plan = [(languages[0], [audio[a:b] for a, b in regions])]
         else:
@@ -453,7 +476,65 @@ class Worker:
                 texts.append(text)
                 if code not in used:
                     used.append(code)
-        emit(id=rid, type='transcript', text=' '.join(texts).strip(), languages=used, seconds=round(time.monotonic() - started, 3), cold=cold, segments=len(plan))
+        return texts, used, len(plan)
+
+    def read_growing_wav(self, path):
+        """Samples written so far to a WAV that is still being recorded (16-bit PCM, mono).
+        The header's sizes are not final yet, so the data chunk is read to the end of the file."""
+        np = self.np
+        with open(path, 'rb') as handle:
+            data = handle.read()
+        if data[:4] != b'RIFF' or data[8:12] != b'WAVE':
+            raise WorkerError('format', 'Not a WAV file.')
+        pos, bits, channels, rate = 12, 16, 1, SAMPLE_RATE
+        while pos + 8 <= len(data):
+            chunk, size = data[pos:pos + 4], int.from_bytes(data[pos + 4:pos + 8], 'little')
+            if chunk == b'fmt ':
+                channels = int.from_bytes(data[pos + 10:pos + 12], 'little')
+                rate = int.from_bytes(data[pos + 12:pos + 16], 'little')
+                bits = int.from_bytes(data[pos + 22:pos + 24], 'little')
+            elif chunk == b'data':
+                if bits != 16 or channels != 1 or rate != SAMPLE_RATE:
+                    raise WorkerError('format', 'Expected 16 kHz 16-bit mono audio.')
+                body = data[pos + 8:]
+                body = body[: len(body) - len(body) % 2]
+                return np.frombuffer(body, dtype='<i2').astype(np.float32) / 32768.0
+            pos += 8 + size + (size & 1)
+        return np.zeros(0, dtype=np.float32)
+
+    def recognize_ahead(self, req):
+        """While the person is still speaking: recognises the phrases that are already finished
+        (followed by a pause), so after the stop only the rest is left. Replies "ready"."""
+        started = time.monotonic()
+        if self.engine != 'whisper':
+            raise WorkerError('protocol', 'Only Whisper recognises ahead.')
+        self.load()
+        path = req['path']
+        state = self.ahead.get(path) or {'cut': 0, 'texts': [], 'used': [], 'segments': 0, 'floor': None}
+        audio = self.read_growing_wav(path)
+        regions = self.speech_regions(audio)
+        floor = self.noise_floor if regions else None
+        # Cut only where the speaker clearly paused: at least AHEAD_PAUSE of quiet after a phrase
+        # (region ends already include 0.24 s of padding), either before the next phrase or
+        # before the end of what has been recorded. Short pauses inside a sentence are never
+        # cut: Whisper drops or misreads words when a sentence is split.
+        pause = int((AHEAD_PAUSE - 0.24) * SAMPLE_RATE)
+        finished = []
+        for i, (a, b) in enumerate(regions):
+            following = regions[i + 1][0] + int(0.24 * SAMPLE_RATE) if i + 1 < len(regions) else len(audio)
+            if a >= state['cut'] and following - b >= pause:
+                finished = [(x, y) for x, y in regions[: i + 1] if x >= state['cut']]
+        if finished and finished[-1][1] - state['cut'] >= int(AHEAD_MIN_CHUNK * SAMPLE_RATE):
+            languages = [code for code in req.get('languages') or [] if code]
+            cut = finished[-1][1]
+            texts, used, segments = self.recognize(audio, languages, req.get('prompt'), finished)
+            state['texts'] += texts
+            state['used'] += [code for code in used if code not in state['used']]
+            state['segments'] += segments
+            state['cut'] = cut
+            state['floor'] = floor if state['floor'] is None else min(state['floor'], floor)
+            self.ahead[path] = state
+        emit(id=req['id'], type='ready', seconds=round(time.monotonic() - started, 3), ahead=round(state['cut'] / SAMPLE_RATE, 2))
 
 
 class WorkerError(Exception):
@@ -493,6 +574,8 @@ def main():
                     worker.prepare(rid)
                 elif command == 'transcribe':
                     worker.transcribe(req)
+                elif command == 'ahead':
+                    worker.recognize_ahead(req)
                 elif command == 'languages' and worker.engine == 'whisper':
                     worker.region_languages(req)
                 else:

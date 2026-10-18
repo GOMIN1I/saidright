@@ -32,6 +32,13 @@ struct AppearanceSettings: View {
                     ForEach(ThemePreference.allCases, id: \.self) { Text(tr("theme.\($0.rawValue)")).tag($0) }
                 }.labelsHidden().pickerStyle(.segmented).fixedSize()
             }
+            SettingRow(title: tr("look.tint"), detail: tr("look.tintDetail")) {
+                HStack(spacing: DS.Space.s) {
+                    ForEach(WindowTint.allCases, id: \.self) { tint in
+                        TintSwatch(tint: tint, selected: model.settings.windowTint == tint) { model.settings.windowTint = tint }
+                    }
+                }
+            }
         }
 
         SettingsGroup(title: tr("look.capsule")) {
@@ -234,5 +241,42 @@ struct IconSizes: View {
             }
         }
         .accessibilityHidden(true)
+    }
+}
+
+/// A window-colour choice: a small light/dark preview of the window and card, with its name.
+private struct TintSwatch: View {
+    var tint: WindowTint
+    var selected: Bool
+    var action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                HStack(spacing: 0) {
+                    half(dark: false)
+                    half(dark: true)
+                }
+                .frame(width: 64, height: 40)
+                .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 8, style: .continuous).strokeBorder(selected ? Surface.accent(tint == .saidright) : DS.Palette.hairline, lineWidth: selected ? 2 : 0.5))
+                Text(tr("tint.\(tint.rawValue)")).font(DS.Font.caption).foregroundStyle(selected ? .primary : DS.Palette.secondaryText)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(tr("tint.\(tint.rawValue)"))
+        .accessibilityAddTraits(selected ? .isSelected : [])
+    }
+
+    private func half(dark: Bool) -> some View {
+        let brand = tint == .saidright
+        let canvas = brand ? Color(hex: dark ? 0x0E1430 : 0xF2F4FB) : Color(white: dark ? 0.16 : 0.93)
+        let card = brand ? Color(hex: dark ? 0x171F40 : 0xFFFFFF) : Color(white: dark ? 0.22 : 1)
+        let accent = brand ? Color(hex: dark ? 0x5E7DFF : 0x3D6BFF) : Color(hex: 0x4F9DFF)
+        return ZStack(alignment: .bottomLeading) {
+            canvas
+            RoundedRectangle(cornerRadius: 3).fill(card).frame(width: 24, height: 16).padding(5)
+            Circle().fill(accent).frame(width: 6, height: 6).padding(.leading, 10).padding(.bottom, 10)
+        }
     }
 }

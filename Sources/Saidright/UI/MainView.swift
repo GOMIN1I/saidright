@@ -8,10 +8,12 @@ struct MainView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
+            // The header shares the title bar's row with the window buttons: no empty band on top.
             header
-                .padding(.horizontal, DS.Space.l)
-                .padding(.top, DS.Space.m)
-                .padding(.bottom, DS.Space.s)
+                .padding(.leading, Self.windowButtonsWidth)
+                .padding(.trailing, DS.Space.m)
+                .frame(height: Self.titleBarHeight)
+                .padding(.top, 3)
             RecordPanel()
                 .padding(.horizontal, DS.Space.l)
                 .padding(.vertical, DS.Space.m)
@@ -32,11 +34,24 @@ struct MainView: View {
         }
         .frame(width: DS.Size.mainWidth)
         .fixedSize(horizontal: false, vertical: true)
+        // The title bar is hidden: its 28 pt band is reused by the header row, not added above it.
+        .padding(.top, -Self.hiddenTitleBarInset)
         .onAppear {
             WindowRouter.openWindow = openWindow
-            if !model.settings.onboardingCompleted { WindowRouter.onboardingRequested = true; openWindow(id: "onboarding") }
+            if !model.settings.onboardingCompleted {
+                // macOS 14 opens this window at launch: the introduction comes first, alone.
+                WindowFX.window("main")?.orderOut(nil)
+                WindowRouter.onboardingRequested = true
+                openWindow(id: "onboarding")
+            }
         }
     }
+
+    /// Room for the close / minimise / zoom buttons at the leading edge of the title row.
+    static let windowButtonsWidth: CGFloat = 76
+    static let titleBarHeight: CGFloat = 30
+    /// Safe-area inset macOS keeps for a hidden title bar.
+    static let hiddenTitleBarInset: CGFloat = 28
 
     private var header: some View {
         GlassGroup {
@@ -180,6 +195,7 @@ struct RecordButton: View {
             .frame(width: 84, height: 44)
             .padding(5)
             .glass(Capsule(), interactive: true)
+            .background { LivingHalo(intensity: model.isRecording ? 1 : model.isBusy ? 0.8 : hovering ? 0.65 : 0.45, speed: model.isBusy ? 2.4 : 1) }
             .contentShape(Capsule())
             .scaleEffect(hovering && !reduceMotion ? 1.03 : 1)
             .animation(DS.Motion.quick, value: hovering)
@@ -194,6 +210,79 @@ struct RecordButton: View {
         if model.isRecording { return model.capsule.recordingColor }
         if model.isBusy { return model.capsule.processingColor }
         return model.capsule.recordingColor
+    }
+}
+
+/// A soft ring of the brand lights (voice blue, violet, rose, sky) turning slowly behind the record
+/// control, so the window feels alive; brighter while it listens or thinks. The turn is a
+/// Core Animation rotation (no per-frame work in the app); still with Reduce Motion.
+struct LivingHalo: View {
+    var intensity: Double
+    var speed: Double
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.brandTint) private var brand
+
+    var body: some View {
+        if brand {
+            HaloLayer(speed: reduceMotion ? 0 : speed)
+                // A static, blurred ring as the mask: drawn once; only the colours behind it turn.
+                .mask {
+                    Capsule().strokeBorder(.white, lineWidth: 4).padding(10).blur(radius: 4)
+                }
+                .padding(-13)
+                .opacity(intensity)
+                .animation(.easeInOut(duration: 0.6), value: intensity)
+                .allowsHitTesting(false)
+                .accessibilityHidden(true)
+        }
+    }
+}
+
+private struct HaloLayer: NSViewRepresentable {
+    var speed: Double
+    func makeNSView(context: Context) -> HaloView { HaloView() }
+    func updateNSView(_ view: HaloView, context: Context) { view.spin(speed) }
+}
+
+final class HaloView: NSView {
+    private let conic = CAGradientLayer()
+    private var current: Double = -1
+
+    override init(frame: NSRect) {
+        super.init(frame: frame)
+        wantsLayer = true
+        layer?.masksToBounds = true
+        conic.type = .conic
+        conic.startPoint = CGPoint(x: 0.5, y: 0.5)
+        conic.endPoint = CGPoint(x: 0.5, y: 0)
+        conic.colors = [0x3D6BFF, 0x7B5CFF, 0xFF5257, 0x5BC8FF, 0x3D6BFF].map {
+            CGColor(srgbRed: CGFloat(($0 >> 16) & 0xFF) / 255, green: CGFloat(($0 >> 8) & 0xFF) / 255, blue: CGFloat($0 & 0xFF) / 255, alpha: 1)
+        }
+        layer?.addSublayer(conic)
+    }
+    required init?(coder: NSCoder) { fatalError() }
+
+    override func layout() {
+        super.layout()
+        // A square larger than the view, so the rotating colours always cover the ring.
+        let side = max(bounds.width, bounds.height) * 1.5
+        CATransaction.begin(); CATransaction.setDisableActions(true)
+        conic.bounds = CGRect(x: 0, y: 0, width: side, height: side)
+        conic.position = CGPoint(x: bounds.midX, y: bounds.midY)
+        CATransaction.commit()
+    }
+
+    func spin(_ speed: Double) {
+        guard speed != current else { return }
+        current = speed
+        conic.removeAnimation(forKey: "spin")
+        guard speed > 0 else { return }
+        let spin = CABasicAnimation(keyPath: "transform.rotation.z")
+        spin.fromValue = 0
+        spin.toValue = -Double.pi * 2
+        spin.duration = 9 / speed
+        spin.repeatCount = .infinity
+        conic.add(spin, forKey: "spin")
     }
 }
 

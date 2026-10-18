@@ -2,7 +2,7 @@
 
 <h1 align="center">Saidright</h1>
 
-<p align="center"><b>Dictation that teaches you the language you speak.</b><br>
+<p align="center"><b>Speak freely.</b> Stop fearing imperfect words — set your speech free.<br>
 Talk in any Mac app, your words appear at the cursor, and a friendly tip shows you the one mistake worth fixing.</p>
 
 <p align="center"><a href="../../releases/latest"><b>Download for Mac</b></a> · <a href="https://gomin1i.github.io/saidright/">Website</a> · <a href="README.ru.md">Русский</a></p>
@@ -29,7 +29,8 @@ Tips use a text model you choose: free and fully local through [Ollama](https://
 - **Works everywhere.** Tap right ⌘ (or ⌃⌥Space), speak, tap again — the text appears where your cursor is. Ordinary shortcuts such as ⌘C never start a recording; Esc cancels.
 - **Truly multilingual.** Around 100 languages, and you can switch between them mid-dictation. Foreign terms keep their own spelling — say, an English “pull request” inside a Russian sentence. Nothing is translated behind your back.
 - **Fast and private.** Whisper large-v3-turbo or NVIDIA Parakeet run locally through MLX — about half a second per phrase, and audio never leaves your Mac. No account, no telemetry.
-- **Smart formatting.** Dictate a few tasks and get a checklist; list things and get bullets; describe steps and get a numbered list. Ordinary sentences stay prose, and nothing you did not say is added.
+- **Smart formatting.** Dictate a few tasks and get a checklist; list things and get bullets; describe steps and get a numbered list. Ask for a table — “I need a table with three columns: ChatGPT, Claude and Gemini” — and get a real Markdown table. Ordinary sentences stay prose, and nothing you did not say is added.
+- **Designed to be yours.** Saidright's indigo windows (light by day, deep at night), Liquid Glass or Ink capsule, palettes, size and motion — all previewed live.
 - **Modes for every job.** Keep exactly what you said, tidy punctuation, fix grammar, or rewrite in a tone. Switch with ⌃⌥M.
 - **Made to be yours.** Liquid Glass or Ink capsule, palettes, size, motion, sounds, light and dark, your own shortcuts — and a settings window with search.
 - **Honest delivery.** If focus moved while you were speaking, nothing is pasted into the wrong place; the text waits on the clipboard.

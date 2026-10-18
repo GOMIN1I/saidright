@@ -29,13 +29,21 @@ public enum TextPipeline {
     public static func edit(raw: String, mode: Mode, provider: () throws -> TextProvider) async -> EditResult {
         let text = raw.trimmingCharacters(in: .whitespacesAndNewlines)
         guard mode.cleanup.usesEditor, !text.isEmpty else { return EditResult(output: text, edited: nil, issues: [], failure: nil) }
+        // A light edit of a short, already clean phrase returns it unchanged; skipping the
+        // request saves the whole provider round trip (eval/results/2026-10-18-editing-speed.md).
+        if lightEditIsNoOp(text, mode: mode) { return EditResult(output: text, edited: text, issues: [], failure: nil) }
         do {
             let client = try provider()
-            let answer = try await client.complete(system: EditorPrompt.system(for: mode), user: EditorPrompt.wrap(text), maxOutputTokens: max(256, text.count * 2 + 200))
+            // Layout is asked for at the same time as the edit, on the transcript itself; the
+            // answer is used only if it also fits the edited text (see `structure`).
+            let early: Task<String?, Never>? = mode.rules.smartStructure && SmartStructure.worthAsking(text)
+                ? Task { try? await requestLayout(text, mode: mode, provider: client) } : nil
+            let answer: String
+            do { answer = try await client.complete(system: EditorPrompt.system(for: mode), user: EditorPrompt.wrap(text), maxOutputTokens: max(256, text.count * 2 + 200)) } catch { early?.cancel(); throw error }
             let edited = EditorPrompt.unwrap(answer)
             let report = IntegrityReport.check(raw: text, edited: edited, level: mode.cleanup)
-            if report.reject { return EditResult(output: text, edited: nil, issues: report.issues, failure: .rejected(report.issues)) }
-            let shaped = mode.rules.smartStructure ? await structure(edited, raw: text, mode: mode, provider: client) : edited
+            if report.reject { early?.cancel(); return EditResult(output: text, edited: nil, issues: report.issues, failure: .rejected(report.issues)) }
+            let shaped = mode.rules.smartStructure ? await structure(edited, raw: text, mode: mode, provider: client, early: await early?.value) : edited
             return EditResult(output: shaped, edited: shaped, issues: report.issues, failure: nil)
         } catch let error as ProviderError {
             return EditResult(output: text, edited: nil, issues: [], failure: .provider(error))
@@ -44,21 +52,69 @@ public enum TextPipeline {
         }
     }
 
+    /// Longest phrase the light level may pass through without asking the editor. Longer
+    /// recognised sentences sometimes miss a comma the editor would add.
+    static let noOpMaxWords = 12
+
+    /// Hesitation fillers and spoken commands the light level acts on, matched as whole words.
+    static let lightEditTriggers: Set<String> = [
+        "uh", "um", "umm", "uhm", "erm", "hmm", "mm", "э", "ээ", "эээ", "эм", "мм", "ммм", "ну", "короче", "типа", "вот",
+        "äh", "ähm", "öhm", "嗯", "呃", "额",
+        "paragraph", "line", "bullet", "абзац", "строки", "absatz", "换行",
+    ]
+
+    /// True when the light level could not change anything: a short phrase that starts with a
+    /// capital, ends with sentence punctuation, and has no filler, immediate repetition or spoken
+    /// formatting command. Recognition already punctuates, so the editor would return it as is.
+    static func lightEditIsNoOp(_ text: String, mode: Mode) -> Bool {
+        guard mode.cleanup == .light, mode.extraInstructions.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return false }
+        let words = text.split(whereSeparator: \.isWhitespace)
+        guard !words.isEmpty, words.count <= noOpMaxWords, !text.contains("\n") else { return false }
+        guard let first = text.first(where: \.isLetter), first.isUppercase, let last = text.last, ".?!…".contains(last) else { return false }
+        if mode.rules.smartStructure && SmartStructure.worthAsking(text) { return false }
+        let bare = words.map { $0.lowercased().trimmingCharacters(in: .punctuationCharacters) }
+        if bare.contains(where: { lightEditTriggers.contains($0) || $0.hasPrefix("э-") }) { return false }
+        if zip(bare, bare.dropFirst()).contains(where: { $0 == $1 && !$0.isEmpty }) { return false }
+        return true
+    }
+
     /// Smart formatting after an accepted edit. Any problem keeps the prose edit.
-    static func structure(_ edited: String, raw: String, mode: Mode, provider: TextProvider) async -> String {
+    /// `early` is a layout answer for the raw transcript, requested in parallel with the edit.
+    /// It is used when it passes every check against the edited text (so a word the editor
+    /// corrected sends the request again), or when it says "prose" and the edit changed only
+    /// punctuation and capitals. Otherwise the layout is asked for the edited text as before.
+    static func structure(_ edited: String, raw: String, mode: Mode, provider: TextProvider, early: String? = nil) async -> String {
         guard SmartStructure.worthAsking(edited) else { return edited }
-        let allowTitle = mode.cleanup != .light
+        if let early {
+            if let rendered = layoutResult(early, edited: edited, raw: raw, mode: mode), rendered != edited { return rendered }
+            if !early.contains("\"structured\""), !SmartStructure.requestsTable(edited), sameWords(raw, edited) { return edited }
+        }
         // One more try only when the model wanted structure but its answer failed the checks
         // (small local models sometimes drop or repeat a sentence).
         for _ in 0..<2 {
-            guard let json = try? await provider.completeJSON(system: SmartStructure.system(allowTitle: allowTitle), user: EditorPrompt.wrap(edited), schemaName: "layout", schema: SmartStructure.schema, maxOutputTokens: max(400, edited.count * 3 + 300)) else { return edited }
-            if let layout = SmartStructure.parse(json, source: edited, allowTitle: allowTitle) {
-                let rendered = SmartStructure.render(title: layout.title, blocks: layout.blocks)
-                return IntegrityReport.check(raw: raw, edited: rendered, level: mode.cleanup).reject ? edited : rendered
-            }
-            guard json.contains("\"structured\"") else { return edited }
+            guard let json = try? await requestLayout(edited, mode: mode, provider: provider) else { return edited }
+            if let rendered = layoutResult(json, edited: edited, raw: raw, mode: mode) { return rendered }
+            // A spoken table request deserves the second try even when the model said "prose".
+            guard json.contains("\"structured\"") || SmartStructure.requestsTable(edited) else { return edited }
         }
         return edited
+    }
+
+    static func requestLayout(_ text: String, mode: Mode, provider: TextProvider) async throws -> String {
+        try await provider.completeJSON(system: SmartStructure.system(allowTitle: mode.cleanup != .light, table: SmartStructure.requestsTable(text)), user: EditorPrompt.wrap(text), schemaName: "layout", schema: SmartStructure.schema, maxOutputTokens: max(400, text.count * 3 + 300))
+    }
+
+    /// The rendered layout when it is valid for the edited text, else nil.
+    static func layoutResult(_ json: String, edited: String, raw: String, mode: Mode) -> String? {
+        guard let layout = SmartStructure.parse(json, source: edited, allowTitle: mode.cleanup != .light) else { return nil }
+        let rendered = SmartStructure.render(title: layout.title, blocks: layout.blocks)
+        return IntegrityReport.check(raw: raw, edited: rendered, level: mode.cleanup).reject ? edited : rendered
+    }
+
+    /// Same words in the same order, ignoring punctuation and capitals.
+    static func sameWords(_ a: String, _ b: String) -> Bool {
+        func words(_ s: String) -> [String] { s.lowercased().split { !$0.isLetter && !$0.isNumber }.map(String.init) }
+        return words(a) == words(b)
     }
 
     public static func feedback(transcript: String, learningLanguage: String, explanationLanguage: String, level: LearningLevel, goal: String?, learner: LearnerLevel = .intermediate, depth: ExplanationDepth = .brief, provider: TextProvider) async throws -> Feedback {

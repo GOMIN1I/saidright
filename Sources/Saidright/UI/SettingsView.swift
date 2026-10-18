@@ -41,6 +41,7 @@ extension Notification.Name { static let settingsSection = Notification.Name("sa
 
 struct SettingsView: View {
     @Environment(AppModel.self) private var model
+    @Environment(\.brandTint) private var brand
     @State private var section: SettingsSection? = SettingsRouter.section
     @State private var query = ""
     @State private var resultSelection: SettingsEntry.ID?
@@ -54,15 +55,20 @@ struct SettingsView: View {
 
     var body: some View {
         NavigationSplitView {
-            ZStack {
+            // The sidebar search field is hosted by the sidebar's list: the column must always be a
+            // List, or the field disappears with the query still applied and cannot be cleared.
+            Group {
                 if searching {
-                    SettingsSearchResults(results: results, query: query, selection: $resultSelection)
+                    SettingsSearchResults(results: results, query: query, selection: $resultSelection) { query = "" }
                 } else {
                     List(SettingsSection.allCases, selection: $section) { s in
                         Label(tr("settings.\(s.rawValue)"), systemImage: s.symbol).tag(s)
                     }
                 }
             }
+            .onExitCommand { query = "" }
+            .scrollContentBackground(brand ? .hidden : .automatic)
+            .background(brand ? DS.Brand.sidebar.opacity(0.55) : .clear)
             .frame(minWidth: 210)
             .navigationSplitViewColumnWidth(min: 210, ideal: 236, max: 300)
             .toolbar(removing: .sidebarToggle)
@@ -83,6 +89,7 @@ struct SettingsView: View {
                 .onAppear { reveal(proxy) }
             }
             .navigationTitle(tr("settings.\(current.rawValue)"))
+            .toolbarBackground(brand ? .hidden : .automatic, for: .windowToolbar)
         }
         .searchable(text: $query, placement: .sidebar, prompt: tr("search.prompt"))
         .onSubmit(of: .search) { if let first = results.first { go(to: first) } }
@@ -147,6 +154,7 @@ struct SettingsGroup<Content: View>: View {
     var title: String
     var footer: String?
     @ViewBuilder var content: Content
+    @Environment(\.brandTint) private var brand
 
     var body: some View {
         VStack(alignment: .leading, spacing: DS.Space.s) {
@@ -154,8 +162,8 @@ struct SettingsGroup<Content: View>: View {
             VStack(alignment: .leading, spacing: DS.Space.m) { content }
                 .padding(DS.Space.l)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Color(nsColor: .controlBackgroundColor), in: RoundedRectangle(cornerRadius: DS.Radius.surface))
-                .overlay(RoundedRectangle(cornerRadius: DS.Radius.surface).stroke(DS.Palette.hairline.opacity(0.5), lineWidth: 0.5))
+                .background(Surface.card(brand), in: RoundedRectangle(cornerRadius: DS.Radius.surface))
+                .overlay(RoundedRectangle(cornerRadius: DS.Radius.surface).stroke(Surface.cardEdge(brand), lineWidth: 0.5))
             if let footer { Text(footer).font(DS.Font.caption).foregroundStyle(DS.Palette.secondaryText).fixedSize(horizontal: false, vertical: true) }
         }
     }

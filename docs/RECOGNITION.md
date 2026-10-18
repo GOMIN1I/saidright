@@ -51,6 +51,10 @@ It loses for two reasons that cannot be tuned away:
 
 Conclusion: for mixed-language speech, one strong multilingual model with language-aware segmentation and a coverage check is both the most accurate and, after the encoder cache, close to the fastest option. Parakeet remains the best choice for modes that really are one language, which *Automatic* already does.
 
+## Recognition ahead (0.7)
+
+While a Whisper mode records, the app asks the worker every 2 s (from the 6th second) to recognise the phrases already finished in the WAV that is still being written (`ahead` command, `Worker.recognize_ahead`). A cut is made only after a pause of at least 1.0 s and for at least 4 s of audio; the noise floor of the earlier part is reused for the tail. `transcribe` of the same path then recognises only the rest and joins the texts. Measured on the owner's 16 recordings longer than 6 s: Whisper time after the stop 3.06 s → 0.72 s; shorter pauses (0.6 s / 2 s chunks) were faster but dropped words when a sentence was split. Details and the rejected smaller-encoder-window experiment: `eval/results/2026-10-17-speed.md`.
+
 ## What could still make it better
 
 - **Streaming partial results** for long dictations (perceived latency).

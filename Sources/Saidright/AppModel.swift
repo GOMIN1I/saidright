@@ -76,6 +76,10 @@ struct Notice: Equatable, Identifiable {
     private var feedbackTask: Task<Void, Never>?
     private var timing = SessionTiming()
     private var maxDurationTimer: Timer?
+    private var aheadTimer: Timer?
+    private var aheadRunning = false
+    /// Seconds of the current recording already recognised ahead (for the session log).
+    private var aheadSeconds = 0.0
     private var capsuleDelay: Task<Void, Never>?
     static let maxRecordingSeconds: TimeInterval = 600
     private var unexpectedExits: [Date] = []
@@ -275,8 +279,9 @@ struct Notice: Equatable, Identifiable {
         guard machine.begin(snapshot) else { return }
         offerDestination = fallbackDestination
         phase = machine.phase
+        let recordingURL: URL
         do {
-            _ = try recorder.start(deviceUID: settings.inputDeviceUID)
+            recordingURL = try recorder.start(deviceUID: settings.inputDeviceUID)
         } catch {
             fail(snapshot.id, message: Self.message(for: error))
             return
@@ -285,6 +290,11 @@ struct Notice: Equatable, Identifiable {
         timing.recordingStarted = Date()
         recordingStarted = timing.recordingStarted
         advance(snapshot.id, .recording)
+        startRecognizingAhead(recordingURL, mode: mode)
+        if mode.cleanup.usesEditor || mode.learning.runsAutomatically {
+            let provider = provider
+            Task.detached(priority: .utility) { await TextProvider.warmUp(provider) }
+        }
         Sound.play(.start, enabled: settings.playSounds)
         capsule.modeName = mode.name
         capsule.modeSymbol = mode.symbol
@@ -307,6 +317,7 @@ struct Notice: Equatable, Identifiable {
     func stopRecording() {
         guard phase == .recording, let snapshot = machine.current else { return }
         maxDurationTimer?.invalidate()
+        aheadTimer?.invalidate()
         capsuleDelay?.cancel()
         guard let recording = recorder.stop() else { fail(snapshot.id, message: tr("error.recordingLost")); return }
         timing.recordingEnded = Date()
@@ -331,6 +342,7 @@ struct Notice: Equatable, Identifiable {
         guard let id = machine.cancel() else { return }
         _ = id
         maxDurationTimer?.invalidate()
+        aheadTimer?.invalidate()
         capsuleDelay?.cancel()
         recorder.discard()
         sessionTask?.cancel()
@@ -407,7 +419,7 @@ struct Notice: Equatable, Identifiable {
         result = SessionResult(recordID: id, modeName: mode.name, raw: raw, edited: edit.edited, output: edit.output, outcome: outcome, editFailure: edit.failure, editIssues: edit.issues, destination: snapshot.destination ?? offerDestination, languages: transcript.languages, timing: timing, feedback: nil, feedbackState: .none, learningLevel: mode.learning, learningLanguage: mode.learningLanguage, audioFile: keepAudio ? fileName : nil)
         if let failure = edit.failure { reportEditFailure(failure) }
         saveRecord(id: id, mode: mode, raw: raw, edit: edit, languages: transcript.languages, audioFile: keepAudio ? fileName : nil, delivery: outcome.code)
-        Log.info("session done audio=\(String(format: "%.1f", recording.duration))s asr=\(String(format: "%.2f", timing.recognition ?? 0))s ready=\(String(format: "%.2f", timing.speechToText ?? 0))s delivered=\(String(format: "%.2f", timing.speechToDelivery ?? 0))s cold=\(transcript.cold) outcome=\(outcome.code)")
+        Log.info("session done audio=\(String(format: "%.1f", recording.duration))s asr=\(String(format: "%.2f", timing.recognition ?? 0))s ready=\(String(format: "%.2f", timing.speechToText ?? 0))s delivered=\(String(format: "%.2f", timing.speechToDelivery ?? 0))s ahead=\(String(format: "%.1f", aheadSeconds))s cold=\(transcript.cold) outcome=\(outcome.code)")
 
         // 4. Optional learning feedback. The text is already delivered; the hint, if any,
         //    arrives in the capsule later and never needs the main window.
@@ -442,8 +454,7 @@ struct Notice: Equatable, Identifiable {
         case .auto: throw RecognizerError.runtimeMissing // resolved above; never reached
         case .whisper:
             guard let installation = WhisperInstallation.current() else { throw RecognizerError.runtimeMissing }
-            let prompt = history.recognitionHints.isEmpty ? nil : history.recognitionHints.prefix(40).joined(separator: ", ")
-            return try await whisper.transcribe(url, languages: mode.spokenLanguages, prompt: prompt, audioSeconds: seconds, installation: installation)
+            return try await whisper.transcribe(url, languages: mode.spokenLanguages, prompt: recognitionPrompt, audioSeconds: seconds, installation: installation)
         case .appleDictation:
             guard let language = mode.spokenLanguages.first else { throw RecognizerError.unsupportedLanguage("auto") }
             return try await AppleDictation.transcribe(url, languageID: language)
@@ -454,6 +465,31 @@ struct Notice: Equatable, Identifiable {
             var transcript = try await parakeet.transcribe(url, languages: mode.spokenLanguages, prompt: nil, audioSeconds: seconds, installation: installation.asWorkerInstallation)
             transcript.text = NumberNormalizer.digits(transcript.text)
             return transcript
+        }
+    }
+
+    /// Vocabulary the person confirmed, passed to Whisper as context.
+    private var recognitionPrompt: String? { history.recognitionHints.isEmpty ? nil : history.recognitionHints.prefix(40).joined(separator: ", ") }
+
+    /// Long dictations: Whisper recognises finished phrases while the person still speaks, so
+    /// after the stop only the last part is left (docs/RECOGNITION.md → Recognition ahead).
+    /// Reads the WAV being written; the recorder itself is untouched.
+    private func startRecognizingAhead(_ url: URL, mode: Mode) {
+        aheadTimer?.invalidate()
+        aheadSeconds = 0
+        guard engine(for: mode) == .whisper, let installation = WhisperInstallation.current() else { return }
+        aheadTimer = Timer.scheduledTimer(withTimeInterval: 2, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated {
+                guard let self, self.phase == .recording, !self.aheadRunning,
+                      let started = self.timing.recordingStarted, Date().timeIntervalSince(started) >= 6 else { return }
+                self.aheadRunning = true
+                let prompt = self.recognitionPrompt
+                Task { [weak self] in
+                    let seconds = try? await self?.whisper.recognizeAhead(url, languages: mode.spokenLanguages, prompt: prompt, installation: installation)
+                    self?.aheadRunning = false
+                    if let seconds { self?.aheadSeconds = seconds }
+                }
+            }
         }
     }
 

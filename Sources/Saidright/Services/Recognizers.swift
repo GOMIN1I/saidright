@@ -122,6 +122,20 @@ final class WhisperEngine: @unchecked Sendable {
         return Transcript(text: text, languages: ids, seconds: seconds, cold: wasCold)
     }
 
+    /// While recording: recognises the phrases already finished (followed by a clear pause) of a
+    /// WAV that is still being written, so `transcribe` of the same path only does the rest.
+    /// Returns the seconds of audio recognised so far. Whisper only.
+    @discardableResult
+    func recognizeAhead(_ url: URL, languages: [String], prompt: String?, installation: WhisperInstallation) async throws -> Double {
+        guard lock.withLock({ modelLoaded && process?.isRunning == true }) else { return 0 }
+        let whisperCodes = languages.compactMap { LanguageCatalog.info($0)?.whisperCode }
+        var extra: [String: Any] = ["path": url.path, "languages": whisperCodes]
+        if let prompt, !prompt.isEmpty { extra["prompt"] = prompt }
+        let reply = try await send(command: "ahead", extra: extra, python: installation.python, modelDir: installation.modelDir, timeout: 60, onProgress: nil)
+        guard case let .ready(_, seconds) = reply else { throw RecognizerError.failed("protocol") }
+        return seconds
+    }
+
     /// Ends the process. Pending requests fail with `.workerStopped`.
     func stop() {
         let (p, pending) = lock.withLock { () -> (Process?, [CheckedContinuation<WorkerProtocol.Reply, Error>]) in

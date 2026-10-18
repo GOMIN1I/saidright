@@ -43,6 +43,49 @@ private func mode(_ level: CleanupLevel) -> Mode {
         #expect(!providerBuilt)
     }
 
+    @Test func lightEditSkipsCleanShortPhrase() async {
+        let transport = MockTransport(json: responsesReply("x"))
+        for raw in ["Привет, я буду через 10 минут.", "Can you send me the report by Friday?", "Я проверил логи. And the deploy failed again."] {
+            let result = await TextPipeline.edit(raw: raw, mode: mode(.light), provider: { TextProvider(settings: .init(), credential: "sk-test", transport: transport) })
+            #expect(result.output == raw)
+            #expect(result.edited == raw)
+            #expect(result.failure == nil)
+        }
+        #expect(transport.requestCount == 0)
+    }
+
+    @Test func lightEditStillAsksWhenThereIsSomethingToDo() async {
+        let cases = [
+            "привет я буду через 10 минут",  // no capital, no full stop
+            "Ну короче, давай созвонимся завтра.",  // filler
+            "Я я думаю, это хорошая идея.",  // repetition
+            "Um, I think we should move the meeting.",  // filler
+            "Купи молоко, хлеб, сыр и яйца.",  // a list: smart formatting may apply
+            "Сегодня утром я разбирался с тем, почему приложение так долго запускается на старых компьютерах.",  // longer than the limit
+        ]
+        for raw in cases {
+            let transport = MockTransport(json: responsesReply(raw))
+            _ = await TextPipeline.edit(raw: raw, mode: mode(.light), provider: { TextProvider(settings: .init(), credential: "sk-test", transport: transport) })
+            #expect(transport.requestCount >= 1, "\(raw)")
+        }
+        // Higher levels always ask: grammar and wording cannot be judged locally.
+        let transport = MockTransport(json: responsesReply("x"))
+        _ = await TextPipeline.edit(raw: "Can you send me the report by Friday?", mode: mode(.correct), provider: { TextProvider(settings: .init(), credential: "sk-test", transport: transport) })
+        #expect(transport.requestCount == 1)
+    }
+
+    @Test func gptOssGetsLowReasoningInsteadOfNone() async throws {
+        for (model, expected) in [("openai/gpt-oss-120b", "low"), ("qwen/qwen3.8-27b", "none")] {
+            let transport = MockTransport(json: ["choices": [["finish_reason": "stop", "message": ["content": "Hi."]]]])
+            var settings = ProviderSettings()
+            settings.kind = .compatible
+            settings.compatibleBaseURL = "https://api.groq.com/openai/v1"
+            settings.compatibleModel = model
+            _ = try await TextProvider(settings: settings, credential: "k", transport: transport).complete(system: "s", user: "u")
+            #expect(transport.bodyObject()["reasoning_effort"] as? String == expected)
+        }
+    }
+
     @Test func localOnlyBlocksCloudProvider() async {
         let transport = MockTransport(json: responsesReply("x"))
         var settings = ProviderSettings()
@@ -193,5 +236,75 @@ private func mode(_ level: CleanupLevel) -> Mode {
     @Test func linksMustSurvive() {
         let r = IntegrityReport.check(raw: "see https://example.com/a now", edited: "See the website now.", level: .light)
         #expect(r.reject)
+    }
+}
+
+/// Answers editor requests and layout (JSON schema) requests differently, and records the
+/// text each layout request was about.
+final class RoutingTransport: HTTPTransport, @unchecked Sendable {
+    private let lock = NSLock()
+    let editorText: String
+    let layout: (String) -> String
+    private(set) var layoutInputs: [String] = []
+    private(set) var count = 0
+
+    init(editorText: String, layout: @escaping (String) -> String) {
+        self.editorText = editorText
+        self.layout = layout
+    }
+
+    func send(_ request: URLRequest) async throws -> (Data, HTTPURLResponse) {
+        let body = (try? JSONSerialization.jsonObject(with: request.httpBody ?? Data())) as? [String: Any] ?? [:]
+        let input = body["input"] as? String ?? ""
+        let reply: String
+        if body["text"] != nil {
+            lock.withLock { layoutInputs.append(input); count += 1 }
+            reply = layout(input)
+        } else {
+            lock.withLock { count += 1 }
+            reply = editorText
+        }
+        let data = try JSONSerialization.data(withJSONObject: responsesReply(reply))
+        return (data, HTTPURLResponse(url: request.url!, statusCode: 200, httpVersion: nil, headerFields: nil)!)
+    }
+}
+
+@Suite struct ParallelLayout {
+    func tableMode() -> Mode {
+        var m = ModePresets.starter(names: [:], spoken: ["ru", "en"])[0]
+        m.cleanup = .correct
+        m.rules.smartStructure = true
+        return m
+    }
+
+    static let table = #"{"format":"structured","title":"","blocks":[{"type":"paragraph","text":"Составь таблицу:","items":[],"rows":[]},{"type":"table","text":"","items":[],"rows":[["Grok","Gemini","Copilot"]]}]}"#
+
+    @Test func layoutAskedTogetherWithTheEditIsUsed() async {
+        let raw = "составь таблицу со столбцами Grok Gemini и Copilot"
+        let transport = RoutingTransport(editorText: "Составь таблицу со столбцами Grok, Gemini и Copilot.") { _ in Self.table }
+        let result = await TextPipeline.edit(raw: raw, mode: tableMode(), provider: { TextProvider(settings: .init(), credential: "k", transport: transport) })
+        #expect(result.output.contains("| Grok | Gemini | Copilot |"))
+        #expect(transport.count == 2)  // edit + layout in parallel, no third request
+    }
+
+    @Test func layoutIsAskedAgainWhenTheEditorCorrectedAWord() async {
+        let raw = "Сставь таблицу со столбцами Grok, Gemini и Copilot"
+        let transport = RoutingTransport(editorText: "Составь таблицу со столбцами Grok, Gemini и Copilot.") { input in
+            input.contains("Сставь")
+                ? #"{"format":"structured","title":"","blocks":[{"type":"paragraph","text":"Сставь таблицу:","items":[],"rows":[]},{"type":"table","text":"","items":[],"rows":[["Grok","Gemini","Copilot"]]}]}"#
+                : Self.table
+        }
+        let result = await TextPipeline.edit(raw: raw, mode: tableMode(), provider: { TextProvider(settings: .init(), credential: "k", transport: transport) })
+        #expect(result.output.hasPrefix("Составь таблицу:"))
+        #expect(transport.count == 3)
+        #expect(transport.layoutInputs.last?.contains("Составь") == true)
+    }
+
+    @Test func proseAnswerIsReusedWhenOnlyPunctuationChanged() async {
+        let raw = "сначала я позвоню тебе а потом мы решим что делать дальше с проектом"
+        let transport = RoutingTransport(editorText: "Сначала я позвоню тебе, а потом мы решим, что делать дальше с проектом.") { _ in #"{"format":"prose","title":"","blocks":[]}"# }
+        let result = await TextPipeline.edit(raw: raw, mode: tableMode(), provider: { TextProvider(settings: .init(), credential: "k", transport: transport) })
+        #expect(result.output == "Сначала я позвоню тебе, а потом мы решим, что делать дальше с проектом.")
+        #expect(transport.count == 2)
     }
 }

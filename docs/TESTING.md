@@ -94,6 +94,24 @@ Found during the comparison, not fixed yet: the shared energy VAD rejects very q
 | `swift test` | 118 tests (new: number normaliser RU/EN incl. idioms and ordinals, Auto resolution) | Automated |
 | Localization | 713 keys × 4 languages, 0 problems | Automated |
 
+## 2026-10-18 release 1.0.0
+
+- **Main window top band** (owner report): the hidden title bar's 28 pt band is reused by the header row; the close/minimise/zoom buttons were present in AX but not drawn because the window colour was a `containerBackground` (drawn over them in this window). Now a background layer for every window except Settings. Real-screen captures: main window dark/light, Introduction and History show the buttons; QA log `window-buttons` prints their frames.
+- Audit: GitHub CI/CodeQL/Pages green on the last push, 0 open code-scanning, Dependabot or secret-scanning alerts, no open PRs/issues. Site: no console errors, all assets present, no horizontal scroll at 375 px (EN/RU). `scripts/check.sh` passes (151 tests).
+- Animations: CPU of a QA instance with Settings + main window is the same with the aurora on and off (Core Animation); the earlier per-frame Canvas version was replaced.
+- Site screenshots regenerated from the 1.0.0 build (aurora background).
+- Personal details (provider quota of the test account, the owner's dictated phrases) removed from `eval/results/2026-10-18-editing-speed.md` before publishing.
+
+## 2026-10-17 session 6 (0.7.0 candidate)
+
+- **Settings search bug** (owner report: the sidebar showed only “Nothing found” and could not be cleared): the empty result replaced the sidebar List, which hosts the search field. Now always a List; QA `search:точ` snapshot shows the field with its clear button, the message and “Clear search”.
+- **Speed** (`eval/results/2026-10-17-speed.md`): owner log breakdown — Whisper 0.46–0.56 s, cloud editing (gpt-6-luna) 1.0–1.5 s, verification 0.2 s after the text is visible. Rejected: 8/4-bit weights (no gain), shorter encoder windows (translation of mixed phrases, corrected learner errors on real recordings). Shipped: recognition ahead (16 real recordings 3.06 → 0.72 s after the stop; QA run with a 27.2 s recording: `asr=1.23s` vs 2.75 s), warm-up HEAD to the provider (TLS 0.12–0.18 s per cold connection, curl).
+- **Voice tables**: unit tests (request detection RU/EN/DE/ZH, dropped request words, restored greeting, moved greeting, invented cell rejected, dropped row rejected); local gemma4:e4b end to end 5/5 table, full LocalModel suite 13/13.
+- **Brand colour**: QA snapshots of Settings (General, Modes, Appearance) and the main window in light and dark.
+- **First launch**: fresh data dir → only `onboarding` window opens (no main window), light and dark; hero and steps checked by snapshot. The finish → main window fade was not exercised by a QA hook (manual check pending).
+- **Site**: checked in the browser at 1440×900 and 375×812 (no horizontal scroll), EN and RU, playground states incl. done (green bars + check to the right, as in the app).
+- `swift test`: 140 tests passed; localisation 719 keys × 4 languages, 0 problems.
+
 ## 2026-10-17 Saidright 0.6.0 (rename, smart formatting, fixes)
 
 | Scenario | Result | Status |

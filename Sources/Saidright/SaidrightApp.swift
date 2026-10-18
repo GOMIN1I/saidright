@@ -139,6 +139,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
                     NSApp.terminate(nil)
                 }
             }
+        case "window-buttons":
+            // QA: where the title-bar buttons of each visible window are and whether they are drawn.
+            for window in NSApp.windows where !(window is NSPanel) && window.className != "NSStatusBarWindow" {
+                let b = window.standardWindowButton(.closeButton)
+                Log.info("qa window \(window.identifier?.rawValue ?? "?") visible=\(window.isVisible) key=\(window.isKeyWindow) \(type(of: window)) \(NSStringFromRect(window.frame)) mask=\(window.styleMask.rawValue) close frame=\(b.map { NSStringFromRect($0.frame) } ?? "none") hidden=\(b?.isHidden ?? true) alpha=\(b?.alphaValue ?? 0) superviewHidden=\(b?.superview?.isHidden ?? true) superAlpha=\(b?.superview?.alphaValue ?? 0) titlebarAlpha=\(b?.superview?.superview?.alphaValue ?? 0)")
+            }
         case "hide": model?.capsule.hide()
         case "last-tip": model?.toggleLastTip()
         case "sample-feedback": model?.qaSampleFeedback()
@@ -193,38 +199,43 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         Window("Saidright", id: "main") {
             MainView()
                 .environment(model)
+                .brandWindow(model.settings.windowTint)
                 .environment(\.locale, Localizer.shared.locale)
                 .id(model.settings.uiLanguage)
         }
         .windowResizability(.contentSize)
+        .windowStyle(.hiddenTitleBar)
         .defaultPosition(.center)
         .commands { AppCommands(model: model) }
+        .firstLaunch(model.settings.onboardingCompleted ? .automatic : .suppressed)
 
         Window(tr("window.history"), id: "history") {
-            HistoryView().environment(model).id(model.settings.uiLanguage)
+            HistoryView().environment(model).brandWindow(model.settings.windowTint).id(model.settings.uiLanguage)
         }
         .defaultSize(width: 760, height: 560)
         .keyboardShortcut("y", modifiers: .command)
 
         Window(tr("window.practice"), id: "practice") {
-            PracticeView().environment(model).id(model.settings.uiLanguage)
+            PracticeView().environment(model).brandWindow(model.settings.windowTint).id(model.settings.uiLanguage)
         }
         .defaultSize(width: 560, height: 560)
         .keyboardShortcut("p", modifiers: [.command, .shift])
 
         Window(tr("window.onboarding"), id: "onboarding") {
-            OnboardingView().environment(model).id(model.settings.uiLanguage)
+            OnboardingView().environment(model).brandWindow(model.settings.windowTint).id(model.settings.uiLanguage)
         }
         .windowResizability(.contentSize)
         .windowStyle(.hiddenTitleBar)
         .defaultPosition(.center)
         .commandsRemoved()
         .onboardingRestorationDisabled()
+        // A new person sees the introduction first, alone, in the middle of the screen.
+        .firstLaunch(model.settings.onboardingCompleted ? .suppressed : .presented)
 
         // A regular window rather than the Settings scene: it gets a full-height sidebar with
         // search, like System Settings, instead of a preferences toolbar and a stray sidebar toggle.
         Window(tr("window.settings"), id: "settings") {
-            SettingsView().environment(model).id(model.settings.uiLanguage)
+            SettingsView().environment(model).brandWindow(model.settings.windowTint, container: true).id(model.settings.uiLanguage)
         }
         .defaultSize(width: 860, height: 640)
         .windowToolbarStyle(.unified)
@@ -239,7 +250,23 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 }
 
+/// Which windows open by themselves at launch (macOS 15+; earlier the main window opens the
+/// introduction from its own onAppear).
+enum LaunchPresence { case automatic, presented, suppressed }
+
 extension Scene {
+    func firstLaunch(_ presence: LaunchPresence) -> some Scene {
+        if #available(macOS 15.0, *) {
+            let behavior: SceneLaunchBehavior = switch presence {
+            case .automatic: .automatic
+            case .presented: .presented
+            case .suppressed: .suppressed
+            }
+            return self.defaultLaunchBehavior(behavior)
+        }
+        return self
+    }
+
     /// The introduction should open only when asked, never through window restoration.
     func onboardingRestorationDisabled() -> some Scene {
         if #available(macOS 15.0, *) { return self.restorationBehavior(.disabled) }

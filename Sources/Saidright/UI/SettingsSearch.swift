@@ -70,6 +70,7 @@ enum SettingsIndex {
             e(.learning, tr("learn.progress"), tr("learn.progressFooter")),
 
             e(.appearance, tr("look.theme"), tr("look.themeDetail"), syn: "syn.theme"),
+            e(.appearance, tr("look.tint"), tr("look.tintDetail"), syn: "syn.colors"),
             e(.appearance, tr("look.style"), tr("look.styleDetail"), syn: "syn.glass"),
             e(.appearance, tr("look.palette"), syn: "syn.colors"),
             e(.appearance, tr("look.size"), syn: "syn.size"),
@@ -145,20 +146,25 @@ extension View {
 }
 
 /// Sidebar list of search results, grouped by section, with an empty state.
+/// Always a List (also when empty): the sidebar search field lives on it.
 struct SettingsSearchResults: View {
     var results: [SettingsEntry]
     var query: String
     @Binding var selection: SettingsEntry.ID?
+    var clear: () -> Void
 
     var body: some View {
-        if results.isEmpty {
-            ContentUnavailableView {
-                Label(tr("search.noResults"), systemImage: "magnifyingglass")
-            } description: {
-                Text(tr("search.noResultsDetail", query))
-            }
-        } else {
-            List(selection: $selection) {
+        List(selection: $selection) {
+            if results.isEmpty {
+                VStack(alignment: .leading, spacing: DS.Space.s) {
+                    Label(tr("search.noResults"), systemImage: "magnifyingglass").font(DS.Font.body.weight(.semibold))
+                    Text(tr("search.noResultsDetail", query)).font(DS.Font.caption).foregroundStyle(DS.Palette.secondaryText)
+                        .lineLimit(nil).frame(maxWidth: .infinity, alignment: .leading).fixedSize(horizontal: false, vertical: true)
+                    Button(tr("search.clear"), action: clear).buttonStyle(PillButtonStyle())
+                }
+                .padding(.vertical, DS.Space.s)
+                .selectionDisabled()
+            } else {
                 ForEach(SettingsSection.allCases.filter { s in results.contains { $0.section == s } }) { section in
                     Section(tr("settings.\(section.rawValue)")) {
                         ForEach(results.filter { $0.section == section }) { entry in

@@ -83,6 +83,30 @@ The mark (`Sources/Saidright/UI/Branding.swift`, `AppIconArt`) is drawn once in 
 
 macOS limits: a signed app cannot switch its Finder/Launchpad icon by theme through a supported API. Saidright changes only the Dock icon while running (`NSApp.applicationIconImage`). Automatic light/dark/tinted icons need an Icon Composer `.icon` compiled by Xcode's `actool`; the SwiftPM build here produces `.icns`, so that is a follow-up.
 
+## Brand colour (0.7)
+
+The windows carry the icon's colours instead of plain greys (`DS.Brand`, `Surface`, `.brandWindow(_:)` in `DesignSystem.swift`). Settings → Appearance → Window colour: **Saidright** (default) or **System**.
+
+| Token | Light | Dark | Source |
+| --- | --- | --- | --- |
+| canvas (window) | #F2F4FB | #0E1430 | icon tile, lightened / deepened |
+| sidebar | #E8ECF8 | #0A0F26 | |
+| card (settings groups) | #FFFFFF | #171F40 | |
+| card edge | indigo 8 % | white 8 % | |
+| accent (controls, prominent buttons) | #3D6BFF | #5E7DFF | voice bars |
+| tile gradient (hero surfaces) | #2A3A78 → #111833 | same | icon tile, top → bottom |
+| coral | #FF5A4E | same | cursor; used only in the onboarding hero light and the learning card's primary button |
+
+The theme picker (System / Light / Dark) still chooses the appearance; the brand colours resolve per appearance, so “System” means airy indigo-white by day and deep indigo by night. Capsule palettes are independent of the window colour.
+
+**Living surfaces (0.7).** `AuroraBackground` (DesignSystem.swift) is the window background with the Saidright colour: a three-stop base (dark #18225A → #0E1430 → #0B1028; light #F6F7FE → #E7EBF9) and three radial lights — voice blue #3D6BFF, violet #7B5CFF, rose #FF5257 (light mode: #8FB0FF, #C4B5FF, #FF8E92) — screen-blended at night, drifting and swelling on 17–23 s Core Animation loops. `LivingHalo` (MainView.swift) is a conic gradient of the same lights turning every 9 s (faster while busy) behind the record control, masked to a soft ring; brightness 0.45 idle, 0.65 hover, 0.8 busy, 1 recording. The Ink capsule has `LivingLight`: its state colour drifts inside the body with a faint passing sheen. Measured: the same CPU with the aurora on and off (QA instance, Settings + main window). Reduce Motion stops everything; Reduce Transparency removes the lights. QA snapshots (`cacheDisplay`) do not apply SwiftUI masks to AppKit layers: check the halo on a real screen.
+
+**Introduction.** First launch opens only the introduction (macOS 15+: `defaultLaunchBehavior`; macOS 14: the main window hides itself), centred, fading up while the card settles from 96.5 % scale. The welcome step has a 200 pt hero in the tile gradient with two slow screen-blended lights (voice blue, coral) and the floating mark; steps slide 36 pt in the direction of travel; Finish fades the introduction out (0.3 s) and the main window in (0.4 s). Reduce Motion: fades only, still hero.
+
+## Product page (0.7)
+
+`site/index.html`, no dependencies. Onest (OFL) served from the site. Sections alternate night indigo and mist white; the capsule on the page reproduces the app's bars (7 × 3 px, 4–18 px, same recording/processing formulas) and the done state (low bars plus the bold check mark to their right, never a centred tick). Screenshots: dark appearance, Saidright window colour, one set per page language (`site/assets/shots/{en,ru}`), produced with the QA snapshot hooks.
+
 ## Verification still to do
 
 Real-window review on bright/dark wallpapers, inactive windows, larger text, German long strings and Chinese glyphs in every screen, VoiceOver pass, and a screen recording of the capsule. See `docs/TESTING.md` for what has been checked so far.

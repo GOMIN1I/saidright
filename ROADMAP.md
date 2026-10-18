@@ -1,6 +1,6 @@
 # Roadmap
 
-Ordered by value to everyday use. Items move only when verified. Status as of 0.6.0 (2026-10-17).
+Ordered by value to everyday use. Items move only when verified. Status as of 0.7.0 candidate (2026-10-17).
 
 ## Next (needs a person or an account)
 - Upload the social preview image (Settings → General → Social preview) and enable the `main` ruleset (docs/GITHUB.md).
@@ -15,7 +15,8 @@ Ordered by value to everyday use. Items move only when verified. Status as of 0.
 - Parakeet vocabulary hints are not supported by the model; consider light post-processing for personal terms.
 - Single English words inside Russian sentences are occasionally misheard (“Slack” → “слог”, “README” → “Redmi”); language-gated Parakeet makes this worse (measured), so improvements must stay inside Whisper (vocabulary hints, post-correction).
 - Number normalisation beyond RU/EN/DE (ordinal numbers, times like “quarter past”).
-- Streaming partial results in the capsule for long dictations.
+- Evaluate Qwen3-ASR 0.6B (MLX, 52 languages) against Whisper turbo on RU+EN mixed speech; it may halve the short-phrase wait (needs a ~1.3 GB download).
+- Streaming partial results in the capsule for long dictations (the recognised-ahead text is already available).
 - WhisperKit (Core ML) engine to remove the Python runtime; compare with MLX on the same set.
 - Sparkle or GitHub-Releases update check.
 - Run the GitHub workflows once and add the green checks to the ruleset (docs/GITHUB.md).

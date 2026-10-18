@@ -70,6 +70,15 @@ struct LocalModel {
         #expect(r.output.contains("\n- ") || r.output.contains("\n1. "))
     }
 
+    @Test func spokenTableBecomesATable() async {
+        let raw = "привет нужна таблица с тремя столбцами ChatGPT Claude и Gemini сравнение по критериям скорость у ChatGPT высокая у Claude средняя у Gemini высокая цена у всех 20 долларов контекст у ChatGPT 400 тысяч у Claude 1 миллион у Gemini 2 миллиона спасибо"
+        let r = await TextPipeline.edit(raw: raw, mode: mode(.correct), provider: { provider })
+        print("TABLE:", r.output, r.failure as Any)
+        #expect(r.failure == nil)
+        #expect(r.output.contains("| --- |"))
+        #expect(r.output.contains("Gemini"))
+    }
+
     @Test func layoutAnswerForAMessage() async throws {
         let text = "Hey, um, so the meeting's moved to Wednesday at three, and can you bring the numbers, the slides, and like the budget?"
         let json = try await provider.completeJSON(system: SmartStructure.system(allowTitle: true), user: EditorPrompt.wrap(text), schemaName: "layout", schema: SmartStructure.schema)

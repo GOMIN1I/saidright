@@ -51,7 +51,7 @@ struct ResultView: View {
         HStack(spacing: DS.Space.s) {
             Button { model.copyResult() } label: { Label(tr("result.copy"), systemImage: "doc.on.doc") }
             if let destination = r.destination, !(r.outcome?.isInsertion ?? false) {
-                Button { model.insertAgain() } label: { Label(tr("result.insertInto", destination.appName), systemImage: "text.insert") }
+                Button { model.insertAgain() } label: { Label(tr("result.insertInto", Self.shortName(destination.appName)), systemImage: "text.insert") }
             }
             if r.edited != nil {
                 Button { withAnimation(DS.Motion.quick) { showComparison.toggle() } } label: {
@@ -172,5 +172,12 @@ struct TranscriptEditor: View {
                 Button(tr("result.confirmTranscript"), action: onConfirm).buttonStyle(PillButtonStyle(prominent: true))
             }
         }
+    }
+}
+
+extension ResultView {
+    /// App names can be long ("UserNotificationCenter"); the buttons keep the window's width.
+    static func shortName(_ name: String) -> String {
+        name.count > 18 ? String(name.prefix(17)) + "…" : name
     }
 }
